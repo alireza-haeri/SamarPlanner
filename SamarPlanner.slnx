@@ -1,0 +1,18 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SamarPlanner.Api/SamarPlanner.Api.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Identity/">
+    <Project Path="src/Modules/SamarPlanner.Identity.Core/SamarPlanner.Identity.Core.csproj" />
+    <Project Path="src/Modules/SamarPlanner.Identity.Infrastructure/SamarPlanner.Identity.Infrastructure.csproj" />
+    <Project Path="src/Modules/SamarPlanner.Identity/SamarPlanner.Identity.csproj" />
+  </Folder>
+  <Folder Name="/src/Shared/">
+    <Project Path="src/Shared/SamarPlanner.Shared.Contracts/SamarPlanner.Shared.Contracts.csproj" />
+    <Project Path="src/Shared/SamarPlanner.Shared.Kernel/SamarPlanner.Shared.Kernel.csproj" />
+    <Project Path="src/Shared/SamarPlanner.Shared/SamarPlanner.Shared.csproj" />
+    <Project Path="src/Shared/SmarPlanner.Shared.Core/SmarPlanner.Shared.Core.csproj" />
+    <Project Path="src\Shared\SamarPlanner.Shared.Infrastructure\SamarPlanner.Shared.Infrastructure.csproj" />
+  </Folder>
+</Solution>
