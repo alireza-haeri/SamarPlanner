@@ -32,11 +32,21 @@ public class Result<TModel>
             Errors = new Dictionary<string, string[]> { { key ?? "General", [message] } },
             BadResultType =  Kernel.BadResultType.NotFound
         };
+
+    public static Result<TModel> UnAuthorizeFailure()=>
+        new()
+        {
+            IsSuccess = false,
+            Errors = new Dictionary<string, string[]>
+                { { "General", ["شما دسترسی لازم را ندارید. لطفاً وارد شوید."] } },
+            BadResultType =  Kernel.BadResultType.Unauthorized
+        };
 }
 
 public enum BadResultType
 {
     NotFound = 0,
     Validation = 1,
-    General = 2
+    General = 2,
+    Unauthorized = 3,
 }

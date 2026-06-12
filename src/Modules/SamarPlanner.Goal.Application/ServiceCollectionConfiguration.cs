@@ -1,17 +1,13 @@
 using System.Reflection;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using SamarPlanner.Identity.Core.UseCases.Commands.RegisterOrLogin;
-using SamarPlanner.Shared.Application.Behaviors;
 using SamarPlanner.Shared.Application.Extensions;
-using SamarPlanner.Shared.Contracts;
-using SamarPlanner.Shared.Contracts.Command;
 
-namespace SamarPlanner.Identity.Core;
+namespace SamarPlanner.Goal.Application;
 
 public static class ServiceCollectionConfiguration
 {
-    public static IServiceCollection ConfigureCore(this IServiceCollection services)
+    public static IServiceCollection ConfigureApplication(this IServiceCollection services)
     {
         services.AddMediatR(options =>
         {
@@ -19,9 +15,9 @@ public static class ServiceCollectionConfiguration
             options.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
             options.AddGlobalBehaviors();
         });
-        
+
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-        
+
         return services;
     }
 }

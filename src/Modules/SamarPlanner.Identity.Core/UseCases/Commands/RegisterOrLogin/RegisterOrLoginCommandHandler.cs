@@ -16,10 +16,6 @@ public class RegisterOrLoginCommandHandler(
     public async Task<Result<RegisterOrLoginCommandResponse>> Handle(RegisterOrLoginCommand request,
         CancellationToken cancellationToken)
     {
-        var validationResult = await validator.ValidateAsync(request, cancellationToken);
-        if (!validationResult.IsValid)
-            return Result<RegisterOrLoginCommandResponse>.ValidationFailure(validationResult.ToDictionary());
-
         var user = await userRepository.GetAsync(request.PhoneNumber, cancellationToken);
         if (user is null)
         {

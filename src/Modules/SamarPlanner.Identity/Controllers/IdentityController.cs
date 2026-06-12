@@ -18,11 +18,4 @@ public class IdentityController(IMediator mediator) : BaseController
             await mediator.Send(new RegisterOrLoginCommand(request.PhoneNumber, request.Password));
         return Result(result);
     }
-    
-    [Authorize]
-    [HttpGet("/test")]
-    public IActionResult Test()
-    {
-        return Ok();
-    }
 }

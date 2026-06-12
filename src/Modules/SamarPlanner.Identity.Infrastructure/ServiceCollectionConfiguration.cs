@@ -1,6 +1,9 @@
 using System.Globalization;
+using System.Net;
 using System.Text;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,20 +21,23 @@ public static class ServiceCollectionConfiguration
 {
     public static IServiceCollection ConfigureInfrastructure(this IServiceCollection services)
     {
-        var applicationSettings = services.BuildServiceProvider().GetRequiredService<IOptions<ApplicationSettings>>().Value;
+        var applicationSettings =
+            services.BuildServiceProvider().GetRequiredService<IOptions<ApplicationSettings>>().Value;
         var databaseSettings = applicationSettings.Databases;
         var jwtSettings = applicationSettings.JwtToken;
 
         services.AddDbContext<IdentityDbContext>(options =>
         {
-            options.UseSqlServer(databaseSettings.IdentityConnectionString, sqlOptions =>
-            {
-                sqlOptions.MigrationsHistoryTable("SamarPlanner.Identity.Infrastructure.MigrationsHistoryTable");
-            });
+            options.UseSqlServer(databaseSettings.IdentityConnectionString,
+                sqlOptions =>
+                {
+                    sqlOptions.MigrationsHistoryTable(
+                        "SamarPlanner.Identity.Infrastructure.MigrationsHistoryTable");
+                });
         });
 
         // Identity
-        services.AddIdentity<ApplicationUser,IdentityRole<Guid>>(options =>
+        services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
             {
                 options.Password.RequiredLength = 6;
                 options.Password.RequireNonAlphanumeric = false;
@@ -43,7 +49,7 @@ public static class ServiceCollectionConfiguration
             })
             .AddEntityFrameworkStores<IdentityDbContext>()
             .AddDefaultTokenProviders();
-        
+
         // JWT Authentication
         var key = Encoding.UTF8.GetBytes(jwtSettings.SigningKey);
         services.AddAuthentication(options =>
@@ -57,17 +63,17 @@ public static class ServiceCollectionConfiguration
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = true,
-                    ValidAudience =  jwtSettings.Audience,
+                    ValidAudience = jwtSettings.Audience,
                     ValidateAudience = true,
-                    ValidIssuer =  jwtSettings.Issuer,
+                    ValidIssuer = jwtSettings.Issuer,
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero
                 };
             });
-        
+
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IUserRepository, UserRepository>();
-        
+
         return services;
     }
 }

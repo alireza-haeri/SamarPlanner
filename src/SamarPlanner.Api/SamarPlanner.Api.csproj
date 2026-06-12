@@ -11,6 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Modules\SamarPlanner.Goal\SamarPlanner.Goal.csproj" />
       <ProjectReference Include="..\Modules\SamarPlanner.Identity\SamarPlanner.Identity.csproj" />
       <ProjectReference Include="..\Shared\SamarPlanner.Shared.Kernel\SamarPlanner.Shared.Kernel.csproj" />
     </ItemGroup>

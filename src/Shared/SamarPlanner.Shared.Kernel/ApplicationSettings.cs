@@ -9,6 +9,7 @@ public sealed class ApplicationSettings
 public sealed class DatabaseSettings
 {
     public required string IdentityConnectionString { get; set; }
+    public required string GoalConnectionString { get; set; }
 }
 
 public sealed class JwtTokenSettings
