@@ -13,6 +13,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Modules\SamarPlanner.Goal\SamarPlanner.Goal.csproj" />
       <ProjectReference Include="..\Modules\SamarPlanner.Identity\SamarPlanner.Identity.csproj" />
+      <ProjectReference Include="..\Modules\SamarPlanner.Task\SamarPlanner.Task.csproj" />
       <ProjectReference Include="..\Shared\SamarPlanner.Shared.Kernel\SamarPlanner.Shared.Kernel.csproj" />
     </ItemGroup>
 
