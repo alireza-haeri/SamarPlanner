@@ -1,0 +1,127 @@
+@page "/login"
+@inject IApiService ApiService
+@inject NavigationManager NavigationManager
+@inject IToastService ToastService
+@inject IApiClient ApiClient
+@inject IAuthenticationService AuthService
+@inject CustomAuthenticationStateProvider AuthProvider
+
+<div class="login-page">
+    <div class="login-card">
+        <div class="login-header">
+            <div class="login-icon">
+                <i class="bi bi-person-circle"></i>
+            </div>
+            <h2>خوش آمدید</h2>
+            <p class="text-muted">برای ورود، شماره تلفن و رمز عبور خود را وارد کنید</p>
+        </div>
+
+        <EditForm EditContext="@_formHelper.EditContext" OnSubmit="@HandleLogin" class="login-form">
+            <ValidationSummary class="text-danger" />
+
+            <div class="form-floating mb-3">
+                <InputText id="phoneNumber" class="form-control" placeholder=" "
+                           @bind-Value="_formHelper.Model.PhoneNumber" />
+                <label for="phoneNumber">شماره تلفن</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <InputText id="password" type="password" class="form-control" placeholder=" "
+                           @bind-Value="_formHelper.Model.Password" />
+                <label for="password">رمز عبور</label>
+            </div>
+
+            <button type="submit" class="btn btn-login-submit w-100" disabled="@_isLoading">
+                @if (_isLoading)
+                {
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    <span>در حال ورود...</span>
+                }
+                else
+                {
+                    <span>ورود</span>
+                }
+            </button>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private FormHelper<LoginModel> _formHelper = null!;
+    private bool _isLoading = false;
+    private string? _returnUrl;
+
+    private readonly Dictionary<string, string> _fieldMapping = new(StringComparer.OrdinalIgnoreCase)
+    {
+        { "phoneNumber", "PhoneNumber" },
+        { "password", "Password" }
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var query = NavigationManager.ToAbsoluteUri(NavigationManager.Uri).Query;
+        var queryParams = System.Web.HttpUtility.ParseQueryString(query);
+        _returnUrl = queryParams["returnUrl"] ?? "/";
+
+        _formHelper = new FormHelper<LoginModel>(fieldMapping: _fieldMapping);
+
+        if (await AuthService.IsAuthenticatedAsync())
+        {
+            NavigationManager.NavigateTo(_returnUrl, true);
+        }
+    }
+
+    private async Task HandleLogin()
+    {
+        if (_isLoading) return;
+        _isLoading = true;
+
+        _formHelper.ClearErrors();
+
+        if (!_formHelper.Validate())
+        {
+            _isLoading = false;
+            return;
+        }
+
+        var result = await ApiService.SendAsync(
+            apiCall: () => ApiClient.RegisterOrLoginAsync(new RegisterOrLoginRequest(
+                _formHelper.Model.Password,
+                _formHelper.Model.PhoneNumber
+            )),
+            successMessage: null,
+            showErrorToast: false
+        );
+
+        if (result != null)
+        {
+            if (result.IsSuccess)
+            {
+                await AuthService.LoginAsync(result.Response.Token, result.Response.ExpireInMinutes);
+
+                AuthProvider.NotifyUserAuthentication(result.Response.Token);
+
+                ToastService.ShowToastSuccess("ورود موفق!");
+                NavigationManager.NavigateTo(_returnUrl!, true);
+            }
+            else
+            {
+                _formHelper.SetServerErrors(result.Errors);
+                ToastService.ShowToastWarning("لطفاً خطاها را بررسی کنید.");
+            }
+        }
+
+        _isLoading = false;
+    }
+
+    public class LoginModel
+    {
+        [Required(ErrorMessage = "شماره تلفن الزامی است")]
+        [Phone(ErrorMessage = "شماره تلفن معتبر وارد کنید")]
+        public string PhoneNumber { get; set; } = "";
+
+        [Required(ErrorMessage = "رمز عبور الزامی است")]
+        [MinLength(6, ErrorMessage = "رمز عبور حداقل ۶ کاراکتر باشد")]
+        public string Password { get; set; } = "";
+    }
+}

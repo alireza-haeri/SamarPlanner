@@ -3,16 +3,19 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SamarPlanner.Shared;
 using SamarPlanner.Shared.Contracts.Command;
+using SamarPlanner.Shared.Kernel;
 using SamarPlanner.Task.Contracts;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SamarPlanner.Task.Controllers;
 
 [Authorize]
-[Route("/api/v1/task-occurrence")]
+[Route("/api/v1/task-occurrences")]
 public class TaskOccurrenceController(IMediator mediator) : BaseController
 {
     [HttpPatch("{taskId:guid}/date")]
-    public async Task<IActionResult> ChangeDate(Guid taskId, [FromBody] ChangeOccurrenceDateRequest request)
+    [SwaggerOperation(OperationId = "ChangeOccurrenceDate")]
+    public async Task<ActionResult<Result<bool>>> ChangeDate(Guid taskId, [FromBody] ChangeOccurrenceDateRequest request)
     {
         var result = await mediator.Send(new ChangeOccurrenceDateCommand(
             TaskId: taskId,
@@ -20,12 +23,12 @@ public class TaskOccurrenceController(IMediator mediator) : BaseController
             OldDate: request.OldDate,
             NewDate: request.NewDate
         ));
-
         return Result(result);
     }
 
     [HttpPatch("{taskId:guid}/time")]
-    public async Task<IActionResult> ChangeTime(Guid taskId, [FromBody] ChangeOccurrenceTimeRequest request)
+    [SwaggerOperation(OperationId = "ChangeOccurrenceTime")]
+    public async Task<ActionResult<Result<bool>>> ChangeTime(Guid taskId, [FromBody] ChangeOccurrenceTimeRequest request)
     {
         var result = await mediator.Send(new ChangeOccurrenceTimeCommand(
             TaskId: taskId,
@@ -33,12 +36,12 @@ public class TaskOccurrenceController(IMediator mediator) : BaseController
             Date: request.Date,
             NewTime: request.NewTime
         ));
-
         return Result(result);
     }
 
     [HttpPatch("{taskId:guid}/skip")]
-    public async Task<IActionResult> ChangeSkip(Guid taskId, [FromBody] SkipOccurrenceRequest request)
+    [SwaggerOperation(OperationId = "SkipOccurrence")]
+    public async Task<ActionResult<Result<bool>>> ChangeSkip(Guid taskId, [FromBody] SkipOccurrenceRequest request)
     {
         var result = await mediator.Send(new ChangeTaskOccurrenceSkipCommand(
             TaskId: taskId,
@@ -46,12 +49,12 @@ public class TaskOccurrenceController(IMediator mediator) : BaseController
             Date: request.Date,
             IsSkipped: request.IsSkipped
         ));
-
         return Result(result);
     }
-    
+
     [HttpPatch("{taskId:guid}/status")]
-    public async Task<IActionResult> ChangeStatus(Guid taskId, [FromBody] ChangeOccurrenceStatusRequest request)
+    [SwaggerOperation(OperationId = "ChangeOccurrenceStatus")]
+    public async Task<ActionResult<Result<bool>>> ChangeStatus(Guid taskId, [FromBody] ChangeOccurrenceStatusRequest request)
     {
         var result = await mediator.Send(new ChangeTaskOccurrenceStatusCommand(
             TaskId: taskId,
@@ -60,43 +63,42 @@ public class TaskOccurrenceController(IMediator mediator) : BaseController
             Status: request.Status,
             Score: request.Score
         ));
-
         return Result(result);
     }
-    
+
     [HttpPut("{taskId:guid}/soft-delete")]
-    public async Task<IActionResult> SoftDelete(Guid taskId, [FromBody] SoftDeleteOccurrenceRequest request)
+    [SwaggerOperation(OperationId = "SoftDeleteOccurrence")]
+    public async Task<ActionResult<Result<bool>>> SoftDelete(Guid taskId, [FromBody] SoftDeleteOccurrenceRequest request)
     {
         var result = await mediator.Send(new SoftDeleteTaskOccurrenceCommand(
             TaskId: taskId,
             UserId: UserId,
             Date: request.Date
         ));
-
         return Result(result);
     }
-    
+
     [HttpPut("{taskId:guid}/restore")]
-    public async Task<IActionResult> Restore(Guid taskId, [FromBody] RestoreTaskOccurrenceRequest request)
+    [SwaggerOperation(OperationId  = "RestoreOccurrence")]
+    public async Task<ActionResult<Result<bool>>> Restore(Guid taskId, [FromBody] RestoreTaskOccurrenceRequest request)
     {
         var result = await mediator.Send(new RestoreTaskOccurrenceCommand(
             TaskId: taskId,
             UserId: UserId,
             Date: request.Date
         ));
-
         return Result(result);
     }
 
     [HttpDelete("{taskId:guid}")]
-    public async Task<IActionResult> Delete(Guid taskId,DeleteTaskOccurrenceRequest request)
+    [SwaggerOperation(OperationId = "DeleteOccurrence")]
+    public async Task<ActionResult<Result<bool>>> Delete(Guid taskId, [FromBody] DeleteTaskOccurrenceRequest request)
     {
         var result = await mediator.Send(new DeleteTaskOccurrenceCommand(
             TaskId: taskId,
             UserId: UserId,
             Date: request.Date
         ));
-        
         return Result(result);
     }
 }

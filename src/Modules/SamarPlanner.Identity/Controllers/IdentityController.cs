@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using SamarPlanner.Identity.Contract;
 using SamarPlanner.Shared;
 using SamarPlanner.Shared.Contracts.Command;
+using SamarPlanner.Shared.Kernel;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SamarPlanner.Identity.Controllers;
 
@@ -12,7 +14,8 @@ namespace SamarPlanner.Identity.Controllers;
 public class IdentityController(IMediator mediator) : BaseController
 {
     [HttpPost("authentication")]
-    public async Task<IActionResult> RegisterOrLogin([FromBody]RegisterOrLoginRequest request)
+    [SwaggerOperation(OperationId = "RegisterOrLogin")]
+    public async Task<ActionResult<Result<RegisterOrLoginCommandResponse>>> RegisterOrLogin([FromBody]RegisterOrLoginRequest request)
     {
         var result =
             await mediator.Send(new RegisterOrLoginCommand(request.PhoneNumber, request.Password));

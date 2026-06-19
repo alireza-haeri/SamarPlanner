@@ -14,15 +14,15 @@ public class BaseController : ControllerBase
 
     protected ActionResult Result<TResponse>(Result<TResponse> result)
     {
-        if (result.IsSuccess)
+       // if (result.IsSuccess)
             return Ok(result);
 
-        return result.BadResultType switch
-        {
-            BadResultType.NotFound => NotFound(result),
-            BadResultType.Validation => BadRequest(result),
-            BadResultType.General => StatusCode(500, result),
-            _ => StatusCode(500, new { error = "Unknown bad result type" })
-        };
+        // return result.BadResultType switch
+        // {
+        //     BadResultType.NotFound => NotFound(result),
+        //     BadResultType.Validation => BadRequest(result),
+        //     BadResultType.General => StatusCode(500, result),
+        //     _ => StatusCode(500, new { error = "Unknown bad result type" })
+        // };
     }
 }
