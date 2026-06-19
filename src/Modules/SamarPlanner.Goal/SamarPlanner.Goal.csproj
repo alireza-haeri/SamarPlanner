@@ -15,4 +15,10 @@
       <ProjectReference Include="..\SamarPlanner.Goal.Infrastructure\SamarPlanner.Goal.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="Swashbuckle.AspNetCore.Annotations">
+        <HintPath>..\..\..\..\..\..\..\.nuget\packages\swashbuckle.aspnetcore.annotations\10.2.1\lib\net10.0\Swashbuckle.AspNetCore.Annotations.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

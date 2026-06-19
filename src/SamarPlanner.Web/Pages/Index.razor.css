@@ -1,0 +1,64 @@
+.index-page {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.index-page .hero-icon {
+    font-size: 5rem;
+    color: #0d6efd;
+    margin-bottom: 1rem;
+}
+
+.index-page h1 {
+    font-weight: 700;
+    font-size: 2rem;
+    color: #1a1a2e;
+}
+
+.index-page .subtitle {
+    font-size: 1rem;
+    color: #6c757d;
+    margin-bottom: 2rem;
+}
+
+.btn-login {
+    background: linear-gradient(135deg, #0d6efd, #0a58ca);
+    border: none;
+    color: white;
+    padding: 14px 48px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-radius: 50px;
+    box-shadow: 0 8px 24px rgba(13, 110, 253, 0.35);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.btn-login:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(13, 110, 253, 0.45);
+    color: white;
+}
+
+.btn-login:active {
+    transform: scale(0.96);
+}
+
+@media (max-width: 576px) {
+    .index-page h1 {
+        font-size: 1.6rem;
+    }
+
+    .btn-login {
+        padding: 12px 36px;
+        font-size: 1rem;
+    }
+}

@@ -5,6 +5,7 @@ using SamarPlanner.Goal.Contracts;
 using SamarPlanner.Shared;
 using SamarPlanner.Shared.Contracts.Command;
 using SamarPlanner.Shared.Contracts.Queries;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SamarPlanner.Goal.Controllers;
 
@@ -14,6 +15,7 @@ namespace SamarPlanner.Goal.Controllers;
 public class GoalController(IMediator mediator) : BaseController
 {
     [HttpPost]
+    [SwaggerOperation(OperationId = "CreateGoal")]
     public async Task<IActionResult> Create([FromBody] CreateGoalRequest request)
     {
         var result = await mediator.Send(new CreateGoalCommand(
@@ -31,6 +33,7 @@ public class GoalController(IMediator mediator) : BaseController
     }
 
     [HttpPut]
+    [SwaggerOperation(OperationId = "UpdateGoal")]
     public async Task<IActionResult> Update([FromBody] UpdateGoalRequest request)
     {
         var result = await mediator.Send(new UpdateGoalCommand(
@@ -49,6 +52,7 @@ public class GoalController(IMediator mediator) : BaseController
     }
 
     [HttpDelete("{goalId:guid}")]
+    [SwaggerOperation(OperationId = "DeleteGoal")]
     public async Task<IActionResult> Delete(Guid goalId)
     {
         var result = await mediator.Send(new DeleteGoalCommand(goalId, UserId));
@@ -56,6 +60,7 @@ public class GoalController(IMediator mediator) : BaseController
     }
 
     [HttpGet]
+    [SwaggerOperation(OperationId = "GetGoals")]
     public async Task<IActionResult> GetAll()
     {
         var result = await mediator.Send(new GetAllGoalsByUserIdQuery(UserId));

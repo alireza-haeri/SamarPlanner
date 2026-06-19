@@ -4,6 +4,7 @@ public sealed class ApplicationSettings
 {
     public required JwtTokenSettings JwtToken { get; set; }
     public required DatabaseSettings Databases { get; set; }
+    public required CorsPolicySettings CorsPolicy { get; set; }
 }
 
 public sealed class DatabaseSettings
@@ -19,4 +20,9 @@ public sealed class JwtTokenSettings
     public required string Issuer { get; set; }
     public required string Audience { get; set; }
     public required int ExpiresInMinutes { get; set; } = 10080;
+}
+
+public sealed class CorsPolicySettings
+{
+    public required string[] Origins { get; set; }
 }

@@ -1,0 +1,98 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@namespace SamarPlanner.Web.Layout
+@inherits LayoutComponentBase
+@inject CustomAuthenticationStateProvider AuthProvider
+@inject IAuthenticationService AuthService
+@inject NavigationManager NavigationManager
+
+<div class="app-container">
+    <header class="main-header">
+        <div class="header-content">
+            <div class="brand-section">
+                <a href="/" class="brand-link">
+                    <div class="brand-icon">
+                        <i class="bi bi-calendar2-week-fill"></i>
+                    </div>
+                    <div class="brand-text">
+                        <span class="brand-name">SamarPlanner</span>
+                        <span class="brand-sub">برنامه‌ریز هوشمند</span>
+                    </div>
+                </a>
+            </div>
+            <div class="header-actions">
+                @if (_isAuthenticated)
+                {
+                    <span class="me-2 text-primary">@_userName</span>
+                    <button class="btn btn-outline-danger btn-sm rounded-pill px-3" @onclick="Logout">
+                        <i class="bi bi-box-arrow-right me-1"></i>
+                        خروج
+                    </button>
+                }
+                else
+                {
+                    <a href="/login" class="btn-login-header">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        <span>ورود</span>
+                    </a>
+                }
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        @Body
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <span>© 2026 SamarPlanner</span>
+            <span class="footer-version">v1.0</span>
+        </div>
+    </footer>
+</div>
+
+@code {
+    private bool _isAuthenticated = false;
+    private string _userName = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        _isAuthenticated = user.Identity?.IsAuthenticated ?? false;
+        if (_isAuthenticated)
+        {
+            _userName = user.Identity?.Name ?? "کاربر";
+        }
+
+        AuthProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
+    }
+
+    private void OnAuthenticationStateChanged(Task<AuthenticationState> task)
+    {
+        var authState = task.Result;
+        var user = authState.User;
+        _isAuthenticated = user.Identity?.IsAuthenticated ?? false;
+        if (_isAuthenticated)
+        {
+            _userName = user.Identity?.Name ?? "کاربر";
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task Logout()
+    {
+        await AuthService.LogoutAsync();
+    
+        AuthProvider.NotifyUserLogout();
+    
+        NavigationManager.NavigateTo("/login", true);
+    }
+
+    public void Dispose()
+    {
+        AuthProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
+    }
+
+}
