@@ -25,7 +25,6 @@ public class ChangeTaskOccurrenceSkipValidator : AbstractValidator<ChangeTaskOcc
             .WithName("تاریخ");
 
         RuleFor(x => x.IsSkipped)
-            .NotEmpty().WithMessage("{PropertyName} نمی‌تواند خالی باشد.")
             .NotNull().WithMessage("{PropertyName} نمی‌تواند null باشد.")
             .WithName("وضعیت رد شدن");
     }

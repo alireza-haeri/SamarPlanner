@@ -33,7 +33,7 @@ public class GetTaskWithOccurrenceQueryHandler(ITaskRepository taskRepository)
             {
                 occurrences = task.Occurrences
                     .Select(o => new GetTaskWithOccurrencesQueryResultTaskOccurrences(
-                        o.Date, o.Time, o.Status, o.Score, o.IsSkipped))
+                        o.Date, o.Time ?? task.DefaultTime, o.Status, o.Score, o.IsSkipped))
                     .ToList();
 
                 if (!occurrences.Any())
@@ -50,12 +50,12 @@ public class GetTaskWithOccurrenceQueryHandler(ITaskRepository taskRepository)
                 {
                     if (!IsScheduledFor(task.RepeatPattern, day))
                         continue;
-
+                    
                     var saved = task.Occurrences.FirstOrDefault(o => o.Date == day);
 
                     occurrences.Add(saved is not null
                         ? new GetTaskWithOccurrencesQueryResultTaskOccurrences(
-                            saved.Date, saved.Time, saved.Status, saved.Score, saved.IsSkipped)
+                            saved.Date, saved.Time ?? task.DefaultTime, saved.Status, saved.Score, saved.IsSkipped)
                         : new GetTaskWithOccurrencesQueryResultTaskOccurrences(
                             day, task.DefaultTime, TaskStatus.Pending, null, false));
                 }

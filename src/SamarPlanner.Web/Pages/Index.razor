@@ -1,5 +1,6 @@
 @page "/"
 @inject  IToastService ToastService
+@inject Blazored.Toast.Services.IToastService t
 
 <div class="index-page">
     <div class="hero-icon">
@@ -12,3 +13,14 @@
         شروع کنید
     </a>
 </div>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        
+        ToastService.ShowToastInfo("kazem");
+        t.ShowWarning("k");
+    }
+}

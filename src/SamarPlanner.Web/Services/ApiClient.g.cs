@@ -1717,6 +1717,7 @@ namespace SamarPlanner.Web.Services
         public System.DateTimeOffset Date { get; init; }
 
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ChangeOccurrenceStatusRequestStatus Status { get; init; }
 
         [Newtonsoft.Json.JsonProperty("score", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -1852,9 +1853,11 @@ namespace SamarPlanner.Web.Services
         public System.TimeSpan? DefaultTime { get; init; }
 
         [Newtonsoft.Json.JsonProperty("priority", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public CreateTaskRequestPriority? Priority { get; init; }
 
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public CreateTaskRequestType Type { get; init; }
 
         [Newtonsoft.Json.JsonProperty("repeatPattern", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -1942,6 +1945,7 @@ namespace SamarPlanner.Web.Services
         public System.TimeSpan? Time { get; init; }
 
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetTaskWithOccurrencesQueryResultTaskOccurrencesStatus Status { get; init; }
 
         [Newtonsoft.Json.JsonProperty("score", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -1973,9 +1977,11 @@ namespace SamarPlanner.Web.Services
         public string Title { get; init; }
 
         [Newtonsoft.Json.JsonProperty("priority", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetTaskWithOccurrencesQueryResultTasksPriority? Priority { get; init; }
 
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetTaskWithOccurrencesQueryResultTasksType Type { get; init; }
 
         [Newtonsoft.Json.JsonProperty("parentGoalId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -2063,6 +2069,7 @@ namespace SamarPlanner.Web.Services
         }
 
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public RepeatPatternDtoType Type { get; init; }
 
         [Newtonsoft.Json.JsonProperty("anchorDate", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -2201,9 +2208,11 @@ namespace SamarPlanner.Web.Services
         public System.TimeSpan? DefaultTime { get; init; }
 
         [Newtonsoft.Json.JsonProperty("priority", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public UpdateTaskRequestPriority? Priority { get; init; }
 
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public UpdateTaskRequestType Type { get; init; }
 
         [Newtonsoft.Json.JsonProperty("repeatPattern", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -2236,13 +2245,17 @@ namespace SamarPlanner.Web.Services
     public enum ChangeOccurrenceStatusRequestStatus
     {
 
-        _1 = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"Pending")]
+        Pending = 0,
 
-        _2 = 2,
+        [System.Runtime.Serialization.EnumMember(Value = @"Done")]
+        Done = 1,
 
-        _3 = 3,
+        [System.Runtime.Serialization.EnumMember(Value = @"NotDone")]
+        NotDone = 2,
 
-        _4 = 4,
+        [System.Runtime.Serialization.EnumMember(Value = @"AlmostDone")]
+        AlmostDone = 3,
 
     }
 
@@ -2292,11 +2305,14 @@ namespace SamarPlanner.Web.Services
     public enum CreateTaskRequestPriority
     {
 
-        _1 = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"High")]
+        High = 0,
 
-        _2 = 2,
+        [System.Runtime.Serialization.EnumMember(Value = @"Medium")]
+        Medium = 1,
 
-        _3 = 3,
+        [System.Runtime.Serialization.EnumMember(Value = @"Low")]
+        Low = 2,
 
     }
 
@@ -2304,9 +2320,11 @@ namespace SamarPlanner.Web.Services
     public enum CreateTaskRequestType
     {
 
-        _1 = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"Task")]
+        Task = 0,
 
-        _2 = 2,
+        [System.Runtime.Serialization.EnumMember(Value = @"Event")]
+        Event = 1,
 
     }
 
@@ -2332,13 +2350,17 @@ namespace SamarPlanner.Web.Services
     public enum GetTaskWithOccurrencesQueryResultTaskOccurrencesStatus
     {
 
-        _1 = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"Pending")]
+        Pending = 0,
 
-        _2 = 2,
+        [System.Runtime.Serialization.EnumMember(Value = @"Done")]
+        Done = 1,
 
-        _3 = 3,
+        [System.Runtime.Serialization.EnumMember(Value = @"NotDone")]
+        NotDone = 2,
 
-        _4 = 4,
+        [System.Runtime.Serialization.EnumMember(Value = @"AlmostDone")]
+        AlmostDone = 3,
 
     }
 
@@ -2346,11 +2368,14 @@ namespace SamarPlanner.Web.Services
     public enum GetTaskWithOccurrencesQueryResultTasksPriority
     {
 
-        _1 = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"High")]
+        High = 0,
 
-        _2 = 2,
+        [System.Runtime.Serialization.EnumMember(Value = @"Medium")]
+        Medium = 1,
 
-        _3 = 3,
+        [System.Runtime.Serialization.EnumMember(Value = @"Low")]
+        Low = 2,
 
     }
 
@@ -2358,9 +2383,11 @@ namespace SamarPlanner.Web.Services
     public enum GetTaskWithOccurrencesQueryResultTasksType
     {
 
-        _1 = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"Task")]
+        Task = 0,
 
-        _2 = 2,
+        [System.Runtime.Serialization.EnumMember(Value = @"Event")]
+        Event = 1,
 
     }
 
@@ -2386,11 +2413,14 @@ namespace SamarPlanner.Web.Services
     public enum RepeatPatternDtoType
     {
 
-        _1 = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"Daily")]
+        Daily = 0,
 
-        _2 = 2,
+        [System.Runtime.Serialization.EnumMember(Value = @"WeeklyOnDays")]
+        WeeklyOnDays = 1,
 
-        _3 = 3,
+        [System.Runtime.Serialization.EnumMember(Value = @"MonthlyOnDays")]
+        MonthlyOnDays = 2,
 
     }
 
@@ -2442,11 +2472,14 @@ namespace SamarPlanner.Web.Services
     public enum UpdateTaskRequestPriority
     {
 
-        _1 = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"High")]
+        High = 0,
 
-        _2 = 2,
+        [System.Runtime.Serialization.EnumMember(Value = @"Medium")]
+        Medium = 1,
 
-        _3 = 3,
+        [System.Runtime.Serialization.EnumMember(Value = @"Low")]
+        Low = 2,
 
     }
 
@@ -2454,9 +2487,11 @@ namespace SamarPlanner.Web.Services
     public enum UpdateTaskRequestType
     {
 
-        _1 = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"Task")]
+        Task = 0,
 
-        _2 = 2,
+        [System.Runtime.Serialization.EnumMember(Value = @"Event")]
+        Event = 1,
 
     }
 

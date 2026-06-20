@@ -1,4 +1,6 @@
-﻿@using Microsoft.AspNetCore.Components.Authorization
+﻿@using Blazored.Toast
+@using Blazored.Toast.Configuration
+@using Microsoft.AspNetCore.Components.Authorization
 @namespace SamarPlanner.Web.Layout
 @inherits LayoutComponentBase
 @inject CustomAuthenticationStateProvider AuthProvider
@@ -49,6 +51,8 @@
             <span class="footer-version">v1.0</span>
         </div>
     </footer>
+    
+    <BlazoredToasts Position="ToastPosition.TopRight"/>
 </div>
 
 @code {

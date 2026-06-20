@@ -1,0 +1,135 @@
+@namespace SamarPlanner.Web.Pages.Components
+@using SamarPlanner.Web.Helpers
+@inject IApiClient ApiClient
+@inject IApiService ApiService
+@inject IToastService ToastService
+
+<EditForm Model="@_model" OnValidSubmit="@HandleSubmit">
+    <DataAnnotationsValidator/>
+
+    <div class="mb-3">
+        <label class="form-label">عنوان تسک</label>
+        <InputText class="form-control" @bind-Value="_model.Title" placeholder="مثلاً: مطالعه کتاب"/>
+        <ValidationMessage For="@(() => _model.Title)" class="text-danger small"/>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">تاریخ (شمسی)</label>
+        <InputText class="form-control" @bind-Value="_model.PersianDate" placeholder="مثلاً 1404/01/01"/>
+        <ValidationMessage For="@(() => _model.PersianDate)" class="text-danger small"/>
+        <small class="text-muted">فرمت: سال/ماه/روز</small>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">زمان (اختیاری)</label>
+        <InputText class="form-control" @bind-Value="_model.DefaultTime" placeholder="مثلاً 14:30"/>
+        <ValidationMessage For="@(() => _model.DefaultTime)" class="text-danger small"/>
+        <small class="text-muted">فرمت: ساعت:دقیقه</small>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">اولویت</label>
+        <InputSelect class="form-select" @bind-Value="_model.Priority">
+            <option value="">انتخاب...</option>
+            <option value="@CreateTaskRequestPriority.High">بالا</option>
+            <option value="@CreateTaskRequestPriority.Medium">متوسط</option>
+            <option value="@CreateTaskRequestPriority.Low">پایین</option>
+        </InputSelect>
+        <ValidationMessage For="@(() => _model.Priority)" class="text-danger small"/>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100" disabled="@_isLoading">
+        @if (_isLoading)
+        {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            <span>در حال ثبت...</span>
+        }
+        else
+        {
+            <span>ایجاد تسک</span>
+        }
+    </button>
+</EditForm>
+
+@code {
+    private readonly CreateTaskModel _model = new();
+    private bool _isLoading = false;
+
+    [Parameter] public EventCallback OnTaskAdded { get; set; }
+
+    protected override void OnInitialized()
+    {
+        // مقدار پیش‌فرض تاریخ را به امروز شمسی تنظیم می‌کنیم
+        _model.PersianDate = PersianDateHelper.TodayPersian();
+    }
+
+    private async Task HandleSubmit()
+    {
+        _isLoading = true;
+
+        // ۱. تبدیل تاریخ شمسی به میلادی
+        var gregorianDate = PersianDateHelper.ToGregorianDateTime(_model.PersianDate);
+        if (!gregorianDate.HasValue)
+        {
+            ToastService.ShowToastError("تاریخ وارد شده معتبر نیست!");
+            _isLoading = false;
+            return;
+        }
+
+        TimeSpan? defaultTime = null;
+        if (!string.IsNullOrEmpty(_model.DefaultTime))
+        {
+            if (TimeSpan.TryParse(_model.DefaultTime, out var time))
+                defaultTime = time;
+            else
+            {
+                ToastService.ShowToastError("زمان وارد شده معتبر نیست! (فرمت: HH:mm)");
+                _isLoading = false;
+                return;
+            }
+        }
+
+        var request = new CreateTaskRequest(
+            title: _model.Title,
+            date: gregorianDate.Value,
+            defaultTime: defaultTime,
+            priority: _model.Priority,
+            type: CreateTaskRequestType.Task,
+            repeatPattern: null,
+            parentGoalId: null,
+            description: null
+        );
+
+        var result = await ApiService.SendAsync(
+            apiCall: () => ApiClient.CreateTaskAsync(request),
+            successMessage: "تسک با موفقیت ایجاد شد!"
+        );
+
+        if (result?.IsSuccess is true)
+        {
+            ToastService.ShowToastSuccess("تسک با موفقیت ایجاد شد!");
+            // ریست کردن فرم
+            _model.Title = "";
+            _model.PersianDate = PersianDateHelper.TodayPersian();
+            _model.DefaultTime = "";
+            _model.Priority = null;
+            await OnTaskAdded.InvokeAsync();
+        }
+
+        _isLoading = false;
+    }
+
+    public class CreateTaskModel
+    {
+        [Required(ErrorMessage = "عنوان الزامی است")]
+        public string Title { get; set; } = "";
+
+        [Required(ErrorMessage = "تاریخ الزامی است")]
+        public string PersianDate { get; set; } = "";
+
+        public string? DefaultTime { get; set; }
+
+        public CreateTaskRequestPriority? Priority { get; set; }
+    }
+
+}

@@ -1055,13 +1055,12 @@
             "format": "date"
           },
           "status": {
-            "type": "integer",
-            "format": "int32",
+            "type": "string",
             "enum": [
-              1,
-              2,
-              3,
-              4
+              "Pending",
+              "Done",
+              "NotDone",
+              "AlmostDone"
             ]
           },
           "score": {
@@ -1203,21 +1202,19 @@
             "nullable": true
           },
           "priority": {
-            "type": "integer",
-            "format": "int32",
+            "type": "string",
             "nullable": true,
             "enum": [
-              1,
-              2,
-              3
+              "High",
+              "Medium",
+              "Low"
             ]
           },
           "type": {
-            "type": "integer",
-            "format": "int32",
+            "type": "string",
             "enum": [
-              1,
-              2
+              "Task",
+              "Event"
             ]
           },
           "repeatPattern": {
@@ -1313,13 +1310,12 @@
             "nullable": true
           },
           "status": {
-            "type": "integer",
-            "format": "int32",
+            "type": "string",
             "enum": [
-              1,
-              2,
-              3,
-              4
+              "Pending",
+              "Done",
+              "NotDone",
+              "AlmostDone"
             ]
           },
           "score": {
@@ -1345,21 +1341,19 @@
             "nullable": true
           },
           "priority": {
-            "type": "integer",
-            "format": "int32",
+            "type": "string",
             "nullable": true,
             "enum": [
-              1,
-              2,
-              3
+              "High",
+              "Medium",
+              "Low"
             ]
           },
           "type": {
-            "type": "integer",
-            "format": "int32",
+            "type": "string",
             "enum": [
-              1,
-              2
+              "Task",
+              "Event"
             ]
           },
           "parentGoalId": {
@@ -1450,12 +1444,11 @@
         "additionalProperties": false,
         "properties": {
           "type": {
-            "type": "integer",
-            "format": "int32",
+            "type": "string",
             "enum": [
-              1,
-              2,
-              3
+              "Daily",
+              "WeeklyOnDays",
+              "MonthlyOnDays"
             ]
           },
           "anchorDate": {
@@ -1598,21 +1591,19 @@
             "nullable": true
           },
           "priority": {
-            "type": "integer",
-            "format": "int32",
+            "type": "string",
             "nullable": true,
             "enum": [
-              1,
-              2,
-              3
+              "High",
+              "Medium",
+              "Low"
             ]
           },
           "type": {
-            "type": "integer",
-            "format": "int32",
+            "type": "string",
             "enum": [
-              1,
-              2
+              "Task",
+              "Event"
             ]
           },
           "repeatPattern": {

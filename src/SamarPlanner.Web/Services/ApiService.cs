@@ -7,66 +7,64 @@ public interface IApiService
 {
     Task<TResult?> SendAsync<TResult>(Func<Task<TResult>> apiCall, string? successMessage = null,
         bool showErrorToast = true);
-
-    Task<bool> SendAsync(Func<Task> apiCall, string? successMessage = null, bool showErrorToast = true);
 }
 
 public class ApiService(IToastService toastService) : IApiService
 {
-    public async Task<TResult?> SendAsync<TResult>(Func<Task<TResult>> apiCall, string? successMessage = null,
+    public async Task<TResult?> SendAsync<TResult>(
+        Func<Task<TResult>> apiCall,
+        string? successMessage = null,
         bool showErrorToast = true)
     {
         try
         {
             var result = await apiCall();
 
-            if (!string.IsNullOrEmpty(successMessage))
-                toastService.ShowToastSuccess(successMessage);
-
-            return result;
-        }
-        catch (ApiException ex)
-        {
-            if (showErrorToast)
+            if (result == null)
             {
-                var message = GetErrorMessage(ex.StatusCode, ex.Response);
-                toastService.ShowToastError( message);
+                if (showErrorToast)
+                    toastService.ShowToastError("پاسخی از سرور دریافت نشد!");
+                return default;
             }
 
-            return default;
-        }
-        catch (HttpRequestException ex)
-        {
+            var isSuccessProp = result.GetType().GetProperty("IsSuccess");
+            var isSuccess = isSuccessProp != null && (bool?)isSuccessProp.GetValue(result) == true;
+
+            if (isSuccess)
+            {
+                if (!string.IsNullOrEmpty(successMessage))
+                    toastService.ShowToastSuccess(successMessage);
+                return result;
+            }
+
             if (showErrorToast)
-                toastService.ShowToastError( "خطای شبکه! لطفاً اتصال اینترنت خود را بررسی کنید.");
+            {
+                var errorsProp = result.GetType().GetProperty("Errors");
+                if (errorsProp != null)
+                {
+                    var errors = errorsProp.GetValue(result) as IDictionary<string, ICollection<string>>;
+                    if (errors != null && errors.Any())
+                    {
+                        foreach (var errorGroup in errors)
+                        {
+                            foreach (var error in errorGroup.Value)
+                            {
+                                toastService.ShowToastError(error, errorGroup.Key);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        toastService.ShowToastError("عملیات با خطا مواجه شد!");
+                    }
+                }
+                else
+                {
+                    toastService.ShowToastError("عملیات با خطا مواجه شد!");
+                }
+            }
 
-            return default;
-        }
-        catch (JsonException)
-        {
-            if (showErrorToast)
-                toastService.ShowToastError( "خطا در پردازش پاسخ سرور!");
-
-            return default;
-        }
-        catch (Exception ex)
-        {
-            if (showErrorToast)
-                toastService.ShowToastError( $"خطای غیرمنتظره: {ex.Message}");
-
-            return default;
-        }
-    }
-    public async Task<bool> SendAsync(Func<Task> apiCall, string? successMessage = null, bool showErrorToast = true)
-    {
-        try
-        {
-            await apiCall();
-
-            if (!string.IsNullOrEmpty(successMessage))
-                toastService.ShowToastSuccess(successMessage);
-
-            return true;
+            return result;
         }
         catch (ApiException ex)
         {
@@ -76,19 +74,25 @@ public class ApiService(IToastService toastService) : IApiService
                 toastService.ShowToastError(message);
             }
 
-            return false;
+            return default;
         }
         catch (HttpRequestException)
         {
             if (showErrorToast)
                 toastService.ShowToastError("خطای شبکه! لطفاً اتصال اینترنت خود را بررسی کنید.");
-            return false;
+            return default;
+        }
+        catch (JsonException)
+        {
+            if (showErrorToast)
+                toastService.ShowToastError("خطا در پردازش پاسخ سرور!");
+            return default;
         }
         catch (Exception ex)
         {
             if (showErrorToast)
-                toastService.ShowToastError( $"خطای غیرمنتظره: {ex.Message}");
-            return false;
+                toastService.ShowToastError($"خطای غیرمنتظره: {ex.Message}");
+            return default;
         }
     }
 

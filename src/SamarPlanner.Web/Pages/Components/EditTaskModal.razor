@@ -1,0 +1,113 @@
+@namespace SamarPlanner.Web.Pages.Components
+@inherits ComponentBase
+@inject IApiClient ApiClient
+@inject IToastService ToastService
+@inject IApiService ApiService
+
+<div class="modal-overlay" @onclick="OnOverlayClick">
+    <div class="modal-content" @onclick:stopPropagation>
+        <div class="modal-header">
+            <h5>ویرایش تسک</h5>
+            <button class="btn-close" @onclick="OnClose"></button>
+        </div>
+        <div class="modal-body">
+            <EditForm Model="@_editModel" OnValidSubmit="@Submit" class="edit-task-form">
+                <DataAnnotationsValidator />
+                
+                <div class="mb-3">
+                    <label class="form-label">عنوان تسک</label>
+                    <InputText class="form-control" @bind-Value="_editModel.Title" placeholder="عنوان را وارد کنید" />
+                    <ValidationMessage For="@(() => _editModel.Title)" class="text-danger small" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">اولویت</label>
+                    <InputSelect class="form-select" @bind-Value="_editModel.Priority">
+                        <option value="">بدون اولویت</option>
+                        <option value="@UpdateTaskRequestPriority.High">بالا</option>
+                        <option value="@UpdateTaskRequestPriority.Medium">متوسط</option>
+                        <option value="@UpdateTaskRequestPriority.Low">پایین</option>
+                    </InputSelect>
+                    <ValidationMessage For="@(() => _editModel.Priority)" class="text-danger small" />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100" disabled="@_isLoading">
+                    @if (_isLoading)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2"></span>
+                        <span>در حال ذخیره...</span>
+                    }
+                    else
+                    {
+                        <span>ذخیره تغییرات</span>
+                    }
+                </button>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public Guid TaskId { get; set; }
+    [Parameter] public string CurrentTitle { get; set; } = "";
+    [Parameter] public UpdateTaskRequestPriority? CurrentPriority { get; set; }
+    [Parameter] public EventCallback OnTaskUpdated { get; set; }
+    [Parameter] public EventCallback OnCloseRequested { get; set; }
+
+    private EditTaskModel _editModel = new();
+    private bool _isLoading = false;
+
+    protected override void OnInitialized()
+    {
+        _editModel = new EditTaskModel
+        {
+            Title = CurrentTitle,
+            Priority = CurrentPriority
+        };
+    }
+
+    private async Task Submit()
+    {
+        _isLoading = true;
+
+        var request = new UpdateTaskRequest(
+            title : _editModel.Title,
+            priority : (UpdateTaskRequestPriority?)_editModel.Priority,
+            date : DateTimeOffset.Now, // موقتی، بعداً اصلاح می‌شود
+            type : UpdateTaskRequestType.Task,
+            repeatPattern : null,
+            parentGoalId : null,
+            description : null,
+            defaultTime : null
+        );
+
+        var result = await ApiService.SendAsync(
+            apiCall: () => ApiClient.UpdateTaskAsync(TaskId, request),
+            successMessage: "تسک با موفقیت ویرایش شد!",
+            showErrorToast: false
+        );
+
+        if (result?.IsSuccess == true)
+        {
+            await OnTaskUpdated.InvokeAsync();
+            await OnCloseRequested.InvokeAsync();
+        }
+        else
+        {
+            ToastService.ShowToastError("خطا در ویرایش تسک");
+        }
+
+        _isLoading = false;
+    }
+
+    private async Task OnClose() => await OnCloseRequested.InvokeAsync();
+    private async Task OnOverlayClick() => await OnCloseRequested.InvokeAsync();
+
+    public class EditTaskModel
+    {
+        [Required(ErrorMessage = "عنوان الزامی است")]
+        public string Title { get; set; } = "";
+
+        public UpdateTaskRequestPriority? Priority { get; set; }
+    }
+}

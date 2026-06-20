@@ -26,7 +26,7 @@ public class ChangeTaskOccurrenceStatusCommandValidator : AbstractValidator<Chan
         RuleFor(x => x.Score)
             .NotEmpty().WithMessage("{PropertyName} نمی‌تواند خالی باشد.")
             .NotNull().WithMessage("{PropertyName} نمی‌تواند null باشد.")
-            .ExclusiveBetween(0, 10).WithMessage("{PropertyName} باید بین 0 و 10 باشد.")
+            .ExclusiveBetween(-1, 11).WithMessage("{PropertyName} باید بین 0 و 10 باشد.")
             .When(x => x.Score != null)
             .WithName("امتیاز");
 

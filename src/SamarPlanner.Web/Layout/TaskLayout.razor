@@ -1,0 +1,71 @@
+@namespace SamarPlanner.Web.Layout
+@inherits LayoutComponentBase
+@using Blazored.Toast
+@using Blazored.Toast.Configuration
+@using SamarPlanner.Web.Services
+@inject NavigationManager NavigationManager
+
+<div class="task-layout">
+    <div class="task-header">
+        <div class="task-nav">
+            <NavLink href="/tasks/daily" class="nav-link" ActiveClass="active">
+                روزانه
+            </NavLink>
+            <NavLink href="/tasks/week" class="nav-link" ActiveClass="active">
+                هفتگی
+            </NavLink>
+            <NavLink href="/tasks/month" class="nav-link" ActiveClass="active">
+                ماهانه
+            </NavLink>
+        </div>
+    </div>
+
+    <main class="task-content">
+        @Body
+    </main>
+
+    <div class="fab-container">
+        <button class="btn-fab" @onclick="OpenAddTaskModal">
+            <i class="bi bi-plus-lg"></i>
+        </button>
+    </div>
+</div>
+
+@if (_showAddTaskModal)
+{
+    <div class="modal-overlay" @onclick="CloseModal">
+        <div class="modal-content" @onclick:stopPropagation>
+            <div class="modal-header">
+                <h5>تسک جدید</h5>
+                <button class="btn-close" @onclick="CloseModal"></button>
+            </div>
+            <div class="modal-body">
+                <AddTaskForm OnTaskAdded="OnTaskAdded" />
+            </div>
+        </div>
+    </div>
+}
+
+
+<BlazoredToasts Position="ToastPosition.TopRight"/>
+
+@code {
+    private bool _showAddTaskModal = false;
+
+    private void OpenAddTaskModal()
+    {
+        _showAddTaskModal = true;
+    }
+
+    private void CloseModal()
+    {
+        _showAddTaskModal = false;
+    }
+
+    private Task OnTaskAdded()
+    {
+        CloseModal();
+        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+        return Task.CompletedTask;
+    }
+}

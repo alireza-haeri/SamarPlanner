@@ -1,0 +1,183 @@
+@page "/tasks/daily"
+@using SamarPlanner.Web.Helpers
+@using Microsoft.AspNetCore.WebUtilities
+@attribute [Authorize]
+@layout TaskLayout
+@inject IApiClient ApiClient
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
+
+<div class="today-tasks">
+    <div class="page-header">
+        <div>
+            <h3>📅 تسک‌های روز</h3>
+            <span class="date-badge">@_day.ToPersianDate()</span>
+        </div>
+        <div class="date-nav">
+            <button class="btn btn-sm btn-outline-secondary me-2" @onclick="() => GoToDate(-1)">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-secondary" @onclick="() => GoToDate(1)">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+        </div>
+    </div>
+
+    @if (_isLoading)
+    {
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status"></div>
+        </div>
+    }
+    else if (_tasks == null || !_tasks.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-calendar-check"></i>
+            <p>در این تاریخ هیچ تسکی نداری! 🎉</p>
+            <small class="text-muted">برای اضافه کردن، دکمه + پایین صفحه رو بزن.</small>
+        </div>
+    }
+    else
+    {
+        <div class="task-list">
+            @foreach (var task in _tasks)
+            {
+                <TaskItem Task="@task.Task" Occurrence="@task.Occurrence" OnTaskUpdatedEvent="@RefreshTasks" />
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<TaskWithOccurrence>? _tasks;
+    private bool _isLoading = true;
+    private DateTimeOffset _day;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // خواندن تاریخ از query
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        var queryParams = QueryHelpers.ParseQuery(uri.Query);
+
+        if (queryParams.TryGetValue("date", out var dateValue) && !string.IsNullOrEmpty(dateValue))
+        {
+            var gregorian = PersianDateHelper.ToGregorianDateTime(dateValue!);
+            if (gregorian.HasValue)
+                _day = gregorian.Value;
+            else
+                _day = DateTimeOffset.Now;
+        }
+        else
+        {
+            _day = DateTimeOffset.Now;
+        }
+
+        // اشتراک در رویداد تغییر مسیر
+        NavigationManager.LocationChanged += OnLocationChanged;
+
+        await LoadTodayTasks();
+    }
+
+    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+    {
+        // وقتی URL تغییر کرد، تاریخ جدید را بخوان و تسک‌ها را بارگذاری کن
+        var uri = NavigationManager.ToAbsoluteUri(e.Location);
+        var queryParams = QueryHelpers.ParseQuery(uri.Query);
+
+        if (queryParams.TryGetValue("date", out var dateValue) && !string.IsNullOrEmpty(dateValue))
+        {
+            var gregorian = PersianDateHelper.ToGregorianDateTime(dateValue!);
+            if (gregorian.HasValue)
+                _day = gregorian.Value;
+            else
+                _day = DateTimeOffset.Now;
+        }
+        else
+        {
+            _day = DateTimeOffset.Now;
+        }
+
+        // بارگذاری مجدد تسک‌ها (در یک Task جدا تا از مسدود شدن UI جلوگیری شود)
+        _ = LoadTodayTasks();
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        // لغو اشتراک برای جلوگیری از نشتی حافظه
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+
+    private void GoToDate(int direction)
+    {
+        var newDate = _day.AddDays(direction);
+        var persianDate = newDate.ToPersianDate();
+        NavigationManager.NavigateTo($"/tasks/daily?date={persianDate}", forceLoad: false);
+    }
+
+    private async Task LoadTodayTasks()
+    {
+        try
+        {
+            _isLoading = true;
+
+            var from = _day.Date;
+            var to = _day.Date;
+            var result = await ApiClient.GetTasksWithOccurrencesAsync(from, to);
+
+            if (result.IsSuccess)
+            {
+                _tasks = result.Response.Tasks
+                    .SelectMany(t => t.Occurrences
+                        .Where(o => o.Date.Date == from.Date)
+                        .Select(o => new TaskWithOccurrence
+                        {
+                            Task = t,
+                            Occurrence = o
+                        })
+                    )
+                    .OrderBy(t=>t.Occurrence.IsSkipped)
+                    .ThenBy(t=>
+                    {
+                        return t.Occurrence.Status switch
+                        {
+                            GetTaskWithOccurrencesQueryResultTaskOccurrencesStatus.Done => 3,
+                            GetTaskWithOccurrencesQueryResultTaskOccurrencesStatus.AlmostDone => 2,
+                            GetTaskWithOccurrencesQueryResultTaskOccurrencesStatus.NotDone => 1,
+                            GetTaskWithOccurrencesQueryResultTaskOccurrencesStatus.Pending => 0,
+                            _ => throw new ArgumentOutOfRangeException()
+                        };
+                    })
+                    .ThenBy(t=> t.Task.Priority.HasValue ? (int)t.Task.Priority.Value : 10)
+                    .ThenBy(t=>t.Occurrence.Time)
+                    .ToList();
+            }
+            else
+            {
+                _tasks = [];
+            }
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowToastError("خطا در دریافت تسک‌ها");
+            Console.WriteLine($"Error: {ex.Message}");
+            _tasks = new List<TaskWithOccurrence>();
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task RefreshTasks()
+    {
+        await LoadTodayTasks();
+    }
+
+    private class TaskWithOccurrence
+    {
+        public GetTaskWithOccurrencesQueryResultTasks Task { get; set; } = null!;
+        public GetTaskWithOccurrencesQueryResultTaskOccurrences Occurrence { get; set; } = null!;
+    }
+}

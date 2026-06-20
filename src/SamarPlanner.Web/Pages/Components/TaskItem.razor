@@ -1,0 +1,236 @@
+@namespace SamarPlanner.Web.Pages.Components
+@inject IApiClient ApiClient
+@inject IToastService ToastService
+@inject IApiService ApiService
+
+<div class="task-item @(Occurrence.IsSkipped ? "skipped" : "") @(GetPriorityClass())">
+    <!-- وضعیت و اولویت در کنار هم -->
+    <div class="task-left">
+        <div class="task-status-icon">
+            @switch (Occurrence.Status)
+            {
+                case GetTaskWithOccurrencesQueryResultTaskOccurrencesStatus.Pending:
+                    <span
+                        class="badge-pending">⏳</span>
+                    break;
+                case GetTaskWithOccurrencesQueryResultTaskOccurrencesStatus.Done:
+                    <span
+                        class="badge-done">✅</span>
+                    break;
+                case GetTaskWithOccurrencesQueryResultTaskOccurrencesStatus.NotDone:
+                    <span
+                        class="badge-notdone">❌</span>
+                    break;
+                case GetTaskWithOccurrencesQueryResultTaskOccurrencesStatus.AlmostDone:
+                    <span
+                        class="badge-almost">🔄</span>
+                    break;
+                default: <span class="badge-pending">⏳</span> break;
+            }
+        </div>
+        <div class="task-priority">
+                <span class="priority-badge @GetPriorityColor()">
+                    @switch (Task.Priority)
+                    {
+                        case GetTaskWithOccurrencesQueryResultTasksPriority.High: <text>!</text> break;
+                        case GetTaskWithOccurrencesQueryResultTasksPriority.Medium: <text>?</text> break;
+                        case GetTaskWithOccurrencesQueryResultTasksPriority.Low: <text>.</text> break;
+                        default: <text>-</text> break;
+                    }
+                </span>
+        </div>
+    </div>
+
+    <!-- اطلاعات اصلی تسک -->
+    <div class="task-info">
+        <div class="task-title-wrapper">
+            <div class="task-title @(Occurrence.IsSkipped ? "skipped-title" : "")">
+                @Task.Title
+            </div>
+            @if (Occurrence.IsSkipped)
+            {
+                <span class="skipped-badge">نادیده گرفته شده</span>
+            }
+        </div>
+
+        <div class="task-meta">
+            @if (Occurrence.Time != null)
+            {
+                <span class="meta-item">
+                    <i class="bi bi-clock"></i>
+                    @Occurrence.Time.Value.ToString(@"hh\:mm")
+                </span>
+            }
+
+            @if (Occurrence.Score.HasValue)
+            {
+                <span class="meta-item score">
+                    <i class="bi bi-star-fill text-warning"></i>
+                    @Occurrence.Score
+                </span>
+            }
+        </div>
+    </div>
+
+
+    <div class="task-actions">
+        <!-- دکمه تغییر وضعیت (جایگزین Done) -->
+        <button class="btn btn-action btn-sm btn-outline-primary" @onclick="OpenChangeStatusModal" title="تغییر وضعیت">
+            <i class="bi bi-arrow-repeat"></i>
+        </button>
+
+        <!-- دکمه ویرایش -->
+        <button class="btn btn-action btn-sm btn-outline-info" @onclick="OpenEditModal" title="ویرایش">
+            <i class="bi bi-pencil"></i>
+        </button>
+
+        <!-- دکمه‌های Skip/Unskip -->
+        @if (!Occurrence.IsSkipped)
+        {
+            <button class="btn btn-action btn-sm btn-outline-warning" @onclick="OnSkip" title="نادیده گرفتن">
+                <i class="bi bi-eye-slash"></i>
+            </button>
+        }
+        else
+        {
+            <button class="btn btn-action btn-sm btn-outline-info" @onclick="OnUnskip" title="لغو نادیده‌گیری">
+                <i class="bi bi-eye"></i>
+            </button>
+        }
+    </div>
+</div>
+
+
+@if (_showChangeStatusModal)
+{
+    <ChangeStatusModal TaskId="@Task.TaskId"
+                       Date="@Occurrence.Date"
+                       CurrentStatus="@Occurrence.Status"
+                       CurrentScore="@Occurrence.Score"
+                       OnStatusChanged="OnStatusChanged"
+                       OnCloseRequested="CloseChangeStatusModal"/>
+}
+
+@if (_showEditModal)
+{
+    @if (_showEditModal)
+    {
+        <EditTaskModal TaskId="@Task.TaskId"
+                       CurrentTitle="@Task.Title"
+                       CurrentPriority="@(Task.Priority is null ? null : (UpdateTaskRequestPriority)Task.Priority)"
+                       OnTaskUpdated="OnTaskUpdated"
+                       OnCloseRequested="CloseEditModal"/>
+    }
+
+    <EditTaskModal TaskId="@Task.TaskId"
+                   CurrentTitle="@Task.Title"
+                   CurrentPriority="@(Task.Priority is null ? null : (UpdateTaskRequestPriority)Task.Priority)"
+                   OnTaskUpdated="OnTaskUpdated"
+                   OnCloseRequested="CloseEditModal"/>
+}
+
+
+@code {
+    [Parameter] public GetTaskWithOccurrencesQueryResultTasks Task { get; set; } = null!;
+    [Parameter] public GetTaskWithOccurrencesQueryResultTaskOccurrences Occurrence { get; set; } = null!;
+    [Parameter] public EventCallback OnTaskUpdatedEvent { get; set; }
+
+    private bool _showEditModal = false;
+
+    private void OpenEditModal()
+    {
+        _showEditModal = true;
+    }
+
+    private void CloseEditModal()
+    {
+        _showEditModal = false;
+    }
+
+    private async Task OnTaskUpdated()
+    {
+        CloseChangeStatusModal();
+        CloseEditModal();
+        await OnTaskUpdatedEvent.InvokeAsync();
+    }
+
+    private bool _showChangeStatusModal = false;
+
+    private void OpenChangeStatusModal()
+    {
+        _showChangeStatusModal = true;
+    }
+
+    private void CloseChangeStatusModal()
+    {
+        _showChangeStatusModal = false;
+    }
+
+    private async Task OnStatusChanged()
+    {
+        CloseChangeStatusModal();
+        await OnTaskUpdatedEvent.InvokeAsync();
+    }
+
+    private string GetPriorityClass()
+    {
+        if (Task.Priority == GetTaskWithOccurrencesQueryResultTasksPriority.High) return "priority-high";
+        if (Task.Priority == GetTaskWithOccurrencesQueryResultTasksPriority.Medium) return "priority-medium";
+        if (Task.Priority == GetTaskWithOccurrencesQueryResultTasksPriority.Low) return "priority-low";
+        return "priority-none";
+    }
+
+    private string GetPriorityColor()
+    {
+        if (Task.Priority == GetTaskWithOccurrencesQueryResultTasksPriority.High) return "priority-high-color";
+        if (Task.Priority == GetTaskWithOccurrencesQueryResultTasksPriority.Medium) return "priority-medium-color";
+        if (Task.Priority == GetTaskWithOccurrencesQueryResultTasksPriority.Low) return "priority-low-color";
+        return "priority-none-color";
+    }
+
+    private async Task OnDone()
+    {
+        var request = new ChangeOccurrenceStatusRequest(date: Occurrence.Date, null, ChangeOccurrenceStatusRequestStatus.Done);
+        var result = await ApiService.SendAsync(
+            apiCall: () => ApiClient.ChangeOccurrenceStatusAsync(
+                taskId: Task.TaskId,
+                request),
+            successMessage: "عملیات با موفقیت انجام شد");
+
+        if (result?.IsSuccess == true)
+        {
+            await OnTaskUpdatedEvent.InvokeAsync();
+        }
+    }
+
+    private async Task OnSkip()
+    {
+        var request = new SkipOccurrenceRequest(Occurrence.Date, isSkipped: true);
+        var result = await ApiService.SendAsync(
+            apiCall: () => ApiClient.SkipOccurrenceAsync(
+                taskId: Task.TaskId,
+                request),
+            successMessage: "عملیات با موفقیت انجام شد");
+
+        if (result?.IsSuccess == true)
+        {
+            await OnTaskUpdatedEvent.InvokeAsync();
+        }
+    }
+
+    private async Task OnUnskip()
+    {
+        var request = new SkipOccurrenceRequest(Occurrence.Date, isSkipped: false);
+        var result = await ApiService.SendAsync(
+            apiCall: () => ApiClient.SkipOccurrenceAsync(
+                taskId: Task.TaskId,
+                request),
+            "عملیات با موفقیت انجام شد");
+
+        if (result?.IsSuccess == true)
+        {
+            await OnTaskUpdatedEvent.InvokeAsync();
+        }
+    }
+
+}
