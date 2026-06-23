@@ -7,15 +7,15 @@ using SamarPlanner.Task.Core.Entities;
 using SamarPlanner.Task.Core.Enums;
 using TaskStatus = SamarPlanner.Task.Core.Enums.TaskStatus;
 
-namespace SamarPlanner.Task.Application.UseCases.Queries;
+namespace SamarPlanner.Task.Application.UseCases.Queries.GetTasksWithOccurrences;
 
-public class GetTaskWithOccurrenceQueryHandler(ITaskRepository taskRepository)
-    : IRequestHandler<GetTaskWithOccurrencesQuery, Result<GetTaskWithOccurrencesQueryResult>>
+public class GetTasksWithOccurrencesQueryHandler(ITaskRepository taskRepository)
+    : IRequestHandler<GetTasksWithOccurrencesQuery, Result<GetTasksWithOccurrencesQueryResult>>
 {
-    public async Task<Result<GetTaskWithOccurrencesQueryResult>> Handle(GetTaskWithOccurrencesQuery request,
+    public async Task<Result<GetTasksWithOccurrencesQueryResult>> Handle(GetTasksWithOccurrencesQuery request,
         CancellationToken cancellationToken)
     {
-        var result = new GetTaskWithOccurrencesQueryResult([]);
+        var result = new GetTasksWithOccurrencesQueryResult([]);
 
         var tasks = await taskRepository.GetWithOccurrencesAndRepeatPatternAsync(
             request.UserId,
@@ -23,16 +23,16 @@ public class GetTaskWithOccurrenceQueryHandler(ITaskRepository taskRepository)
             request.To,
             cancellationToken);
         if (!tasks.Any())
-            return Result<GetTaskWithOccurrencesQueryResult>.Success(result);
+            return Result<GetTasksWithOccurrencesQueryResult>.Success(result);
 
         foreach (var task in tasks)
         {
-            List<GetTaskWithOccurrencesQueryResultTaskOccurrences> occurrences;
+            List<GetTasksWithOccurrencesQueryResultTaskOccurrences> occurrences;
 
             if (task.RepeatPattern is null)
             {
                 occurrences = task.Occurrences
-                    .Select(o => new GetTaskWithOccurrencesQueryResultTaskOccurrences(
+                    .Select(o => new GetTasksWithOccurrencesQueryResultTaskOccurrences(
                         o.Date, o.Time ?? task.DefaultTime, o.Status, o.Score, o.IsSkipped))
                     .ToList();
 
@@ -54,9 +54,9 @@ public class GetTaskWithOccurrenceQueryHandler(ITaskRepository taskRepository)
                     var saved = task.Occurrences.FirstOrDefault(o => o.Date == day);
 
                     occurrences.Add(saved is not null
-                        ? new GetTaskWithOccurrencesQueryResultTaskOccurrences(
+                        ? new GetTasksWithOccurrencesQueryResultTaskOccurrences(
                             saved.Date, saved.Time ?? task.DefaultTime, saved.Status, saved.Score, saved.IsSkipped)
-                        : new GetTaskWithOccurrencesQueryResultTaskOccurrences(
+                        : new GetTasksWithOccurrencesQueryResultTaskOccurrences(
                             day, task.DefaultTime, TaskStatus.Pending, null, false));
                 }
             }
@@ -64,11 +64,11 @@ public class GetTaskWithOccurrenceQueryHandler(ITaskRepository taskRepository)
             if (!occurrences.Any())
                 continue;
 
-            result.Tasks.Add(new GetTaskWithOccurrencesQueryResultTasks(
+            result.Tasks.Add(new GetTasksWithOccurrencesQueryResultTasks(
                 task.Id, task.Title, task.Priority, task.Type, task.ParentGoalId, occurrences));
         }
 
-        return Result<GetTaskWithOccurrencesQueryResult>.Success(result);
+        return Result<GetTasksWithOccurrencesQueryResult>.Success(result);
     }
 
     private static bool IsScheduledFor(RepeatPattern pattern, DateOnly date)
@@ -110,6 +110,7 @@ public class GetTaskWithOccurrenceQueryHandler(ITaskRepository taskRepository)
 
     private static bool IsMonthlyMatch(RepeatPattern pattern, DateOnly date)
     {
+        //todo math with persian month
         if (!pattern.MonthDays!.Contains(date.Day))
             return false;
 

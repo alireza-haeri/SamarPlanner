@@ -1,11 +1,11 @@
 using FluentValidation;
 using SamarPlanner.Shared.Contracts.Queries;
 
-namespace SamarPlanner.Task.Application.UseCases.Queries;
+namespace SamarPlanner.Task.Application.UseCases.Queries.GetTasksWithOccurrences;
 
-public class GetTaskWithOccurrenceQueryValidator : AbstractValidator<GetTaskWithOccurrencesQuery>
+public class GetTasksWithOccurrencesQueryValidator : AbstractValidator<GetTasksWithOccurrencesQuery>
 {
-    public GetTaskWithOccurrenceQueryValidator()
+    public GetTasksWithOccurrencesQueryValidator()
     {
         RuleFor(x=>x.UserId)
             .NotEmpty().WithMessage("{PropertyName} نمی‌تواند خالی باشد.")

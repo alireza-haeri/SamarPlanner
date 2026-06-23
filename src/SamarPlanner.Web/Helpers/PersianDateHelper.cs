@@ -61,4 +61,43 @@ public static class PersianDateHelper
     {
         return DateTimeOffset.Now.Date;
     }
+    
+    public static string GetWeekday(DateTimeOffset date)
+    {
+        var dt = date.DateTime;
+        var dayOfWeek = PersianCalendar.GetDayOfWeek(dt);
+        return dayOfWeek switch
+        {
+            DayOfWeek.Saturday => "شنبه",
+            DayOfWeek.Sunday => "یکشنبه",
+            DayOfWeek.Monday => "دوشنبه",
+            DayOfWeek.Tuesday => "سه‌شنبه",
+            DayOfWeek.Wednesday => "چهارشنبه",
+            DayOfWeek.Thursday => "پنجشنبه",
+            DayOfWeek.Friday => "جمعه",
+            _ => ""
+        };
+    }
+
+    public static string GetMonthName(DateTimeOffset date)
+    {
+        var dt = date.DateTime;
+        var month = PersianCalendar.GetMonth(dt);
+        return month switch
+        {
+            1 => "فروردین",
+            2 => "اردیبهشت",
+            3 => "خرداد",
+            4 => "تیر",
+            5 => "مرداد",
+            6 => "شهریور",
+            7 => "مهر",
+            8 => "آبان",
+            9 => "آذر",
+            10 => "دی",
+            11 => "بهمن",
+            12 => "اسفند",
+            _ => ""
+        };
+    }
 }

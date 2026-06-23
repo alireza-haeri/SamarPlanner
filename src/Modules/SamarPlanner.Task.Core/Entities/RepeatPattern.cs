@@ -1,3 +1,4 @@
+using SamarPlanner.Task.Core.Dtos;
 using SamarPlanner.Task.Core.Enums;
 
 namespace SamarPlanner.Task.Core.Entities;
@@ -23,4 +24,7 @@ public class RepeatPattern
             WeekDays =  weekDays,   
             MonthDays =  monthDays
         };
+
+    public RepeatPatternDto ToDto() =>
+        new RepeatPatternDto(Type, AnchorDate, Interval, WeekDays, MonthDays);
 }

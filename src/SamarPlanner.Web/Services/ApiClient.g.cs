@@ -71,6 +71,11 @@ namespace SamarPlanner.Web.Services
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<GetTaskDetailQueryResultResult> GetTaskDetailAsync(System.Guid taskId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<BooleanResult> SoftDeleteTaskAsync(System.Guid taskId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -81,7 +86,12 @@ namespace SamarPlanner.Web.Services
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<GetTaskWithOccurrencesQueryResultResult> GetTasksWithOccurrencesAsync(System.DateTimeOffset? from = null, System.DateTimeOffset? to = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<GetTasksWithOccurrencesQueryResultResult> GetTasksWithOccurrencesAsync(System.DateTimeOffset? from = null, System.DateTimeOffset? to = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<GetDeletedTasksQueryResultResult> GetDeletedTasksAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
@@ -731,6 +741,81 @@ namespace SamarPlanner.Web.Services
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<GetTaskDetailQueryResultResult> GetTaskDetailAsync(System.Guid taskId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+            if (taskId == null)
+                throw new System.ArgumentNullException("taskId");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/v1/tasks/{taskId}"
+                    urlBuilder_.Append("api/v1/tasks/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(taskId, System.Globalization.CultureInfo.InvariantCulture)));
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<GetTaskDetailQueryResultResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<BooleanResult> SoftDeleteTaskAsync(System.Guid taskId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (taskId == null)
@@ -885,7 +970,7 @@ namespace SamarPlanner.Web.Services
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<GetTaskWithOccurrencesQueryResultResult> GetTasksWithOccurrencesAsync(System.DateTimeOffset? from = null, System.DateTimeOffset? to = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<GetTasksWithOccurrencesQueryResultResult> GetTasksWithOccurrencesAsync(System.DateTimeOffset? from = null, System.DateTimeOffset? to = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -936,7 +1021,78 @@ namespace SamarPlanner.Web.Services
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<GetTaskWithOccurrencesQueryResultResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetTasksWithOccurrencesQueryResultResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<GetDeletedTasksQueryResultResult> GetDeletedTasksAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "deleted"
+                    urlBuilder_.Append("deleted");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<GetDeletedTasksQueryResultResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1884,24 +2040,24 @@ namespace SamarPlanner.Web.Services
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial record GetTaskWithOccurrencesQueryResult
+    public partial record GetDeletedTasksQueryResult
     {
         [Newtonsoft.Json.JsonConstructor]
-        public GetTaskWithOccurrencesQueryResult(System.Collections.Generic.ICollection<GetTaskWithOccurrencesQueryResultTasks> @tasks)
+        public GetDeletedTasksQueryResult(System.Collections.Generic.ICollection<GetDeletedTasksQueryResultTasks> @tasks)
         {
             this.Tasks = @tasks;
         }
 
         [Newtonsoft.Json.JsonProperty("tasks", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<GetTaskWithOccurrencesQueryResultTasks> Tasks { get; init; }
+        public System.Collections.Generic.ICollection<GetDeletedTasksQueryResultTasks> Tasks { get; init; }
 
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial record GetTaskWithOccurrencesQueryResultResult
+    public partial record GetDeletedTasksQueryResultResult
     {
         [Newtonsoft.Json.JsonConstructor]
-        public GetTaskWithOccurrencesQueryResultResult(GetTaskWithOccurrencesQueryResultResultBadResultType? @badResultType, System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<string>> @errors, bool @isSuccess, GetTaskWithOccurrencesQueryResult @response)
+        public GetDeletedTasksQueryResultResult(GetDeletedTasksQueryResultResultBadResultType? @badResultType, System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<string>> @errors, bool @isSuccess, GetDeletedTasksQueryResult @response)
         {
             this.IsSuccess = @isSuccess;
             this.BadResultType = @badResultType;
@@ -1914,10 +2070,10 @@ namespace SamarPlanner.Web.Services
 
         [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public GetTaskWithOccurrencesQueryResultResultBadResultType? BadResultType { get; init; }
+        public GetDeletedTasksQueryResultResultBadResultType? BadResultType { get; init; }
 
         [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public GetTaskWithOccurrencesQueryResult Response { get; init; }
+        public GetDeletedTasksQueryResult Response { get; init; }
 
         [Newtonsoft.Json.JsonProperty("errors", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<string>> Errors { get; init; }
@@ -1925,10 +2081,140 @@ namespace SamarPlanner.Web.Services
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial record GetTaskWithOccurrencesQueryResultTaskOccurrences
+    public partial record GetDeletedTasksQueryResultTasks
     {
         [Newtonsoft.Json.JsonConstructor]
-        public GetTaskWithOccurrencesQueryResultTaskOccurrences(System.DateTimeOffset @date, bool @isSkipped, int? @score, GetTaskWithOccurrencesQueryResultTaskOccurrencesStatus @status, System.TimeSpan? @time)
+        public GetDeletedTasksQueryResultTasks(System.Guid @taskId, string @title)
+        {
+            this.TaskId = @taskId;
+            this.Title = @title;
+        }
+
+        [Newtonsoft.Json.JsonProperty("taskId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid TaskId { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Title { get; init; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial record GetTaskDetailQueryResult
+    {
+        [Newtonsoft.Json.JsonConstructor]
+        public GetTaskDetailQueryResult(System.TimeSpan? @defaultTime, string @description, System.Guid? @parentGoalId, GetTaskDetailQueryResultPriority? @priority, RepeatPatternDto @repeatPattern, System.Guid @taskId, string @title, GetTaskDetailQueryResultType @type)
+        {
+            this.TaskId = @taskId;
+            this.Title = @title;
+            this.Description = @description;
+            this.DefaultTime = @defaultTime;
+            this.Priority = @priority;
+            this.Type = @type;
+            this.RepeatPattern = @repeatPattern;
+            this.ParentGoalId = @parentGoalId;
+        }
+
+        [Newtonsoft.Json.JsonProperty("taskId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid TaskId { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Title { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Description { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("defaultTime", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.TimeSpan? DefaultTime { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("priority", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetTaskDetailQueryResultPriority? Priority { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetTaskDetailQueryResultType Type { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("repeatPattern", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public RepeatPatternDto RepeatPattern { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("parentGoalId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid? ParentGoalId { get; init; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial record GetTaskDetailQueryResultResult
+    {
+        [Newtonsoft.Json.JsonConstructor]
+        public GetTaskDetailQueryResultResult(GetTaskDetailQueryResultResultBadResultType? @badResultType, System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<string>> @errors, bool @isSuccess, GetTaskDetailQueryResult @response)
+        {
+            this.IsSuccess = @isSuccess;
+            this.BadResultType = @badResultType;
+            this.Response = @response;
+            this.Errors = @errors;
+        }
+
+        [Newtonsoft.Json.JsonProperty("isSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsSuccess { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetTaskDetailQueryResultResultBadResultType? BadResultType { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public GetTaskDetailQueryResult Response { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("errors", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<string>> Errors { get; init; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial record GetTasksWithOccurrencesQueryResult
+    {
+        [Newtonsoft.Json.JsonConstructor]
+        public GetTasksWithOccurrencesQueryResult(System.Collections.Generic.ICollection<GetTasksWithOccurrencesQueryResultTasks> @tasks)
+        {
+            this.Tasks = @tasks;
+        }
+
+        [Newtonsoft.Json.JsonProperty("tasks", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<GetTasksWithOccurrencesQueryResultTasks> Tasks { get; init; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial record GetTasksWithOccurrencesQueryResultResult
+    {
+        [Newtonsoft.Json.JsonConstructor]
+        public GetTasksWithOccurrencesQueryResultResult(GetTasksWithOccurrencesQueryResultResultBadResultType? @badResultType, System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<string>> @errors, bool @isSuccess, GetTasksWithOccurrencesQueryResult @response)
+        {
+            this.IsSuccess = @isSuccess;
+            this.BadResultType = @badResultType;
+            this.Response = @response;
+            this.Errors = @errors;
+        }
+
+        [Newtonsoft.Json.JsonProperty("isSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsSuccess { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetTasksWithOccurrencesQueryResultResultBadResultType? BadResultType { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public GetTasksWithOccurrencesQueryResult Response { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("errors", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<string>> Errors { get; init; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial record GetTasksWithOccurrencesQueryResultTaskOccurrences
+    {
+        [Newtonsoft.Json.JsonConstructor]
+        public GetTasksWithOccurrencesQueryResultTaskOccurrences(System.DateTimeOffset @date, bool @isSkipped, int? @score, GetTasksWithOccurrencesQueryResultTaskOccurrencesStatus @status, System.TimeSpan? @time)
         {
             this.Date = @date;
             this.Time = @time;
@@ -1946,7 +2232,7 @@ namespace SamarPlanner.Web.Services
 
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public GetTaskWithOccurrencesQueryResultTaskOccurrencesStatus Status { get; init; }
+        public GetTasksWithOccurrencesQueryResultTaskOccurrencesStatus Status { get; init; }
 
         [Newtonsoft.Json.JsonProperty("score", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int? Score { get; init; }
@@ -1957,10 +2243,10 @@ namespace SamarPlanner.Web.Services
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial record GetTaskWithOccurrencesQueryResultTasks
+    public partial record GetTasksWithOccurrencesQueryResultTasks
     {
         [Newtonsoft.Json.JsonConstructor]
-        public GetTaskWithOccurrencesQueryResultTasks(System.Collections.Generic.ICollection<GetTaskWithOccurrencesQueryResultTaskOccurrences> @occurrences, System.Guid? @parentGoalId, GetTaskWithOccurrencesQueryResultTasksPriority? @priority, System.Guid @taskId, string @title, GetTaskWithOccurrencesQueryResultTasksType @type)
+        public GetTasksWithOccurrencesQueryResultTasks(System.Collections.Generic.ICollection<GetTasksWithOccurrencesQueryResultTaskOccurrences> @occurrences, System.Guid? @parentGoalId, GetTasksWithOccurrencesQueryResultTasksPriority? @priority, System.Guid @taskId, string @title, GetTasksWithOccurrencesQueryResultTasksType @type)
         {
             this.TaskId = @taskId;
             this.Title = @title;
@@ -1978,17 +2264,17 @@ namespace SamarPlanner.Web.Services
 
         [Newtonsoft.Json.JsonProperty("priority", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public GetTaskWithOccurrencesQueryResultTasksPriority? Priority { get; init; }
+        public GetTasksWithOccurrencesQueryResultTasksPriority? Priority { get; init; }
 
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public GetTaskWithOccurrencesQueryResultTasksType Type { get; init; }
+        public GetTasksWithOccurrencesQueryResultTasksType Type { get; init; }
 
         [Newtonsoft.Json.JsonProperty("parentGoalId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Guid? ParentGoalId { get; init; }
 
         [Newtonsoft.Json.JsonProperty("occurrences", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<GetTaskWithOccurrencesQueryResultTaskOccurrences> Occurrences { get; init; }
+        public System.Collections.Generic.ICollection<GetTasksWithOccurrencesQueryResultTaskOccurrences> Occurrences { get; init; }
 
     }
 
@@ -2329,7 +2615,7 @@ namespace SamarPlanner.Web.Services
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum GetTaskWithOccurrencesQueryResultResultBadResultType
+    public enum GetDeletedTasksQueryResultResultBadResultType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
@@ -2347,7 +2633,70 @@ namespace SamarPlanner.Web.Services
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum GetTaskWithOccurrencesQueryResultTaskOccurrencesStatus
+    public enum GetTaskDetailQueryResultPriority
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"High")]
+        High = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Medium")]
+        Medium = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Low")]
+        Low = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetTaskDetailQueryResultType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Task")]
+        Task = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Event")]
+        Event = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetTaskDetailQueryResultResultBadResultType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
+        NotFound = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
+        Validation = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"General")]
+        General = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
+        Unauthorized = 3,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetTasksWithOccurrencesQueryResultResultBadResultType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
+        NotFound = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
+        Validation = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"General")]
+        General = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
+        Unauthorized = 3,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetTasksWithOccurrencesQueryResultTaskOccurrencesStatus
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"Pending")]
@@ -2365,7 +2714,7 @@ namespace SamarPlanner.Web.Services
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum GetTaskWithOccurrencesQueryResultTasksPriority
+    public enum GetTasksWithOccurrencesQueryResultTasksPriority
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"High")]
@@ -2380,7 +2729,7 @@ namespace SamarPlanner.Web.Services
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum GetTaskWithOccurrencesQueryResultTasksType
+    public enum GetTasksWithOccurrencesQueryResultTasksType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"Task")]

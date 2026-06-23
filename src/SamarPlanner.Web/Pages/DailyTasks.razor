@@ -1,23 +1,32 @@
 @page "/tasks/daily"
+@using System.Globalization
 @using SamarPlanner.Web.Helpers
 @using Microsoft.AspNetCore.WebUtilities
 @attribute [Authorize]
 @layout TaskLayout
 @inject IApiClient ApiClient
+@inject IApiService ApiService
 @inject IToastService ToastService
 @inject NavigationManager NavigationManager
 
-<div class="today-tasks">
-    <div class="page-header">
-        <div>
-            <h3>📅 تسک‌های روز</h3>
-            <span class="date-badge">@_day.ToPersianDate()</span>
+<div class="daily-tasks">
+    <div class="daily-header">
+        <div class="daily-header-left">
+            <h1 class="daily-title">📋 تسک‌های روز</h1>
+            <div class="daily-date">
+                <span class="daily-date-main">@_day.ToPersianDate()</span>
+                <span class="daily-date-weekday">@PersianDateHelper.GetWeekday(_day)</span>
+                <span class="daily-date-month">@PersianDateHelper.GetMonthName(_day)</span>
+            </div>
         </div>
-        <div class="date-nav">
-            <button class="btn btn-sm btn-outline-secondary me-2" @onclick="() => GoToDate(-1)">
+        <div class="daily-nav">
+            <button class="daily-nav-btn" @onclick="() => GoToDate(-1)" title="روز قبل">
                 <i class="bi bi-chevron-right"></i>
             </button>
-            <button class="btn btn-sm btn-outline-secondary" @onclick="() => GoToDate(1)">
+            <button class="daily-nav-btn daily-nav-today" @onclick="GoToToday" title="امروز">
+                امروز
+            </button>
+            <button class="daily-nav-btn" @onclick="() => GoToDate(1)" title="روز بعد">
                 <i class="bi bi-chevron-left"></i>
             </button>
         </div>
@@ -25,24 +34,85 @@
 
     @if (_isLoading)
     {
-        <div class="text-center py-5">
+        <div class="daily-loading">
             <div class="spinner-border text-primary" role="status"></div>
+            <span>بارگذاری تسک‌ها...</span>
         </div>
     }
     else if (_tasks == null || !_tasks.Any())
     {
-        <div class="empty-state">
-            <i class="bi bi-calendar-check"></i>
-            <p>در این تاریخ هیچ تسکی نداری! 🎉</p>
-            <small class="text-muted">برای اضافه کردن، دکمه + پایین صفحه رو بزن.</small>
+        <div class="daily-empty">
+            <div class="daily-empty-icon">📭</div>
+            <h3>هیچ تسکی در این روز ندارید</h3>
+            <p class="text-muted">برای اضافه کردن تسک جدید، دکمهٔ + پایین صفحه را بزنید.</p>
         </div>
     }
     else
     {
-        <div class="task-list">
-            @foreach (var task in _tasks)
+        <div class="daily-task-list">
+            @if (_pendingTasks.Any())
             {
-                <TaskItem Task="@task.Task" Occurrence="@task.Occurrence" OnTaskUpdatedEvent="@RefreshTasks" />
+                <div class="task-group">
+                    <div class="task-group-header" @onclick="() => _expandPending = !_expandPending">
+                        <span class="task-group-title">
+                            در انتظار / انجام نشده
+                        </span>
+                        <span class="task-group-count">@_pendingTasks.Count</span>
+                        <i class="bi @(_expandPending ? "bi-chevron-up" : "bi-chevron-down")"></i>
+                    </div>
+                    @if (_expandPending)
+                    {
+                        <div class="task-group-body">
+                            @foreach (var task in _pendingTasks)
+                            {
+                                <TaskItem Task="@task.Task" Occurrence="@task.Occurrence"
+                                          OnTaskUpdatedEvent="@RefreshTasks"/>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+
+            @if (_doneTasks.Any())
+            {
+                <div class="task-group">
+                    <div class="task-group-header" @onclick="() => _expandDone = !_expandDone">
+                        <span class="task-group-title"> انجام شده</span>
+                        <span class="task-group-count">@_doneTasks.Count</span>
+                        <i class="bi @(_expandDone ? "bi-chevron-up" : "bi-chevron-down")"></i>
+                    </div>
+                    @if (_expandDone)
+                    {
+                        <div class="task-group-body">
+                            @foreach (var task in _doneTasks)
+                            {
+                                <TaskItem Task="@task.Task" Occurrence="@task.Occurrence"
+                                          OnTaskUpdatedEvent="@RefreshTasks"/>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+
+            @if (_skippedTasks.Any())
+            {
+                <div class="task-group">
+                    <div class="task-group-header" @onclick="() => _expandSkipped = !_expandSkipped">
+                        <span class="task-group-title"> نادیده گرفته شده</span>
+                        <span class="task-group-count">@_skippedTasks.Count</span>
+                        <i class="bi @(_expandSkipped ? "bi-chevron-up" : "bi-chevron-down")"></i>
+                    </div>
+                    @if (_expandSkipped)
+                    {
+                        <div class="task-group-body">
+                            @foreach (var task in _skippedTasks)
+                            {
+                                <TaskItem Task="@task.Task" Occurrence="@task.Occurrence"
+                                          OnTaskUpdatedEvent="@RefreshTasks"/>
+                            }
+                        </div>
+                    }
+                </div>
             }
         </div>
     }
@@ -50,12 +120,17 @@
 
 @code {
     private List<TaskWithOccurrence>? _tasks;
+    private List<TaskWithOccurrence> _pendingTasks = new();
+    private List<TaskWithOccurrence> _doneTasks = new();
+    private List<TaskWithOccurrence> _skippedTasks = new();
     private bool _isLoading = true;
     private DateTimeOffset _day;
+    private bool _expandPending = true;
+    private bool _expandDone = false;
+    private bool _expandSkipped = false;
 
     protected override async Task OnInitializedAsync()
     {
-        // خواندن تاریخ از query
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
         var queryParams = QueryHelpers.ParseQuery(uri.Query);
 
@@ -72,15 +147,12 @@
             _day = DateTimeOffset.Now;
         }
 
-        // اشتراک در رویداد تغییر مسیر
         NavigationManager.LocationChanged += OnLocationChanged;
-
         await LoadTodayTasks();
     }
 
     private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
     {
-        // وقتی URL تغییر کرد، تاریخ جدید را بخوان و تسک‌ها را بارگذاری کن
         var uri = NavigationManager.ToAbsoluteUri(e.Location);
         var queryParams = QueryHelpers.ParseQuery(uri.Query);
 
@@ -97,14 +169,12 @@
             _day = DateTimeOffset.Now;
         }
 
-        // بارگذاری مجدد تسک‌ها (در یک Task جدا تا از مسدود شدن UI جلوگیری شود)
         _ = LoadTodayTasks();
         StateHasChanged();
     }
 
     public void Dispose()
     {
-        // لغو اشتراک برای جلوگیری از نشتی حافظه
         NavigationManager.LocationChanged -= OnLocationChanged;
     }
 
@@ -115,59 +185,72 @@
         NavigationManager.NavigateTo($"/tasks/daily?date={persianDate}", forceLoad: false);
     }
 
+    private void GoToToday()
+    {
+        var today = DateTimeOffset.Now;
+        NavigationManager.NavigateTo($"/tasks/daily?date={today.ToPersianDate()}", forceLoad: false);
+    }
+
     private async Task LoadTodayTasks()
     {
-        try
+        _isLoading = true;
+        var from = _day.Date;
+        var to = _day.Date;
+        var result = await ApiService.SendAsync(
+            apiCall: () => ApiClient.GetTasksWithOccurrencesAsync(from, to),
+            successMessage: null,
+            showErrorToast: true
+        );
+
+        if (result?.IsSuccess is true)
         {
-            _isLoading = true;
-
-            var from = _day.Date;
-            var to = _day.Date;
-            var result = await ApiClient.GetTasksWithOccurrencesAsync(from, to);
-
-            if (result.IsSuccess)
-            {
-                _tasks = result.Response.Tasks
-                    .SelectMany(t => t.Occurrences
-                        .Where(o => o.Date.Date == from.Date)
-                        .Select(o => new TaskWithOccurrence
-                        {
-                            Task = t,
-                            Occurrence = o
-                        })
-                    )
-                    .OrderBy(t=>t.Occurrence.IsSkipped)
-                    .ThenBy(t=>
+            _tasks = result.Response.Tasks
+                .SelectMany(t => t.Occurrences
+                    .Where(o => o.Date.Date == from.Date)
+                    .Select(o => new TaskWithOccurrence
                     {
-                        return t.Occurrence.Status switch
-                        {
-                            GetTaskWithOccurrencesQueryResultTaskOccurrencesStatus.Done => 3,
-                            GetTaskWithOccurrencesQueryResultTaskOccurrencesStatus.AlmostDone => 2,
-                            GetTaskWithOccurrencesQueryResultTaskOccurrencesStatus.NotDone => 1,
-                            GetTaskWithOccurrencesQueryResultTaskOccurrencesStatus.Pending => 0,
-                            _ => throw new ArgumentOutOfRangeException()
-                        };
+                        Task = t,
+                        Occurrence = o
                     })
-                    .ThenBy(t=> t.Task.Priority.HasValue ? (int)t.Task.Priority.Value : 10)
-                    .ThenBy(t=>t.Occurrence.Time)
-                    .ToList();
-            }
-            else
-            {
-                _tasks = [];
-            }
+                )
+                .OrderBy(t => t.Occurrence.IsSkipped)
+                .ThenBy(t =>
+                {
+                    return t.Occurrence.Status switch
+                    {
+                        GetTasksWithOccurrencesQueryResultTaskOccurrencesStatus.Done => 3,
+                        GetTasksWithOccurrencesQueryResultTaskOccurrencesStatus.AlmostDone => 2,
+                        GetTasksWithOccurrencesQueryResultTaskOccurrencesStatus.NotDone => 1,
+                        GetTasksWithOccurrencesQueryResultTaskOccurrencesStatus.Pending => 0,
+                        _ => throw new ArgumentOutOfRangeException()
+                    };
+                })
+                .ThenBy(t => t.Task.Priority.HasValue ? (int)t.Task.Priority.Value : 10)
+                .ThenBy(t => t.Occurrence.Time)
+                .ToList();
+
+            _pendingTasks = _tasks
+                .Where(t => !t.Occurrence.IsSkipped && t.Occurrence.Status != GetTasksWithOccurrencesQueryResultTaskOccurrencesStatus.Done && t.Occurrence.Status != GetTasksWithOccurrencesQueryResultTaskOccurrencesStatus.AlmostDone)
+                .ToList();
+
+            _doneTasks = _tasks
+                .Where(t => !t.Occurrence.IsSkipped && (t.Occurrence.Status == GetTasksWithOccurrencesQueryResultTaskOccurrencesStatus.Done || t.Occurrence.Status == GetTasksWithOccurrencesQueryResultTaskOccurrencesStatus.AlmostDone))
+                .ToList();
+
+            _skippedTasks = _tasks
+                .Where(t => t.Occurrence.IsSkipped)
+                .ToList();
         }
-        catch (Exception ex)
+        else
         {
-            ToastService.ShowToastError("خطا در دریافت تسک‌ها");
-            Console.WriteLine($"Error: {ex.Message}");
-            _tasks = new List<TaskWithOccurrence>();
+            _tasks = [];
+            _pendingTasks = [];
+            _doneTasks = [];
+            _skippedTasks = [];
         }
-        finally
-        {
-            _isLoading = false;
-            StateHasChanged();
-        }
+
+        _isLoading = false;
+        StateHasChanged();
     }
 
     private async Task RefreshTasks()
@@ -177,7 +260,8 @@
 
     private class TaskWithOccurrence
     {
-        public GetTaskWithOccurrencesQueryResultTasks Task { get; set; } = null!;
-        public GetTaskWithOccurrencesQueryResultTaskOccurrences Occurrence { get; set; } = null!;
+        public GetTasksWithOccurrencesQueryResultTasks Task { get; set; } = null!;
+        public GetTasksWithOccurrencesQueryResultTaskOccurrences Occurrence { get; set; } = null!;
     }
+
 }

@@ -357,6 +357,45 @@
             }
           }
         }
+      },
+      "get": {
+        "tags": [
+          "Task"
+        ],
+        "operationId": "GetTaskDetail",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetTaskDetailQueryResultResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetTaskDetailQueryResultResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetTaskDetailQueryResultResult"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/v1/tasks/{taskId}/soft-delete": {
@@ -471,17 +510,47 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetTaskWithOccurrencesQueryResultResult"
+                  "$ref": "#/components/schemas/GetTasksWithOccurrencesQueryResultResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetTaskWithOccurrencesQueryResultResult"
+                  "$ref": "#/components/schemas/GetTasksWithOccurrencesQueryResultResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetTaskWithOccurrencesQueryResultResult"
+                  "$ref": "#/components/schemas/GetTasksWithOccurrencesQueryResultResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/deleted": {
+      "get": {
+        "tags": [
+          "Task"
+        ],
+        "operationId": "GetDeletedTasks",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDeletedTasksQueryResultResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDeletedTasksQueryResultResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDeletedTasksQueryResultResult"
                 }
               }
             }
@@ -1242,7 +1311,7 @@
           }
         }
       },
-      "GetTaskWithOccurrencesQueryResult": {
+      "GetDeletedTasksQueryResult": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -1250,12 +1319,12 @@
             "type": "array",
             "nullable": true,
             "items": {
-              "$ref": "#/components/schemas/GetTaskWithOccurrencesQueryResultTasks"
+              "$ref": "#/components/schemas/GetDeletedTasksQueryResultTasks"
             }
           }
         }
       },
-      "GetTaskWithOccurrencesQueryResultResult": {
+      "GetDeletedTasksQueryResultResult": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -1279,7 +1348,7 @@
             "nullable": true,
             "allOf": [
               {
-                "$ref": "#/components/schemas/GetTaskWithOccurrencesQueryResult"
+                "$ref": "#/components/schemas/GetDeletedTasksQueryResult"
               }
             ]
           },
@@ -1296,7 +1365,168 @@
           }
         }
       },
-      "GetTaskWithOccurrencesQueryResultTaskOccurrences": {
+      "GetDeletedTasksQueryResultTasks": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "taskId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "GetTaskDetailQueryResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "taskId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "defaultTime": {
+            "type": "string",
+            "format": "time",
+            "nullable": true
+          },
+          "priority": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "High",
+              "Medium",
+              "Low"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "Task",
+              "Event"
+            ]
+          },
+          "repeatPattern": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RepeatPatternDto"
+              }
+            ]
+          },
+          "parentGoalId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          }
+        }
+      },
+      "GetTaskDetailQueryResultResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "isSuccess": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "badResultType": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true,
+            "enum": [
+              "NotFound",
+              "Validation",
+              "General",
+              "Unauthorized"
+            ]
+          },
+          "response": {
+            "readOnly": true,
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GetTaskDetailQueryResult"
+              }
+            ]
+          },
+          "errors": {
+            "type": "object",
+            "readOnly": true,
+            "nullable": true,
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "GetTasksWithOccurrencesQueryResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "tasks": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/GetTasksWithOccurrencesQueryResultTasks"
+            }
+          }
+        }
+      },
+      "GetTasksWithOccurrencesQueryResultResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "isSuccess": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "badResultType": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true,
+            "enum": [
+              "NotFound",
+              "Validation",
+              "General",
+              "Unauthorized"
+            ]
+          },
+          "response": {
+            "readOnly": true,
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GetTasksWithOccurrencesQueryResult"
+              }
+            ]
+          },
+          "errors": {
+            "type": "object",
+            "readOnly": true,
+            "nullable": true,
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "GetTasksWithOccurrencesQueryResultTaskOccurrences": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -1328,7 +1558,7 @@
           }
         }
       },
-      "GetTaskWithOccurrencesQueryResultTasks": {
+      "GetTasksWithOccurrencesQueryResultTasks": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -1365,7 +1595,7 @@
             "type": "array",
             "nullable": true,
             "items": {
-              "$ref": "#/components/schemas/GetTaskWithOccurrencesQueryResultTaskOccurrences"
+              "$ref": "#/components/schemas/GetTasksWithOccurrencesQueryResultTaskOccurrences"
             }
           }
         }

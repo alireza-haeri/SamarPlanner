@@ -11,6 +11,7 @@ public class SoftDeleteTaskOccurrenceCommandHandler
 {
     public async Task<Result<bool>> Handle(SoftDeleteTaskOccurrenceCommand request, CancellationToken cancellationToken)
     {
+        //todo remove this option
         var task = await taskRepository.GetWithOccurrencesAsTrackingAsync(request.TaskId,request.UserId ,cancellationToken);
         if (task is null)
             return Result<bool>.NotfoundFailure("وظیفه مورد نظر یافت نشد.");

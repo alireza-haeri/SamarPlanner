@@ -31,4 +31,5 @@ public interface ITaskRepository
         CancellationToken cancellationToken = default);
 
     Task<List<Core.Entities.Task>> GetWithOccurrencesAndRepeatPatternAsync(Guid userId, DateOnly from, DateOnly to, CancellationToken cancellationToken);
+    Task<List<Core.Entities.Task>> GetDeletedTasksAsync(Guid userId,CancellationToken cancellationToken = default);
 }

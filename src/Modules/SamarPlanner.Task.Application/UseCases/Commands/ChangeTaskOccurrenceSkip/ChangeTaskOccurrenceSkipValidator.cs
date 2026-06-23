@@ -20,8 +20,6 @@ public class ChangeTaskOccurrenceSkipValidator : AbstractValidator<ChangeTaskOcc
         RuleFor(x => x.Date)
             .NotEmpty().WithMessage("{PropertyName} نمی‌تواند خالی باشد.")
             .NotNull().WithMessage("{PropertyName} نمی‌تواند null باشد.")
-            .LessThanOrEqualTo(d => DateOnly.FromDateTime(DateTime.Now))
-            .WithMessage("{PropertyName} نمی‌تواند تاریخی در آینده باشد.")
             .WithName("تاریخ");
 
         RuleFor(x => x.IsSkipped)

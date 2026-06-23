@@ -86,12 +86,33 @@ public class TaskController(IMediator mediator) : BaseController
 
     [HttpGet("with-occurrences")] 
     [SwaggerOperation(OperationId = "GetTasksWithOccurrences")]
-    public async Task<ActionResult<Result<GetTaskWithOccurrencesQueryResult>>> GetTaskWithOccurrences([FromQuery] DateOnly from, [FromQuery] DateOnly to)
+    public async Task<ActionResult<Result<GetTasksWithOccurrencesQueryResult>>> GetTasksWithOccurrences([FromQuery] DateOnly from, [FromQuery] DateOnly to)
     {
-        var result = await mediator.Send(new GetTaskWithOccurrencesQuery(
+        var result = await mediator.Send(new GetTasksWithOccurrencesQuery(
             UserId,
             From: from,
             To: to
+        ));
+        return Result(result);
+    }
+
+    [HttpGet("{taskId:guid}")] 
+    [SwaggerOperation(OperationId = "GetTaskDetail")]
+    public async Task<ActionResult<Result<GetTaskDetailQueryResult>>> GetTaskDetail(Guid taskId)
+    {
+        var result = await mediator.Send(new GetTaskDetailQuery(
+            TaskId:taskId,
+           UserId: UserId
+        ));
+        return Result(result);
+    }
+
+    [HttpGet("/deleted")] 
+    [SwaggerOperation(OperationId = "GetDeletedTasks")]
+    public async Task<ActionResult<Result<GetDeletedTasksQueryResult>>> GetDeletedTasks()
+    {
+        var result = await mediator.Send(new GetDeletedTasksQuery(
+            UserId: UserId
         ));
         return Result(result);
     }

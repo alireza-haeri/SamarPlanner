@@ -1,0 +1,140 @@
+@page "/tasks/deleted"
+@using System.Globalization
+@using SamarPlanner.Web.Helpers
+@attribute [Authorize]
+@layout TaskLayout
+@inject IApiClient ApiClient
+@inject IToastService ToastService
+@inject IApiService ApiService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+<div class="deleted-tasks">
+    <div class="page-header">
+        <h3>🗑️ تسک‌های حذف شده</h3>
+        <span class="text-muted small">تسک‌هایی که قبلاً حذف کرده‌اید</span>
+    </div>
+
+    @if (_isLoading)
+    {
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status"></div>
+            <span>بارگذاری...</span>
+        </div>
+    }
+    else if (_tasks == null || !_tasks.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-trash3"></i>
+            <p>هیچ تسک حذف شده‌ای وجود ندارد</p>
+            <small class="text-muted">تسک‌هایی که حذف می‌کنید در اینجا ظاهر می‌شوند</small>
+        </div>
+    }
+    else
+    {
+        <div class="task-list">
+            @foreach (var task in _tasks)
+            {
+                <div class="deleted-task-item">
+                    <div class="task-info">
+                        <div class="task-title">@task.Title</div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="btn btn-sm btn-outline-success" @onclick="() => RestoreTask(task.TaskId)" title="بازیابی">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" @onclick="() => DeletePermanently(task.TaskId)" title="حذف کامل">
+                            <i class="bi bi-trash3"></i>
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<GetDeletedTasksQueryResultTasks>? _tasks;
+    private bool _isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDeletedTasks();
+    }
+
+    private async Task LoadDeletedTasks()
+    {
+        try
+        {
+            _isLoading = true;
+            var result = await ApiService.SendAsync(
+                () => ApiClient.GetDeletedTasksAsync(),
+                showErrorToast: false
+            );
+
+            if (result != null && result.IsSuccess)
+            {
+                _tasks = result.Response?.Tasks?.ToList() ?? new List<GetDeletedTasksQueryResultTasks>();
+            }
+            else
+            {
+                _tasks = new List<GetDeletedTasksQueryResultTasks>();
+                if (result?.Errors != null && result.Errors.Any())
+                {
+                    var errors = string.Join("\n", result.Errors.SelectMany(e => e.Value));
+                    ToastService.ShowToastError(errors);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowToastError($"خطا: {ex.Message}");
+            _tasks = new List<GetDeletedTasksQueryResultTasks>();
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task RestoreTask(Guid taskId)
+    {
+        var result = await ApiService.SendAsync(
+            () => ApiClient.RestoreTaskAsync(taskId),
+            successMessage: "تسک با موفقیت بازیابی شد!",
+            showErrorToast: false
+        );
+
+        if (result?.IsSuccess == true)
+        {
+            await LoadDeletedTasks();
+        }
+        else if (result?.Errors != null)
+        {
+            var errors = string.Join("\n", result.Errors.SelectMany(e => e.Value));
+            ToastService.ShowToastError(errors);
+        }
+    }
+
+    private async Task DeletePermanently(Guid taskId)
+    {
+        var confirmed = await JS.InvokeAsync<bool>("confirm", "آیا از حذف کامل این تسک مطمئن هستید؟ این عمل قابل بازگشت نیست.");
+        if (!confirmed) return;
+
+        var result = await ApiService.SendAsync(
+            () => ApiClient.DeleteTaskAsync(taskId),
+            successMessage: "تسک با موفقیت حذف شد!",
+            showErrorToast: false
+        );
+
+        if (result?.IsSuccess == true)
+        {
+            await LoadDeletedTasks();
+        }
+        else if (result?.Errors != null)
+        {
+            var errors = string.Join("\n", result.Errors.SelectMany(e => e.Value));
+            ToastService.ShowToastError(errors);
+        }
+    }
+}
