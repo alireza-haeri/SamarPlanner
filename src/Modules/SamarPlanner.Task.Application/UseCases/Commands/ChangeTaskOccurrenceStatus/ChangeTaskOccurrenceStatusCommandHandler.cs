@@ -24,7 +24,7 @@ public class ChangeTaskOccurrenceStatusCommandHandler(ITaskRepository taskReposi
             return Result<bool>.GeneralFailure("خطایی در ویرایش وضعیت وظیفه مورد نظر رخ داده است.");
         
         if (task.ParentGoalId.HasValue)
-            await mediator.Publish(new TaskGoalStatusChangedEvent(request.TaskId, request.UserId,
+            await mediator.Publish(new TaskGoalStatusChangedEvent( request.UserId,
                 task.ParentGoalId.Value), cancellationToken);
 
         return Result<bool>.Success(true);

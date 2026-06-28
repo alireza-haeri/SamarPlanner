@@ -31,7 +31,7 @@ public class CreateTaskCommandHandler(ITaskRepository taskRepository,IMediator m
             return Result<CreateTaskCommandResponse>.GeneralFailure();
         
         if (task.ParentGoalId.HasValue)
-            await mediator.Publish(new TaskGoalStatusChangedEvent(task.Id, request.UserId,
+            await mediator.Publish(new TaskGoalStatusChangedEvent( request.UserId,
                 task.ParentGoalId.Value), cancellationToken);
 
         return Result<CreateTaskCommandResponse>.Success(new CreateTaskCommandResponse(task.Id));

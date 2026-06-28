@@ -13,7 +13,6 @@ public class TaskOccurrence
     public TaskStatus Status { get; private set; }
     public int? Score { get; private set; }
     public bool IsSkipped { get; private set; }
-    public bool SoftDeleted { get; private set; }
     public Task Task { get; set; } = null!;
 
     public static TaskOccurrence Create(Guid taskId, DateOnly date, TimeOnly? time) => new()
@@ -24,13 +23,10 @@ public class TaskOccurrence
         Status = TaskStatus.Pending,
         Score = null,
         IsSkipped = false,
-        SoftDeleted = false
     };
 
     public void ChangeStatus(TaskStatus status, int? score)
     {
-        if (SoftDeleted)
-            throw new InvalidOperationException("Cannot update a soft deleted occurrence.");
 
         if(Date > DateOnly.FromDateTime(DateTime.Now))
             throw new InvalidOperationException("Cannot update status of a future occurrence.");
@@ -49,10 +45,6 @@ public class TaskOccurrence
     public void ChangeTime(TimeOnly? time) => Time = time;
 
     public void ChangeSkipped(bool isSkipped) => IsSkipped = isSkipped;
-
-    public void SoftDelete() => SoftDeleted = true;
-
-    public void Restore() => SoftDeleted = false;
 
     public void ChangeDate(DateOnly newDate) => Date = newDate;
 }

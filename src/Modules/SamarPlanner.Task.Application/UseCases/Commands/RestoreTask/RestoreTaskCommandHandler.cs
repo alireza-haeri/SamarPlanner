@@ -23,7 +23,7 @@ public class RestoreSoftDeleteTaskCommandHandler
             return Result<bool>.GeneralFailure("خطا در بازیابی وظیفه اتفاق افتاده است.");
         
         if (task.ParentGoalId.HasValue)
-            await mediator.Publish(new TaskGoalStatusChangedEvent(request.TaskId, request.UserId,
+            await mediator.Publish(new TaskGoalStatusChangedEvent( request.UserId,
                 task.ParentGoalId.Value), cancellationToken);
 
         return Result<bool>.Success(true);

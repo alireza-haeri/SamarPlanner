@@ -6,14 +6,17 @@ using SamarPlanner.Task.Application.Abstractions;
 
 namespace SamarPlanner.Task.Application.UseCases.Commands.UpdateTask;
 
-public class UpdateTaskCommandHandler(ITaskRepository taskRepository,IMediator mediator)
+public class UpdateTaskCommandHandler(ITaskRepository taskRepository, IMediator mediator)
     : IRequestHandler<UpdateTaskCommand, Result<bool>>
 {
     public async Task<Result<bool>> Handle(UpdateTaskCommand request, CancellationToken cancellationToken)
     {
-        var task = await taskRepository.GetWithRepeatPatternAsTrackingAsync(request.TaskId, request.UserId, cancellationToken);
+        var task = await taskRepository.GetWithRepeatPatternAsTrackingAsync(request.TaskId, request.UserId,
+            cancellationToken);
         if (task is null)
             return Result<bool>.NotfoundFailure("وظیفه مورد نظر یافت نشد.");
+
+        var oldParentGoalId = task.ParentGoalId;
 
         task.Update(
             title: request.Title,
@@ -23,15 +26,19 @@ public class UpdateTaskCommandHandler(ITaskRepository taskRepository,IMediator m
             type: request.Type,
             repeatPattern: request.RepeatPattern?.ToRepeatPattern(),
             parentGoalId: request.ParentGoalId);
-        
+
         var updateResult = await taskRepository.UpdateAsync(task, cancellationToken);
-        if(!updateResult)
+        if (!updateResult)
             return Result<bool>.GeneralFailure("خطا در بروزرسانی وظیفه اتفاق افتاده است.");
+
+        if (oldParentGoalId.HasValue)
+            await mediator.Publish(new TaskGoalStatusChangedEvent(request.UserId,
+                oldParentGoalId.Value), cancellationToken);
         
         if (task.ParentGoalId.HasValue)
-            await mediator.Publish(new TaskGoalStatusChangedEvent(request.TaskId, request.UserId,
+            await mediator.Publish(new TaskGoalStatusChangedEvent(request.UserId,
                 task.ParentGoalId.Value), cancellationToken);
-        
+
         return Result<bool>.Success(true);
     }
 }

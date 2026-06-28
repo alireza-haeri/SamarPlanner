@@ -65,40 +65,4 @@ public class TaskOccurrenceController(IMediator mediator) : BaseController
         ));
         return Result(result);
     }
-
-    [HttpPut("{taskId:guid}/soft-delete")]
-    [SwaggerOperation(OperationId = "SoftDeleteOccurrence")]
-    public async Task<ActionResult<Result<bool>>> SoftDelete(Guid taskId, [FromBody] SoftDeleteOccurrenceRequest request)
-    {
-        var result = await mediator.Send(new SoftDeleteTaskOccurrenceCommand(
-            TaskId: taskId,
-            UserId: UserId,
-            Date: request.Date
-        ));
-        return Result(result);
-    }
-
-    [HttpPut("{taskId:guid}/restore")]
-    [SwaggerOperation(OperationId  = "RestoreOccurrence")]
-    public async Task<ActionResult<Result<bool>>> Restore(Guid taskId, [FromBody] RestoreTaskOccurrenceRequest request)
-    {
-        var result = await mediator.Send(new RestoreTaskOccurrenceCommand(
-            TaskId: taskId,
-            UserId: UserId,
-            Date: request.Date
-        ));
-        return Result(result);
-    }
-
-    [HttpDelete("{taskId:guid}")]
-    [SwaggerOperation(OperationId = "DeleteOccurrence")]
-    public async Task<ActionResult<Result<bool>>> Delete(Guid taskId, [FromBody] DeleteTaskOccurrenceRequest request)
-    {
-        var result = await mediator.Send(new DeleteTaskOccurrenceCommand(
-            TaskId: taskId,
-            UserId: UserId,
-            Date: request.Date
-        ));
-        return Result(result);
-    }
 }

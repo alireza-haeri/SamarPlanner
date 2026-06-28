@@ -18,9 +18,6 @@ public interface ITaskRepository
     Task<Core.Entities.Task?> GetWithOccurrencesAsTrackingAsync(Guid taskId, Guid userId,
         CancellationToken cancellationToken = default);
 
-    Task<Core.Entities.Task?> GetWithOccurrencesAsTrackingWithOutFilterAsync(Guid taskId, Guid userId,
-        CancellationToken cancellationToken = default);
-
     Task<Core.Entities.Task?> GetAsTrackingWithOutFilterAsync(Guid taskId, Guid userId,
         CancellationToken cancellationToken = default);
 
@@ -29,13 +26,8 @@ public interface ITaskRepository
     Task<bool> DeleteTaskWithOccurrencesWithOutFilterAsync(Guid taskId, Guid userId,
         CancellationToken cancellationToken = default);
 
-    Task<bool> DeleteOccurrencesWithOutFilterAsync(Guid taskId, Guid userId, DateOnly date,
-        CancellationToken cancellationToken = default);
-
     Task<List<Core.Entities.Task>> GetWithOccurrencesAndRepeatPatternAsync(Guid userId, DateOnly from, DateOnly to, CancellationToken cancellationToken);
     Task<List<Core.Entities.Task>> GetDeletedTasksAsync(Guid userId,CancellationToken cancellationToken = default);
-    Task<Core.Entities.Task?> GetWithOccurrences(Guid taskId, Guid userId, CancellationToken  cancellationToken = default);
-    Task<List<Guid>> GetTaskIdsByGoalIdAsync(Guid goalId, CancellationToken cancellationToken = default);
     Task<List<TaskOccurrence>> GetOccurrencesByGoalIdUntilDateAsync(Guid goalId, Guid userId, DateOnly periodStart,
         DateOnly periodEnd, CancellationToken ct = default);
 }

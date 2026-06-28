@@ -117,16 +117,4 @@ public class Task
         var occurrence = GetOrCreateOccurrence(date);
         occurrence.ChangeStatus(status, score);
     }
-
-    public void SoftDeleteOccurrence(DateOnly date)
-    {
-        var occurrence = GetOrCreateOccurrence(date);
-        occurrence.SoftDelete();
-    }
-
-    public void RestoreOccurrence(DateOnly date)
-    {
-        var occurrence = GetOrCreateOccurrence(date);
-        occurrence.Restore();
-    }
 }

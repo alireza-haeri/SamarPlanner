@@ -28,12 +28,7 @@ public class TaskOccurrenceConfiguration : IEntityTypeConfiguration<TaskOccurren
             .IsUnicode(false)
             .HasMaxLength(50);
 
-        builder.Property(x => x.SoftDeleted)
-            .IsUnicode(false);
-
         builder.Property(x => x.IsSkipped)
             .IsUnicode(false);
-        
-        builder.HasQueryFilter(o => !o.SoftDeleted);
     }
 }

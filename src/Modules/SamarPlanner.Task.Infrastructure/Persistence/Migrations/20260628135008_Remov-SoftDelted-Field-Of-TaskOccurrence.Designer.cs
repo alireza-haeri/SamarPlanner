@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SamarPlanner.Task.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using SamarPlanner.Task.Infrastructure.Persistence;
 namespace SamarPlanner.Task.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(TaskDbContext))]
-    partial class TaskDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260628135008_Remov-SoftDelted-Field-Of-TaskOccurrence")]
+    partial class RemovSoftDeltedFieldOfTaskOccurrence
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

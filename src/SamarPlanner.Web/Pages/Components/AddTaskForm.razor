@@ -11,6 +11,11 @@
         <label class="form-label">عنوان تسک</label>
         <InputText class="form-control" @bind-Value="_formHelper.Model.Title" placeholder="مثلاً: مطالعه کتاب" />
     </div>
+    
+    <div class="mb-3">
+        <label class="form-label">توضیحات</label>
+        <InputTextArea class="form-control" @bind-Value="_formHelper.Model.Description" placeholder="توضیحات (اختیاری)" rows="2" />
+    </div>
 
     <div class="mb-3">
         <label class="form-label">تاریخ (شمسی)</label>
@@ -34,6 +39,17 @@
         </InputSelect>
     </div>
 
+    <div class="mb-3">
+        <label class="form-label">زیرمجموعه هدف (اختیاری)</label>
+        <select class="form-select" @bind="_selectedParentGoalId">
+            <option value="">هیچکدام</option>
+            @foreach (var goal in ShortGoals)
+            {
+                <option value="@goal.GoalId">@goal.Title</option>
+            }
+        </select>
+    </div>
+    
     <div class="mb-3 border-top pt-3">
         <div class="d-flex align-items-center gap-2 mb-2">
             <label class="form-label mb-0 fw-semibold">تکرار</label>
@@ -109,9 +125,21 @@
 @code {
     private FormHelper<CreateTaskModel> _formHelper = null!;
     private bool _isLoading = false;
+    private Guid? _selectedParentGoalId;
 
     [Parameter] public EventCallback OnTaskAdded { get; set; }
+    private List<GetAllShortGoalsByUserIdQueryResponseGoals> ShortGoals { get; set; } = [];
 
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await ApiService.SendAsync(
+            () => ApiClient.GetShortGoalsAsync(),
+            showErrorToast: true);
+
+        if (result?.IsSuccess is true)
+            ShortGoals = result.Response.Goals.ToList();
+    }
+    
     protected override void OnInitialized()
     {
         _formHelper = new FormHelper<CreateTaskModel>(new CreateTaskModel
@@ -187,7 +215,7 @@
             }
 
             var type = _formHelper.Model.RepeatType.Value;
-            if (type == RepeatPatternDtoType.WeeklyOnDays && (_formHelper.Model.WeekDays == null || !_formHelper.Model.WeekDays.Any()))
+            if (type == RepeatPatternDtoType.WeeklyOnDays && (!_formHelper.Model.WeekDays.Any()))
             {
                 ToastService.ShowToastError("حداقل یک روز هفته را انتخاب کنید.");
                 _isLoading = false;
@@ -255,8 +283,8 @@
             priority: _formHelper.Model.Priority,
             type: CreateTaskRequestType.Task,
             repeatPattern: repeatPattern,
-            parentGoalId: null,
-            description: null
+            parentGoalId: _selectedParentGoalId,
+            description: _formHelper.Model.Description
         );
 
         var result = await ApiService.SendAsync(
@@ -296,6 +324,9 @@
     {
         [Required(ErrorMessage = "عنوان الزامی است")]
         public string Title { get; set; } = "";
+        
+        
+        public string? Description { get; set; }
 
         [Required(ErrorMessage = "تاریخ الزامی است")]
         public string PersianDate { get; set; } = "";

@@ -54,14 +54,6 @@ public class TaskRepository(TaskDbContext context) : ITaskRepository
             .FirstOrDefaultAsync(t => t.Id == taskId && t.UserId == userId, cancellationToken);
     }
 
-    public async Task<Core.Entities.Task?> GetWithOccurrencesAsTrackingWithOutFilterAsync(Guid taskId, Guid userId,
-        CancellationToken cancellationToken = default)
-    {
-        return await context.Tasks.AsTracking().IgnoreQueryFilters()
-            .Include(t => t.Occurrences)
-            .FirstOrDefaultAsync(t => t.Id == taskId && t.UserId == userId, cancellationToken);
-    }
-
     public async Task<Core.Entities.Task?> GetAsTrackingWithOutFilterAsync(Guid taskId, Guid userId,
         CancellationToken cancellationToken = default)
     {
@@ -97,39 +89,12 @@ public class TaskRepository(TaskDbContext context) : ITaskRepository
                 return false;
 
             await context.TaskOccurrences
-                .IgnoreQueryFilters()
                 .Where(o => o.TaskId == taskId)
                 .ExecuteDeleteAsync(cancellationToken);
 
             var deleted = await context.Tasks
                 .IgnoreQueryFilters()
                 .Where(t => t.Id == taskId && t.UserId == userId)
-                .ExecuteDeleteAsync(cancellationToken);
-
-            return deleted > 0;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return false;
-        }
-    }
-
-    public async Task<bool> DeleteOccurrencesWithOutFilterAsync(Guid taskId, Guid userId, DateOnly date,
-        CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            var taskExists = await context.Tasks
-                .IgnoreQueryFilters()
-                .AnyAsync(t => t.Id == taskId && t.UserId == userId, cancellationToken);
-
-            if (!taskExists)
-                return false;
-
-            var deleted = await context.TaskOccurrences
-                .IgnoreQueryFilters()
-                .Where(o => o.TaskId == taskId && o.Date == date)
                 .ExecuteDeleteAsync(cancellationToken);
 
             return deleted > 0;
@@ -162,22 +127,6 @@ public class TaskRepository(TaskDbContext context) : ITaskRepository
         return await context.Tasks.AsNoTracking()
             .IgnoreQueryFilters()
             .Where(t => t.UserId == userId && t.SoftDeleted == true)
-            .ToListAsync(cancellationToken);
-    }
-
-    public async Task<Core.Entities.Task?> GetWithOccurrences(Guid taskId, Guid userId,
-        CancellationToken cancellationToken = default)
-    {
-        return await context.Tasks.AsNoTracking()
-            .Include(t => t.Occurrences)
-            .FirstOrDefaultAsync(t => t.Id == taskId && t.UserId == userId, cancellationToken);
-    }
-
-    public Task<List<Guid>> GetTaskIdsByGoalIdAsync(Guid goalId, CancellationToken cancellationToken = default)
-    {
-        return context.Tasks.AsNoTracking()
-            .Where(t => t.ParentGoalId == goalId)
-            .Select(t => t.Id)
             .ToListAsync(cancellationToken);
     }
 
