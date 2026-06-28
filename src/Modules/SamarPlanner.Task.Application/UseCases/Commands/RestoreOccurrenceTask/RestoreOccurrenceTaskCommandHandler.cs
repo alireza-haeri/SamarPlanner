@@ -11,6 +11,7 @@ public class RestoreTaskOccurrenceCommandHandler
 {
     public async Task<Result<bool>> Handle(RestoreTaskOccurrenceCommand request, CancellationToken cancellationToken)
     {
+        //todo Remove this option
         var task = await taskRepository.GetWithOccurrencesAsTrackingWithOutFilterAsync(request.TaskId,request.UserId ,cancellationToken);
         if (task is null)
             return Result<bool>.NotfoundFailure("وظیفه مورد نظر یافت نشد.");

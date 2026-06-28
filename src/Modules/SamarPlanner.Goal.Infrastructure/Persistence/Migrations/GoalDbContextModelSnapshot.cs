@@ -36,18 +36,25 @@ namespace SamarPlanner.Goal.Infrastructure.Persistence.Migrations
                     b.Property<string>("GoalPriority")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("GoalType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid?>("ParentGoalId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("PeriodEnd")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("PeriodEnd")
+                        .HasColumnType("date");
 
-                    b.Property<DateTime>("PeriodStart")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("PeriodStart")
+                        .HasColumnType("date");
+
+                    b.Property<double>("Progress")
+                        .HasColumnType("float");
+
+                    b.Property<Guid?>("RolledOverId")
+                        .HasMaxLength(100)
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()

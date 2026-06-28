@@ -36,8 +36,11 @@ public class GetAllGoalsByUserIdQueryHandler(
                 GoalId: goal.Id,
                 Title: goal.Title,
                 Description: goal.Description,
-                GoalType: goal.GoalType,
                 GoalPriority: goal.GoalPriority,
+                PeriodStart: goal.PeriodStart,
+                PeriodEnd: goal.PeriodEnd,
+                Status: goal.Status,
+                Progress: goal.Progress,
                 Goals: children
             );
         }

@@ -3,6 +3,7 @@ using SamarPlanner.Goal;
 using SamarPlanner.Identity;
 using SamarPlanner.Shared.Kernel;
 using SamarPlanner.Task;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +43,11 @@ var app = builder.Build();
 
 app.MapOpenApi();
 app.MapSwagger();
+app.MapScalarApiReference(options =>
+{
+    options.Title = "SamarPlanner API";
+    options.WithOpenApiRoutePattern("/swagger/v1/swagger.json");
+});
 
 app.UseRouting();
 

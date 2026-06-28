@@ -57,7 +57,7 @@
         { "password", "Password" }
     };
 
-    protected override async Task OnInitializedAsync()
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
         var query = NavigationManager.ToAbsoluteUri(NavigationManager.Uri).Query;
         var queryParams = System.Web.HttpUtility.ParseQueryString(query);
@@ -71,7 +71,7 @@
         }
     }
 
-    private async Task HandleLogin()
+    private async System.Threading.Tasks.Task HandleLogin()
     {
         if (_isLoading) return;
         _isLoading = true;

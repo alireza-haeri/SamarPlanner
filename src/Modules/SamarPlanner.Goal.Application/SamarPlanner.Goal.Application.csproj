@@ -13,4 +13,8 @@
       <ProjectReference Include="..\SamarPlanner.Goal.Core\SamarPlanner.Goal.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="UseCases\Queries\GetAllGoalsByUserId\" />
+    </ItemGroup>
+
 </Project>

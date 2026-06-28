@@ -44,7 +44,24 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateGoalCommandResponseResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateGoalCommandResponseResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateGoalCommandResponseResult"
+                }
+              }
+            }
           }
         }
       },
@@ -86,7 +103,24 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
           }
         }
       },
@@ -97,7 +131,219 @@
         "operationId": "GetGoals",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAllGoalsByUserIdQueryResponseResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAllGoalsByUserIdQueryResponseResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAllGoalsByUserIdQueryResponseResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/goals/{goalId}/achieve": {
+      "patch": {
+        "tags": [
+          "Goal"
+        ],
+        "operationId": "achieve",
+        "parameters": [
+          {
+            "name": "goalId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/goals/{goalId}/active": {
+      "patch": {
+        "tags": [
+          "Goal"
+        ],
+        "operationId": "active",
+        "parameters": [
+          {
+            "name": "goalId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/goals/{goalId}/fail": {
+      "patch": {
+        "tags": [
+          "Goal"
+        ],
+        "operationId": "fail",
+        "parameters": [
+          {
+            "name": "goalId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/goals/{goalId}/rollover": {
+      "patch": {
+        "tags": [
+          "Goal"
+        ],
+        "operationId": "rollover",
+        "parameters": [
+          {
+            "name": "goalId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RolloverGoalRequest"
+                  }
+                ]
+              }
+            },
+            "text/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RolloverGoalRequest"
+                  }
+                ]
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RolloverGoalRequest"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RolloverGoalCommandResultResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RolloverGoalCommandResultResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RolloverGoalCommandResultResult"
+                }
+              }
+            }
           }
         }
       }
@@ -121,7 +367,54 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/goals/short": {
+      "get": {
+        "tags": [
+          "Goal"
+        ],
+        "operationId": "GetShortGoals",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAllShortGoalsByUserIdQueryResponseResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAllShortGoalsByUserIdQueryResponseResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAllShortGoalsByUserIdQueryResponseResult"
+                }
+              }
+            }
           }
         }
       }
@@ -1153,6 +1446,57 @@
           }
         }
       },
+      "CreateGoalCommandResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "goalId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "CreateGoalCommandResponseResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "isSuccess": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "badResultType": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true,
+            "enum": [
+              "NotFound",
+              "Validation",
+              "General",
+              "Unauthorized"
+            ]
+          },
+          "response": {
+            "readOnly": true,
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CreateGoalCommandResponse"
+              }
+            ]
+          },
+          "errors": {
+            "type": "object",
+            "readOnly": true,
+            "nullable": true,
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
       "CreateGoalRequest": {
         "type": "object",
         "additionalProperties": false,
@@ -1166,30 +1510,21 @@
             "nullable": true
           },
           "priority": {
-            "type": "integer",
-            "format": "int32",
+            "type": "string",
+            "nullable": true,
             "enum": [
-              1,
-              2,
-              3
-            ]
-          },
-          "goalType": {
-            "type": "integer",
-            "format": "int32",
-            "enum": [
-              1,
-              2,
-              3
+              "Low",
+              "Medium",
+              "High"
             ]
           },
           "periodStart": {
             "type": "string",
-            "format": "date-time"
+            "format": "date"
           },
           "periodEnd": {
             "type": "string",
-            "format": "date-time"
+            "format": "date"
           },
           "parentGoalId": {
             "type": "string",
@@ -1308,6 +1643,192 @@
           "date": {
             "type": "string",
             "format": "date"
+          }
+        }
+      },
+      "GetAllGoalsByUserIdQueryResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "goals": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/GetAllGoalsByUserIdQueryResponseGoals"
+            }
+          }
+        }
+      },
+      "GetAllGoalsByUserIdQueryResponseGoals": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "goalId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "goalPriority": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "Low",
+              "Medium",
+              "High"
+            ]
+          },
+          "periodStart": {
+            "type": "string",
+            "format": "date"
+          },
+          "periodEnd": {
+            "type": "string",
+            "format": "date"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "Active",
+              "Achieved",
+              "Failed",
+              "RolledOver"
+            ]
+          },
+          "progress": {
+            "type": "number",
+            "format": "double"
+          },
+          "goals": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/GetAllGoalsByUserIdQueryResponseGoals"
+            }
+          }
+        }
+      },
+      "GetAllGoalsByUserIdQueryResponseResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "isSuccess": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "badResultType": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true,
+            "enum": [
+              "NotFound",
+              "Validation",
+              "General",
+              "Unauthorized"
+            ]
+          },
+          "response": {
+            "readOnly": true,
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GetAllGoalsByUserIdQueryResponse"
+              }
+            ]
+          },
+          "errors": {
+            "type": "object",
+            "readOnly": true,
+            "nullable": true,
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "GetAllShortGoalsByUserIdQueryResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "goals": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/GetAllShortGoalsByUserIdQueryResponseGoals"
+            }
+          }
+        }
+      },
+      "GetAllShortGoalsByUserIdQueryResponseGoals": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "goalId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "priority": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "Low",
+              "Medium",
+              "High"
+            ]
+          }
+        }
+      },
+      "GetAllShortGoalsByUserIdQueryResponseResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "isSuccess": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "badResultType": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true,
+            "enum": [
+              "NotFound",
+              "Validation",
+              "General",
+              "Unauthorized"
+            ]
+          },
+          "response": {
+            "readOnly": true,
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GetAllShortGoalsByUserIdQueryResponse"
+              }
+            ]
+          },
+          "errors": {
+            "type": "object",
+            "readOnly": true,
+            "nullable": true,
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
           }
         }
       },
@@ -1727,6 +2248,71 @@
           }
         }
       },
+      "RolloverGoalCommandResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "goalId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "RolloverGoalCommandResultResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "isSuccess": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "badResultType": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true,
+            "enum": [
+              "NotFound",
+              "Validation",
+              "General",
+              "Unauthorized"
+            ]
+          },
+          "response": {
+            "readOnly": true,
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RolloverGoalCommandResult"
+              }
+            ]
+          },
+          "errors": {
+            "type": "object",
+            "readOnly": true,
+            "nullable": true,
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "RolloverGoalRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "periodStart": {
+            "type": "string",
+            "format": "date"
+          },
+          "periodEnd": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
       "SkipOccurrenceRequest": {
         "type": "object",
         "additionalProperties": false,
@@ -1767,30 +2353,21 @@
             "nullable": true
           },
           "priority": {
-            "type": "integer",
-            "format": "int32",
+            "type": "string",
+            "nullable": true,
             "enum": [
-              1,
-              2,
-              3
-            ]
-          },
-          "goalType": {
-            "type": "integer",
-            "format": "int32",
-            "enum": [
-              1,
-              2,
-              3
+              "Low",
+              "Medium",
+              "High"
             ]
           },
           "periodStart": {
             "type": "string",
-            "format": "date-time"
+            "format": "date"
           },
           "periodEnd": {
             "type": "string",
-            "format": "date-time"
+            "format": "date"
           },
           "parentGoalId": {
             "type": "string",

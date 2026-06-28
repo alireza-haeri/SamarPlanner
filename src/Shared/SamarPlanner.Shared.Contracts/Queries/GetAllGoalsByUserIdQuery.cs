@@ -1,5 +1,6 @@
 using MediatR;
 using SamarPlanner.Goal.Core.Entities;
+using SamarPlanner.Goal.Core.Enums;
 using SamarPlanner.Shared.Kernel;
 
 namespace SamarPlanner.Shared.Contracts.Queries;
@@ -13,6 +14,9 @@ public record GetAllGoalsByUserIdQueryResponseGoals(
     Guid GoalId,
     string Title,
     string? Description,
-    GoalType GoalType,
     GoalPriority? GoalPriority,
+    DateOnly PeriodStart,
+    DateOnly PeriodEnd,
+    GoalStatus  Status,
+    double Progress,
     List<GetAllGoalsByUserIdQueryResponseGoals> Goals);

@@ -31,22 +31,47 @@ namespace SamarPlanner.Web.Services
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task CreateGoalAsync(CreateGoalRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<CreateGoalCommandResponseResult> CreateGoalAsync(CreateGoalRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task UpdateGoalAsync(UpdateGoalRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<BooleanResult> UpdateGoalAsync(UpdateGoalRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task GetGoalsAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<GetAllGoalsByUserIdQueryResponseResult> GetGoalsAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task DeleteGoalAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<BooleanResult> AchieveAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<BooleanResult> ActiveAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<BooleanResult> FailAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<RolloverGoalCommandResultResult> RolloverAsync(System.Guid goalId, RolloverGoalRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<BooleanResult> DeleteGoalAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<GetAllShortGoalsByUserIdQueryResponseResult> GetShortGoalsAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
@@ -165,7 +190,7 @@ namespace SamarPlanner.Web.Services
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task CreateGoalAsync(CreateGoalRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<CreateGoalCommandResponseResult> CreateGoalAsync(CreateGoalRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -178,6 +203,7 @@ namespace SamarPlanner.Web.Services
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
@@ -209,7 +235,12 @@ namespace SamarPlanner.Web.Services
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            return;
+                            var objectResponse_ = await ReadObjectResponseAsync<CreateGoalCommandResponseResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
                         }
                         else
                         {
@@ -234,7 +265,7 @@ namespace SamarPlanner.Web.Services
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task UpdateGoalAsync(UpdateGoalRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<BooleanResult> UpdateGoalAsync(UpdateGoalRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -247,6 +278,7 @@ namespace SamarPlanner.Web.Services
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("PUT");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
@@ -278,7 +310,12 @@ namespace SamarPlanner.Web.Services
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            return;
+                            var objectResponse_ = await ReadObjectResponseAsync<BooleanResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
                         }
                         else
                         {
@@ -303,7 +340,7 @@ namespace SamarPlanner.Web.Services
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task GetGoalsAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<GetAllGoalsByUserIdQueryResponseResult> GetGoalsAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -312,6 +349,7 @@ namespace SamarPlanner.Web.Services
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
                     request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
@@ -343,7 +381,12 @@ namespace SamarPlanner.Web.Services
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            return;
+                            var objectResponse_ = await ReadObjectResponseAsync<GetAllGoalsByUserIdQueryResponseResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
                         }
                         else
                         {
@@ -368,7 +411,318 @@ namespace SamarPlanner.Web.Services
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task DeleteGoalAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<BooleanResult> AchieveAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+            if (goalId == null)
+                throw new System.ArgumentNullException("goalId");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Content = new System.Net.Http.StringContent(string.Empty, System.Text.Encoding.UTF8, "application/json");
+                    request_.Method = new System.Net.Http.HttpMethod("PATCH");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/v1/goals/{goalId}/achieve"
+                    urlBuilder_.Append("api/v1/goals/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(goalId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/achieve");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<BooleanResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<BooleanResult> ActiveAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+            if (goalId == null)
+                throw new System.ArgumentNullException("goalId");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Content = new System.Net.Http.StringContent(string.Empty, System.Text.Encoding.UTF8, "application/json");
+                    request_.Method = new System.Net.Http.HttpMethod("PATCH");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/v1/goals/{goalId}/active"
+                    urlBuilder_.Append("api/v1/goals/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(goalId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/active");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<BooleanResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<BooleanResult> FailAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+            if (goalId == null)
+                throw new System.ArgumentNullException("goalId");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Content = new System.Net.Http.StringContent(string.Empty, System.Text.Encoding.UTF8, "application/json");
+                    request_.Method = new System.Net.Http.HttpMethod("PATCH");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/v1/goals/{goalId}/fail"
+                    urlBuilder_.Append("api/v1/goals/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(goalId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/fail");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<BooleanResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<RolloverGoalCommandResultResult> RolloverAsync(System.Guid goalId, RolloverGoalRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+            if (goalId == null)
+                throw new System.ArgumentNullException("goalId");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(body, JsonSerializerSettings);
+                    var content_ = new System.Net.Http.StringContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("PATCH");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/v1/goals/{goalId}/rollover"
+                    urlBuilder_.Append("api/v1/goals/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(goalId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/rollover");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<RolloverGoalCommandResultResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<BooleanResult> DeleteGoalAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (goalId == null)
                 throw new System.ArgumentNullException("goalId");
@@ -380,6 +734,7 @@ namespace SamarPlanner.Web.Services
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
                     request_.Method = new System.Net.Http.HttpMethod("DELETE");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
@@ -412,7 +767,83 @@ namespace SamarPlanner.Web.Services
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            return;
+                            var objectResponse_ = await ReadObjectResponseAsync<BooleanResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<GetAllShortGoalsByUserIdQueryResponseResult> GetShortGoalsAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/v1/goals/short"
+                    urlBuilder_.Append("api/v1/goals/short");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<GetAllShortGoalsByUserIdQueryResponseResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
                         }
                         else
                         {
@@ -1901,15 +2332,55 @@ namespace SamarPlanner.Web.Services
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial record CreateGoalCommandResponse
+    {
+        [Newtonsoft.Json.JsonConstructor]
+        public CreateGoalCommandResponse(System.Guid @goalId)
+        {
+            this.GoalId = @goalId;
+        }
+
+        [Newtonsoft.Json.JsonProperty("goalId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid GoalId { get; init; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial record CreateGoalCommandResponseResult
+    {
+        [Newtonsoft.Json.JsonConstructor]
+        public CreateGoalCommandResponseResult(CreateGoalCommandResponseResultBadResultType? @badResultType, System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<string>> @errors, bool @isSuccess, CreateGoalCommandResponse @response)
+        {
+            this.IsSuccess = @isSuccess;
+            this.BadResultType = @badResultType;
+            this.Response = @response;
+            this.Errors = @errors;
+        }
+
+        [Newtonsoft.Json.JsonProperty("isSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsSuccess { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CreateGoalCommandResponseResultBadResultType? BadResultType { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public CreateGoalCommandResponse Response { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("errors", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<string>> Errors { get; init; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial record CreateGoalRequest
     {
         [Newtonsoft.Json.JsonConstructor]
-        public CreateGoalRequest(string @description, CreateGoalRequestGoalType @goalType, System.Guid? @parentGoalId, System.DateTimeOffset @periodEnd, System.DateTimeOffset @periodStart, CreateGoalRequestPriority @priority, string @title)
+        public CreateGoalRequest(string @description, System.Guid? @parentGoalId, System.DateTimeOffset @periodEnd, System.DateTimeOffset @periodStart, CreateGoalRequestPriority? @priority, string @title)
         {
             this.Title = @title;
             this.Description = @description;
             this.Priority = @priority;
-            this.GoalType = @goalType;
             this.PeriodStart = @periodStart;
             this.PeriodEnd = @periodEnd;
             this.ParentGoalId = @parentGoalId;
@@ -1921,16 +2392,16 @@ namespace SamarPlanner.Web.Services
         [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Description { get; init; }
 
-        [Newtonsoft.Json.JsonProperty("priority", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public CreateGoalRequestPriority Priority { get; init; }
-
-        [Newtonsoft.Json.JsonProperty("goalType", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public CreateGoalRequestGoalType GoalType { get; init; }
+        [Newtonsoft.Json.JsonProperty("priority", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CreateGoalRequestPriority? Priority { get; init; }
 
         [Newtonsoft.Json.JsonProperty("periodStart", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
         public System.DateTimeOffset PeriodStart { get; init; }
 
         [Newtonsoft.Json.JsonProperty("periodEnd", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
         public System.DateTimeOffset PeriodEnd { get; init; }
 
         [Newtonsoft.Json.JsonProperty("parentGoalId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -2036,6 +2507,161 @@ namespace SamarPlanner.Web.Services
         [Newtonsoft.Json.JsonProperty("date", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
         public System.DateTimeOffset Date { get; init; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial record GetAllGoalsByUserIdQueryResponse
+    {
+        [Newtonsoft.Json.JsonConstructor]
+        public GetAllGoalsByUserIdQueryResponse(System.Collections.Generic.ICollection<GetAllGoalsByUserIdQueryResponseGoals> @goals)
+        {
+            this.Goals = @goals;
+        }
+
+        [Newtonsoft.Json.JsonProperty("goals", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<GetAllGoalsByUserIdQueryResponseGoals> Goals { get; init; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial record GetAllGoalsByUserIdQueryResponseGoals
+    {
+        [Newtonsoft.Json.JsonConstructor]
+        public GetAllGoalsByUserIdQueryResponseGoals(string @description, System.Guid @goalId, GetAllGoalsByUserIdQueryResponseGoalsGoalPriority? @goalPriority, System.Collections.Generic.ICollection<GetAllGoalsByUserIdQueryResponseGoals> @goals, System.DateTimeOffset @periodEnd, System.DateTimeOffset @periodStart, double @progress, GetAllGoalsByUserIdQueryResponseGoalsStatus @status, string @title)
+        {
+            this.GoalId = @goalId;
+            this.Title = @title;
+            this.Description = @description;
+            this.GoalPriority = @goalPriority;
+            this.PeriodStart = @periodStart;
+            this.PeriodEnd = @periodEnd;
+            this.Status = @status;
+            this.Progress = @progress;
+            this.Goals = @goals;
+        }
+
+        [Newtonsoft.Json.JsonProperty("goalId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid GoalId { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Title { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Description { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("goalPriority", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetAllGoalsByUserIdQueryResponseGoalsGoalPriority? GoalPriority { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("periodStart", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
+        public System.DateTimeOffset PeriodStart { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("periodEnd", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
+        public System.DateTimeOffset PeriodEnd { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetAllGoalsByUserIdQueryResponseGoalsStatus Status { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("progress", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double Progress { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("goals", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<GetAllGoalsByUserIdQueryResponseGoals> Goals { get; init; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial record GetAllGoalsByUserIdQueryResponseResult
+    {
+        [Newtonsoft.Json.JsonConstructor]
+        public GetAllGoalsByUserIdQueryResponseResult(GetAllGoalsByUserIdQueryResponseResultBadResultType? @badResultType, System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<string>> @errors, bool @isSuccess, GetAllGoalsByUserIdQueryResponse @response)
+        {
+            this.IsSuccess = @isSuccess;
+            this.BadResultType = @badResultType;
+            this.Response = @response;
+            this.Errors = @errors;
+        }
+
+        [Newtonsoft.Json.JsonProperty("isSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsSuccess { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetAllGoalsByUserIdQueryResponseResultBadResultType? BadResultType { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public GetAllGoalsByUserIdQueryResponse Response { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("errors", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<string>> Errors { get; init; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial record GetAllShortGoalsByUserIdQueryResponse
+    {
+        [Newtonsoft.Json.JsonConstructor]
+        public GetAllShortGoalsByUserIdQueryResponse(System.Collections.Generic.ICollection<GetAllShortGoalsByUserIdQueryResponseGoals> @goals)
+        {
+            this.Goals = @goals;
+        }
+
+        [Newtonsoft.Json.JsonProperty("goals", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<GetAllShortGoalsByUserIdQueryResponseGoals> Goals { get; init; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial record GetAllShortGoalsByUserIdQueryResponseGoals
+    {
+        [Newtonsoft.Json.JsonConstructor]
+        public GetAllShortGoalsByUserIdQueryResponseGoals(System.Guid @goalId, GetAllShortGoalsByUserIdQueryResponseGoalsPriority? @priority, string @title)
+        {
+            this.GoalId = @goalId;
+            this.Title = @title;
+            this.Priority = @priority;
+        }
+
+        [Newtonsoft.Json.JsonProperty("goalId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid GoalId { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Title { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("priority", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetAllShortGoalsByUserIdQueryResponseGoalsPriority? Priority { get; init; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial record GetAllShortGoalsByUserIdQueryResponseResult
+    {
+        [Newtonsoft.Json.JsonConstructor]
+        public GetAllShortGoalsByUserIdQueryResponseResult(GetAllShortGoalsByUserIdQueryResponseResultBadResultType? @badResultType, System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<string>> @errors, bool @isSuccess, GetAllShortGoalsByUserIdQueryResponse @response)
+        {
+            this.IsSuccess = @isSuccess;
+            this.BadResultType = @badResultType;
+            this.Response = @response;
+            this.Errors = @errors;
+        }
+
+        [Newtonsoft.Json.JsonProperty("isSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsSuccess { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetAllShortGoalsByUserIdQueryResponseResultBadResultType? BadResultType { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public GetAllShortGoalsByUserIdQueryResponse Response { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("errors", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<string>> Errors { get; init; }
 
     }
 
@@ -2389,6 +3015,67 @@ namespace SamarPlanner.Web.Services
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial record RolloverGoalCommandResult
+    {
+        [Newtonsoft.Json.JsonConstructor]
+        public RolloverGoalCommandResult(System.Guid @goalId)
+        {
+            this.GoalId = @goalId;
+        }
+
+        [Newtonsoft.Json.JsonProperty("goalId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid GoalId { get; init; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial record RolloverGoalCommandResultResult
+    {
+        [Newtonsoft.Json.JsonConstructor]
+        public RolloverGoalCommandResultResult(RolloverGoalCommandResultResultBadResultType? @badResultType, System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<string>> @errors, bool @isSuccess, RolloverGoalCommandResult @response)
+        {
+            this.IsSuccess = @isSuccess;
+            this.BadResultType = @badResultType;
+            this.Response = @response;
+            this.Errors = @errors;
+        }
+
+        [Newtonsoft.Json.JsonProperty("isSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsSuccess { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public RolloverGoalCommandResultResultBadResultType? BadResultType { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public RolloverGoalCommandResult Response { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("errors", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<string>> Errors { get; init; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial record RolloverGoalRequest
+    {
+        [Newtonsoft.Json.JsonConstructor]
+        public RolloverGoalRequest(System.DateTimeOffset @periodEnd, System.DateTimeOffset @periodStart)
+        {
+            this.PeriodStart = @periodStart;
+            this.PeriodEnd = @periodEnd;
+        }
+
+        [Newtonsoft.Json.JsonProperty("periodStart", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
+        public System.DateTimeOffset PeriodStart { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("periodEnd", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
+        public System.DateTimeOffset PeriodEnd { get; init; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial record SkipOccurrenceRequest
     {
         [Newtonsoft.Json.JsonConstructor]
@@ -2426,13 +3113,12 @@ namespace SamarPlanner.Web.Services
     public partial record UpdateGoalRequest
     {
         [Newtonsoft.Json.JsonConstructor]
-        public UpdateGoalRequest(string @description, System.Guid @goalId, UpdateGoalRequestGoalType @goalType, System.Guid? @parentGoalId, System.DateTimeOffset @periodEnd, System.DateTimeOffset @periodStart, UpdateGoalRequestPriority @priority, string @title)
+        public UpdateGoalRequest(string @description, System.Guid @goalId, System.Guid? @parentGoalId, System.DateTimeOffset @periodEnd, System.DateTimeOffset @periodStart, UpdateGoalRequestPriority? @priority, string @title)
         {
             this.GoalId = @goalId;
             this.Title = @title;
             this.Description = @description;
             this.Priority = @priority;
-            this.GoalType = @goalType;
             this.PeriodStart = @periodStart;
             this.PeriodEnd = @periodEnd;
             this.ParentGoalId = @parentGoalId;
@@ -2447,16 +3133,16 @@ namespace SamarPlanner.Web.Services
         [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Description { get; init; }
 
-        [Newtonsoft.Json.JsonProperty("priority", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public UpdateGoalRequestPriority Priority { get; init; }
-
-        [Newtonsoft.Json.JsonProperty("goalType", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public UpdateGoalRequestGoalType GoalType { get; init; }
+        [Newtonsoft.Json.JsonProperty("priority", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public UpdateGoalRequestPriority? Priority { get; init; }
 
         [Newtonsoft.Json.JsonProperty("periodStart", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
         public System.DateTimeOffset PeriodStart { get; init; }
 
         [Newtonsoft.Json.JsonProperty("periodEnd", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
         public System.DateTimeOffset PeriodEnd { get; init; }
 
         [Newtonsoft.Json.JsonProperty("parentGoalId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -2546,14 +3232,20 @@ namespace SamarPlanner.Web.Services
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum CreateGoalRequestGoalType
+    public enum CreateGoalCommandResponseResultBadResultType
     {
 
-        _1 = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
+        NotFound = 0,
 
-        _2 = 2,
+        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
+        Validation = 1,
 
-        _3 = 3,
+        [System.Runtime.Serialization.EnumMember(Value = @"General")]
+        General = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
+        Unauthorized = 3,
 
     }
 
@@ -2561,11 +3253,14 @@ namespace SamarPlanner.Web.Services
     public enum CreateGoalRequestPriority
     {
 
-        _1 = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"Low")]
+        Low = 0,
 
-        _2 = 2,
+        [System.Runtime.Serialization.EnumMember(Value = @"Medium")]
+        Medium = 1,
 
-        _3 = 3,
+        [System.Runtime.Serialization.EnumMember(Value = @"High")]
+        High = 2,
 
     }
 
@@ -2611,6 +3306,90 @@ namespace SamarPlanner.Web.Services
 
         [System.Runtime.Serialization.EnumMember(Value = @"Event")]
         Event = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetAllGoalsByUserIdQueryResponseGoalsGoalPriority
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Low")]
+        Low = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Medium")]
+        Medium = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"High")]
+        High = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetAllGoalsByUserIdQueryResponseGoalsStatus
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Active")]
+        Active = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Achieved")]
+        Achieved = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Failed")]
+        Failed = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"RolledOver")]
+        RolledOver = 3,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetAllGoalsByUserIdQueryResponseResultBadResultType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
+        NotFound = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
+        Validation = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"General")]
+        General = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
+        Unauthorized = 3,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetAllShortGoalsByUserIdQueryResponseGoalsPriority
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Low")]
+        Low = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Medium")]
+        Medium = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"High")]
+        High = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetAllShortGoalsByUserIdQueryResponseResultBadResultType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
+        NotFound = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
+        Validation = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"General")]
+        General = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
+        Unauthorized = 3,
 
     }
 
@@ -2794,14 +3573,20 @@ namespace SamarPlanner.Web.Services
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum UpdateGoalRequestGoalType
+    public enum RolloverGoalCommandResultResultBadResultType
     {
 
-        _1 = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
+        NotFound = 0,
 
-        _2 = 2,
+        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
+        Validation = 1,
 
-        _3 = 3,
+        [System.Runtime.Serialization.EnumMember(Value = @"General")]
+        General = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
+        Unauthorized = 3,
 
     }
 
@@ -2809,11 +3594,14 @@ namespace SamarPlanner.Web.Services
     public enum UpdateGoalRequestPriority
     {
 
-        _1 = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"Low")]
+        Low = 0,
 
-        _2 = 2,
+        [System.Runtime.Serialization.EnumMember(Value = @"Medium")]
+        Medium = 1,
 
-        _3 = 3,
+        [System.Runtime.Serialization.EnumMember(Value = @"High")]
+        High = 2,
 
     }
 

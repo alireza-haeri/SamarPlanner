@@ -1,5 +1,6 @@
 using MediatR;
 using SamarPlanner.Goal.Core.Entities;
+using SamarPlanner.Goal.Core.Enums;
 using SamarPlanner.Shared.Kernel;
 
 namespace SamarPlanner.Shared.Contracts.Command;
@@ -9,9 +10,8 @@ public record UpdateGoalCommand(
     Guid UserId,
     string Title,
     string? Description,
-    GoalPriority Priority,  
-    GoalType GoalType,
-    DateTime PeriodStart,
-    DateTime PeriodEnd,
+    GoalPriority? Priority,  
+    DateOnly PeriodStart,
+    DateOnly PeriodEnd,
     Guid? ParentGoalId)
     : IRequest<Result<bool>>;

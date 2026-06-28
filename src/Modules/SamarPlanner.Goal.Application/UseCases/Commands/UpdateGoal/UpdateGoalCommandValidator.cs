@@ -11,7 +11,7 @@ public class UpdateGoalCommandValidator : AbstractValidator<UpdateGoalCommand>
             .NotEmpty().WithMessage("{PropertyName} نمی‌تواند خالی باشد.")
             .NotNull().WithMessage("{PropertyName} نمی‌تواند null باشد.")
             .WithName("شناسه هدف");
-        
+
         RuleFor(x => x.UserId)
             .NotEmpty().WithMessage("{PropertyName} نمی‌تواند خالی باشد.")
             .NotNull().WithMessage("{PropertyName} نمی‌تواند null باشد.")
@@ -26,24 +26,17 @@ public class UpdateGoalCommandValidator : AbstractValidator<UpdateGoalCommand>
         RuleFor(x => x.Description)
             .MaximumLength(1000).WithMessage("{PropertyName} حداکثر {MaxLength} کاراکتر می‌تواند باشد.")
             .WithName("توضیحات");
-        
+
         RuleFor(x => x.Priority)
-            .NotEmpty().WithMessage("{PropertyName} نمی‌تواند خالی باشد.")
-            .NotNull().WithMessage("{PropertyName} نمی‌تواند null باشد.")
             .IsInEnum().WithMessage("{PropertyName} مقدار معتبری ندارد.")
+            .When(x => x.Priority != null)
             .WithName("اولویت");
 
-        RuleFor(x => x.GoalType)
-            .NotEmpty().WithMessage("{PropertyName} نمی‌تواند خالی باشد.")
-            .NotNull().WithMessage("{PropertyName} نمی‌تواند null باشد.")
-            .IsInEnum().WithMessage("{PropertyName} مقدار معتبری ندارد.")
-            .WithName("نوع هدف");
-        
         RuleFor(x => x.PeriodStart)
             .NotEmpty().WithMessage("{PropertyName} نمی‌تواند خالی باشد.")
             .NotNull().WithMessage("{PropertyName} نمی‌تواند null باشد.")
             .WithName("زمان آغاز");
-        
+
         RuleFor(x => x.PeriodEnd)
             .NotEmpty().WithMessage("{PropertyName} نمی‌تواند خالی باشد.")
             .NotNull().WithMessage("{PropertyName} نمی‌تواند null باشد.")

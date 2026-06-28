@@ -17,7 +17,7 @@ public class DeleteGoalCommandHandler(
         if (goal is null)
             return Result<bool>.NotfoundFailure("هدف مورد نظر یافت نشد.");
 
-        var deleteGoalResult = await goalRepository.DeleteAsync(goal, cancellationToken);
+        var deleteGoalResult = await goalRepository.DeleteWithChildrenAsync(goal, cancellationToken);
         if (!deleteGoalResult)
             return Result<bool>.GeneralFailure();
         

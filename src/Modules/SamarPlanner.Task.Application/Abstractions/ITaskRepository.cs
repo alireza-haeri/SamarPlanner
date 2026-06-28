@@ -1,3 +1,5 @@
+using SamarPlanner.Task.Core.Entities;
+
 namespace SamarPlanner.Task.Application.Abstractions;
 
 public interface ITaskRepository
@@ -32,4 +34,8 @@ public interface ITaskRepository
 
     Task<List<Core.Entities.Task>> GetWithOccurrencesAndRepeatPatternAsync(Guid userId, DateOnly from, DateOnly to, CancellationToken cancellationToken);
     Task<List<Core.Entities.Task>> GetDeletedTasksAsync(Guid userId,CancellationToken cancellationToken = default);
+    Task<Core.Entities.Task?> GetWithOccurrences(Guid taskId, Guid userId, CancellationToken  cancellationToken = default);
+    Task<List<Guid>> GetTaskIdsByGoalIdAsync(Guid goalId, CancellationToken cancellationToken = default);
+    Task<List<TaskOccurrence>> GetOccurrencesByGoalIdUntilDateAsync(Guid goalId, Guid userId, DateOnly periodStart,
+        DateOnly periodEnd, CancellationToken ct = default);
 }

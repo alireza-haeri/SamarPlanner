@@ -1,16 +1,18 @@
 using MediatR;
 using SamarPlanner.Shared.Contracts.Command;
+using SamarPlanner.Shared.Contracts.Events;
 using SamarPlanner.Shared.Kernel;
 using SamarPlanner.Task.Application.Abstractions;
 
 namespace SamarPlanner.Task.Application.UseCases.Commands.CreateTask;
 
-public class CreateTaskCommandHandler(ITaskRepository taskRepository)
+public class CreateTaskCommandHandler(ITaskRepository taskRepository,IMediator mediator)
     : IRequestHandler<CreateTaskCommand, Result<CreateTaskCommandResponse>>
 {
     public async Task<Result<CreateTaskCommandResponse>> Handle(CreateTaskCommand request,
         CancellationToken cancellationToken)
     {
+        
         var task = Core.Entities.Task.Create
         (
             userId: request.UserId,
@@ -27,6 +29,10 @@ public class CreateTaskCommandHandler(ITaskRepository taskRepository)
         var createResult = await taskRepository.CreateAsync(task, cancellationToken);
         if (!createResult)
             return Result<CreateTaskCommandResponse>.GeneralFailure();
+        
+        if (task.ParentGoalId.HasValue)
+            await mediator.Publish(new TaskGoalStatusChangedEvent(task.Id, request.UserId,
+                task.ParentGoalId.Value), cancellationToken);
 
         return Result<CreateTaskCommandResponse>.Success(new CreateTaskCommandResponse(task.Id));
     }

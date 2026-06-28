@@ -15,7 +15,7 @@ public class CreateGoalCommandHandler(
     public async Task<Result<CreateGoalCommandResponse>> Handle(CreateGoalCommand request,
         CancellationToken cancellationToken)
     {
-        var goal = Core.Entities.Goal.Create(request.UserId, request.Title, request.Description, request.GoalType,
+        var goal = Core.Entities.Goal.Create(request.UserId, request.Title, request.Description,
             request.Priority, request.PeriodStart, request.PeriodEnd, request.ParentGoalId);
 
         var goalIdResult = await goalRepository.CreateAsync(goal, cancellationToken);

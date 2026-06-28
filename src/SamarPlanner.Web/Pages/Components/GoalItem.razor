@@ -1,0 +1,429 @@
+@namespace SamarPlanner.Web.Pages.Components
+@using SamarPlanner.Web.Helpers
+@inject IApiClient ApiClient
+@inject IToastService ToastService
+@inject IApiService ApiService
+
+<div class="goal-item goal-status-@Goal.Status.ToString().ToLowerInvariant() @(_showMenu ? "menu-open" : "")">
+    <div class="goal-header-row">
+        <div class="goal-left">
+            <div class="goal-expand" @onclick="ToggleExpand">
+                @if (Goal.Goals != null && Goal.Goals.Any())
+                {
+                    <i class="bi @(_expanded ? "bi-chevron-down" : "bi-chevron-right")"></i>
+                }
+                else
+                {
+                    <i class="bi bi-dash" style="visibility:hidden;"></i>
+                }
+            </div>
+            <div class="goal-status-icon">
+                @switch (Goal.Status)
+                {
+                    case GetAllGoalsByUserIdQueryResponseGoalsStatus.Achieved:
+                        <i class="bi bi-check2-circle text-success"></i>
+                        break;
+                    case GetAllGoalsByUserIdQueryResponseGoalsStatus.Failed:
+                        <i class="bi bi-x-circle text-danger"></i>
+                        break;
+                    case GetAllGoalsByUserIdQueryResponseGoalsStatus.RolledOver:
+                        <i class="bi bi-arrow-repeat text-warning"></i>
+                        break;
+                    default:
+                        <i class="bi bi-circle text-secondary"></i>
+                        break;
+                }
+            </div>
+            <div class="goal-info">
+                <div class="goal-title">@Goal.Title</div>
+                @if (!string.IsNullOrEmpty(Goal.Description))
+                {
+                    <div class="goal-description">@Goal.Description</div>
+                }
+                <div class="goal-period">
+                    <span
+                        class="goal-period-label">📅 @Goal.PeriodStart.ToPersianDate() → @Goal.PeriodEnd.ToPersianDate()</span>
+                </div>
+
+                @switch (Goal.GoalPriority)
+                {
+                    case GetAllGoalsByUserIdQueryResponseGoalsGoalPriority.High:
+                        <span class="goal-priority goal-priority-high">⚡ بالا</span>
+                        break;
+                    case GetAllGoalsByUserIdQueryResponseGoalsGoalPriority.Medium:
+                        <span class="goal-priority goal-priority-medium">🔹 متوسط</span>
+                        break;
+                    case GetAllGoalsByUserIdQueryResponseGoalsGoalPriority.Low:
+                        <span class="goal-priority goal-priority-low">🔹 پایین</span>
+                        break;
+                }
+            </div>
+        </div>
+        <div class="goal-right">
+            <div class="goal-progress">
+                <div class="progress-bar" style="width: @Goal.Progress%;"></div>
+                <span class="progress-text">@Goal.Progress.ToString("0")%</span>
+            </div>
+            <div class="goal-actions">
+                <button class="btn-action btn-action-primary" @onclick="OpenEditModal" title="ویرایش">
+                    <i class="bi bi-pencil"></i>
+                </button>
+                <div class="dropdown" @onclick:stopPropagation>
+                    <button class="btn-action btn-action-more" @onclick="ToggleMenu" title="بیشتر">
+                        <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                    @if (_showMenu)
+                    {
+                        <div class="dropdown-menu show" @onclick:stopPropagation>
+                            @switch (Goal.Status)
+                            {
+                                case GetAllGoalsByUserIdQueryResponseGoalsStatus.Active:
+                                    <button class="dropdown-item" @onclick="OnAchieve">
+                                        <i class="bi bi-check2"></i> انجام شد
+                                    </button>
+                                    <button class="dropdown-item" @onclick="OnFail">
+                                        <i class="bi bi-x-circle"></i> ناموفق
+                                    </button>
+                                    <button class="dropdown-item" @onclick="OnRollover">
+                                        <i class="bi bi-arrow-repeat"></i> رولور
+                                    </button>
+                                    break;
+                                case GetAllGoalsByUserIdQueryResponseGoalsStatus.Achieved:
+                                    <button class="dropdown-item" @onclick="OnActive">
+                                        <i class="bi bi-circle"></i> تغییر به فعال
+                                    </button>
+                                    <button class="dropdown-item" @onclick="OnFail">
+                                        <i class="bi bi-x-circle"></i> تغییر به ناموفق
+                                    </button>
+                                    break;
+                                case GetAllGoalsByUserIdQueryResponseGoalsStatus.Failed:
+                                    <button class="dropdown-item" @onclick="OnActive">
+                                        <i class="bi bi-circle"></i> تغییر به فعال
+                                    </button>
+                                    <button class="dropdown-item" @onclick="OnAchieve">
+                                        <i class="bi bi-check2"></i> تغییر به انجام شده
+                                    </button>
+                                    break;
+                                case GetAllGoalsByUserIdQueryResponseGoalsStatus.RolledOver:
+                                    @* RolledOver goals cannot change status *@
+                                    break;
+                            }
+                            <button class="dropdown-item text-danger" @onclick="OnDelete">
+                                <i class="bi bi-trash3"></i> حذف
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (_expanded && Goal.Goals != null && Goal.Goals.Any())
+    {
+        <div class="goal-children">
+            @foreach (var child in Goal.Goals)
+            {
+                <GoalItem Goal="@child" ParentGoalId="@Goal.GoalId" OnGoalUpdated="OnGoalUpdated"/>
+            }
+        </div>
+    }
+</div>
+
+@if (_showEditModal)
+{
+    <div class="modal-overlay" @onclick="CloseEditModal">
+        <div class="modal-content" @onclick:stopPropagation>
+            <div class="modal-header">
+                <h5 class="modal-title">ویرایش هدف</h5>
+                <button type="button" class="btn-close" @onclick="CloseEditModal"></button>
+            </div>
+            <div class="modal-body">
+                <EditForm EditContext="@_editFormHelper.EditContext" OnSubmit="@HandleEditSubmit">
+                    <ValidationSummary class="text-danger"/>
+
+                    <div class="mb-3">
+                        <label class="form-label">عنوان هدف</label>
+                        <InputText class="form-control" @bind-Value="_editFormHelper.Model.Title"/>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">توضیح (اختیاری)</label>
+                        <InputTextArea class="form-control" @bind-Value="_editFormHelper.Model.Description" rows="3"/>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">اولویت</label>
+                        <InputSelect class="form-select" @bind-Value="_editFormHelper.Model.Priority">
+                            <option value="@UpdateGoalRequestPriority.High">بالا</option>
+                            <option value="@UpdateGoalRequestPriority.Medium">متوسط</option>
+                            <option value="@UpdateGoalRequestPriority.Low">پایین</option>
+                        </InputSelect>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">زیرمجموعه هدف (اختیاری)</label>
+                        
+                        
+                        <select class="form-select" @bind="_editFormHelper.Model.ParentGoalId">
+                            <option value="">هیچکدام</option>
+                            @foreach (var goal in ShortGoals)
+                            {
+                                <option value="@goal.GoalId">@goal.Title</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6">
+                            <label class="form-label">تاریخ شروع (شمسی)</label>
+                            <InputText class="form-control" @bind-Value="_editFormHelper.Model.PeriodStart"
+                                       placeholder="۱۴۰۴/۰۱/۰۱"/>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">تاریخ پایان (شمسی)</label>
+                            <InputText class="form-control" @bind-Value="_editFormHelper.Model.PeriodEnd"
+                                       placeholder="۱۴۰۴/۱۲/۳۰"/>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mt-3" disabled="@_isEditLoading">
+                        @if (_isEditLoading)
+                        {
+                            <span class="spinner-border spinner-border-sm me-2"></span>
+                            <span>در حال ذخیره...</span>
+                        }
+                        else
+                        {
+                            <span>ذخیره تغییرات</span>
+                        }
+                    </button>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public GetAllGoalsByUserIdQueryResponseGoals Goal { get; set; } = null!;
+    [Parameter] public EventCallback OnGoalUpdated { get; set; }
+    [Parameter] public Guid? ParentGoalId { get; set; }
+    private List<GetAllShortGoalsByUserIdQueryResponseGoals> ShortGoals { get; set; } = [];
+
+    private bool _expanded = true;
+    private bool _showMenu = false;
+    private bool _showEditModal = false;
+    private bool _isEditLoading = false;
+    private FormHelper<EditGoalModel> _editFormHelper = null!;
+
+    private void ToggleExpand()
+    {
+        _expanded = !_expanded;
+    }
+
+    private void ToggleMenu()
+    {
+        _showMenu = !_showMenu;
+    }
+
+    private async Task OpenEditModal()
+    {
+        _editFormHelper = new FormHelper<EditGoalModel>(new EditGoalModel
+        {
+            Title = Goal.Title,
+            Description = Goal.Description,
+            Priority = Goal.GoalPriority switch
+            {
+                GetAllGoalsByUserIdQueryResponseGoalsGoalPriority.High => UpdateGoalRequestPriority.High,
+                GetAllGoalsByUserIdQueryResponseGoalsGoalPriority.Low => UpdateGoalRequestPriority.Low,
+                GetAllGoalsByUserIdQueryResponseGoalsGoalPriority.Medium => UpdateGoalRequestPriority.Medium,
+                _ => null
+            },
+            PeriodStart = Goal.PeriodStart.ToPersianDate(),
+            PeriodEnd = Goal.PeriodEnd.ToPersianDate(),
+            ParentGoalId = ParentGoalId
+        });
+        _showEditModal = true;
+        _showMenu = false;
+
+        var result = await ApiService.SendAsync(
+            () => ApiClient.GetShortGoalsAsync(),
+            showErrorToast: true);
+
+        if (result?.IsSuccess is true)
+            ShortGoals = result.Response.Goals.ToList();
+    }
+
+    private void CloseEditModal()
+    {
+        _showEditModal = false;
+    }
+
+    private async Task HandleEditSubmit()
+    {
+        if (_isEditLoading) return;
+        _isEditLoading = true;
+
+        _editFormHelper.ClearErrors();
+
+        if (!_editFormHelper.Validate())
+        {
+            _isEditLoading = false;
+            return;
+        }
+
+        DateTimeOffset? periodStart = null;
+        DateTimeOffset? periodEnd = null;
+
+        if (!string.IsNullOrEmpty(_editFormHelper.Model.PeriodStart))
+        {
+            var startDate = PersianDateHelper.ToGregorianDateTime(_editFormHelper.Model.PeriodStart);
+            if (!startDate.HasValue)
+            {
+                ToastService.ShowToastError("تاریخ شروع معتبر نیست!");
+                _isEditLoading = false;
+                return;
+            }
+
+            periodStart = startDate.Value;
+        }
+
+        if (!string.IsNullOrEmpty(_editFormHelper.Model.PeriodEnd))
+        {
+            var endDate = PersianDateHelper.ToGregorianDateTime(_editFormHelper.Model.PeriodEnd);
+            if (!endDate.HasValue)
+            {
+                ToastService.ShowToastError("تاریخ پایان معتبر نیست!");
+                _isEditLoading = false;
+                return;
+            }
+
+            periodEnd = endDate.Value;
+        }
+
+        var request = new UpdateGoalRequest(
+            goalId: Goal.GoalId,
+            title: _editFormHelper.Model.Title,
+            description: _editFormHelper.Model.Description ?? "",
+            priority: _editFormHelper.Model.Priority,
+            periodStart: periodStart ?? Goal.PeriodStart,
+            periodEnd: periodEnd ?? Goal.PeriodEnd,
+            parentGoalId: _editFormHelper.Model.ParentGoalId
+        );
+
+        var result = await ApiService.SendAsync(
+            apiCall: () => ApiClient.UpdateGoalAsync(request),
+            successMessage: "هدف با موفقیت ویرایش شد!",
+            showErrorToast: false
+        );
+
+        if (result != null)
+        {
+            if (result.IsSuccess)
+            {
+                _showEditModal = false;
+                await OnGoalUpdated.InvokeAsync();
+            }
+            else
+            {
+                _editFormHelper.SetServerErrors(result.Errors);
+                ToastService.ShowToastWarning("لطفاً خطاها را بررسی کنید.");
+            }
+        }
+
+        _isEditLoading = false;
+    }
+
+    private async Task OnAchieve()
+    {
+        _showMenu = false;
+        var result = await ApiService.SendAsync(
+            () => ApiClient.AchieveAsync(Goal.GoalId),
+            successMessage: "هدف با موفقیت انجام شد!",
+            showErrorToast: true
+        );
+
+        if (result?.IsSuccess == true)
+        {
+            await OnGoalUpdated.InvokeAsync();
+        }
+    }
+
+    private async Task OnActive()
+    {
+        _showMenu = false;
+        var result = await ApiService.SendAsync(
+            () => ApiClient.ActiveAsync(Goal.GoalId),
+            successMessage: "هدف بعنوان فعال ثبت شد!",
+            showErrorToast: true
+        );
+
+        if (result?.IsSuccess == true)
+        {
+            await OnGoalUpdated.InvokeAsync();
+        }
+    }
+
+    private async Task OnFail()
+    {
+        _showMenu = false;
+        var result = await ApiService.SendAsync(
+            () => ApiClient.FailAsync(Goal.GoalId),
+            successMessage: "هدف بعنوان ناموفق ثبت شد!",
+            showErrorToast: true
+        );
+
+        if (result?.IsSuccess == true)
+        {
+            await OnGoalUpdated.InvokeAsync();
+        }
+    }
+
+    private async Task OnRollover()
+    {
+        _showMenu = false;
+
+        var start = DateTime.Now;
+        var end = start.Add(Goal.PeriodEnd - Goal.PeriodStart);
+        var request = new RolloverGoalRequest(periodEnd:end, periodStart:start);
+
+        var result = await ApiService.SendAsync(
+            () => ApiClient.RolloverAsync(Goal.GoalId, request),
+            successMessage: "هدف با موفقیت به دوره بعد انتقال یافت.",
+            showErrorToast: true);
+
+        if (result?.IsSuccess == true)
+            await OnGoalUpdated.InvokeAsync();
+    }
+
+    private async Task OnDelete()
+    {
+        _showMenu = false;
+        var result = await ApiService.SendAsync(
+            () => ApiClient.DeleteGoalAsync(Goal.GoalId),
+            successMessage: "هدف با موفقیت حذف شد!",
+            showErrorToast: true
+        );
+
+        if (result?.IsSuccess == true)
+        {
+            await OnGoalUpdated.InvokeAsync();
+        }
+    }
+
+
+    public class EditGoalModel
+    {
+        [Required(ErrorMessage = "عنوان الزامی است")]
+        public string Title { get; set; } = "";
+
+        public string? Description { get; set; }
+
+        public UpdateGoalRequestPriority? Priority { get; set; }
+
+        public string? PeriodStart { get; set; }
+
+        public string? PeriodEnd { get; set; }
+        public Guid? ParentGoalId { get; set; }
+    }
+
+}

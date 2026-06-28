@@ -23,16 +23,9 @@ public class CreateGoalCommandValidator : AbstractValidator<CreateGoalCommand>
             .WithName("توضیحات");
 
         RuleFor(x => x.Priority)
-            .NotEmpty().WithMessage("{PropertyName} نمی‌تواند خالی باشد.")
-            .NotNull().WithMessage("{PropertyName} نمی‌تواند null باشد.")
             .IsInEnum().WithMessage("{PropertyName} مقدار معتبری ندارد.")
+            .When(x => x.Priority != null)
             .WithName("اولویت");
-
-        RuleFor(x => x.GoalType)
-            .NotEmpty().WithMessage("{PropertyName} نمی‌تواند خالی باشد.")
-            .NotNull().WithMessage("{PropertyName} نمی‌تواند null باشد.")
-            .IsInEnum().WithMessage("{PropertyName} مقدار معتبری ندارد.")
-            .WithName("نوع هدف");
 
         RuleFor(x => x.PeriodStart)
             .NotEmpty().WithMessage("{PropertyName} نمی‌تواند خالی باشد.")

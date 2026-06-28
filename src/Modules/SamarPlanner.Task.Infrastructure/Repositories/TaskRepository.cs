@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SamarPlanner.Task.Application.Abstractions;
+using SamarPlanner.Task.Core.Entities;
 using SamarPlanner.Task.Infrastructure.Persistence;
 
 namespace SamarPlanner.Task.Infrastructure.Repositories;
@@ -73,8 +74,8 @@ public class TaskRepository(TaskDbContext context) : ITaskRepository
     {
         try
         {
-             await context.SaveChangesAsync(cancellationToken);
-             return true;
+            await context.SaveChangesAsync(cancellationToken);
+            return true;
         }
         catch (Exception e)
         {
@@ -155,11 +156,38 @@ public class TaskRepository(TaskDbContext context) : ITaskRepository
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<Core.Entities.Task>> GetDeletedTasksAsync(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<List<Core.Entities.Task>> GetDeletedTasksAsync(Guid userId,
+        CancellationToken cancellationToken = default)
     {
         return await context.Tasks.AsNoTracking()
             .IgnoreQueryFilters()
             .Where(t => t.UserId == userId && t.SoftDeleted == true)
             .ToListAsync(cancellationToken);
+    }
+
+    public async Task<Core.Entities.Task?> GetWithOccurrences(Guid taskId, Guid userId,
+        CancellationToken cancellationToken = default)
+    {
+        return await context.Tasks.AsNoTracking()
+            .Include(t => t.Occurrences)
+            .FirstOrDefaultAsync(t => t.Id == taskId && t.UserId == userId, cancellationToken);
+    }
+
+    public Task<List<Guid>> GetTaskIdsByGoalIdAsync(Guid goalId, CancellationToken cancellationToken = default)
+    {
+        return context.Tasks.AsNoTracking()
+            .Where(t => t.ParentGoalId == goalId)
+            .Select(t => t.Id)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<List<TaskOccurrence>> GetOccurrencesByGoalIdUntilDateAsync(Guid goalId, Guid userId,
+        DateOnly periodStart, DateOnly periodEnd, CancellationToken ct = default)
+    {
+        return await context.Tasks.AsNoTracking()
+            .Include(t => t.Occurrences)
+            .Where(t => t.UserId == userId && t.ParentGoalId == goalId)
+            .SelectMany(t => t.Occurrences.Where(o => o.Date >= periodStart && o.Date <= periodEnd && !o.IsSkipped))
+            .ToListAsync(ct);
     }
 }

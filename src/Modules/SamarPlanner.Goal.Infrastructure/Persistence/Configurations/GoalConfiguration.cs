@@ -25,9 +25,13 @@ public class GoalConfiguration : IEntityTypeConfiguration<Core.Entities.Goal>
         builder.Property(x => x.UserId)
             .IsRequired();
 
-        builder.Property(x => x.GoalType)
+        builder.Property(x => x.Status)
             .IsRequired()
             .HasConversion<string>();
+
+        builder.Property(x => x.RolledOverId)
+            .IsRequired(false)
+            .HasMaxLength(100);
 
         builder.Property(x => x.GoalPriority)
             .IsRequired(false)

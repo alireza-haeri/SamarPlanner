@@ -5,6 +5,7 @@ using SamarPlanner.Goal.Contracts;
 using SamarPlanner.Shared;
 using SamarPlanner.Shared.Contracts.Command;
 using SamarPlanner.Shared.Contracts.Queries;
+using SamarPlanner.Shared.Kernel;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace SamarPlanner.Goal.Controllers;
@@ -16,14 +17,13 @@ public class GoalController(IMediator mediator) : BaseController
 {
     [HttpPost]
     [SwaggerOperation(OperationId = "CreateGoal")]
-    public async Task<IActionResult> Create([FromBody] CreateGoalRequest request)
+    public async Task<ActionResult<Result<CreateGoalCommandResponse>>> Create([FromBody] CreateGoalRequest request)
     {
         var result = await mediator.Send(new CreateGoalCommand(
                 UserId,
                 Title: request.Title,
                 Description: request.Description,
                 Priority: request.Priority,
-                GoalType: request.GoalType,
                 PeriodStart: request.PeriodStart,
                 PeriodEnd: request.PeriodEnd,
                 ParentGoalId: request.ParentGoalId)
@@ -34,7 +34,7 @@ public class GoalController(IMediator mediator) : BaseController
 
     [HttpPut]
     [SwaggerOperation(OperationId = "UpdateGoal")]
-    public async Task<IActionResult> Update([FromBody] UpdateGoalRequest request)
+    public async Task<ActionResult<Result<bool>>> Update([FromBody] UpdateGoalRequest request)
     {
         var result = await mediator.Send(new UpdateGoalCommand(
             request.GoalId,
@@ -42,7 +42,6 @@ public class GoalController(IMediator mediator) : BaseController
             request.Title,
             request.Description,
             request.Priority,
-            request.GoalType,
             request.PeriodStart,
             request.PeriodEnd,
             request.ParentGoalId
@@ -51,9 +50,52 @@ public class GoalController(IMediator mediator) : BaseController
         return Result(result);
     }
 
+    [HttpPatch("{goalId:guid}/achieve")]
+    public async Task<ActionResult<Result<bool>>> AchieveGaol(Guid  goalId)
+    {
+        var result = await mediator.Send(new AchieveGoalCommand(
+            UserId: UserId,
+            GoalId: goalId));
+        
+        return Result(result);
+    }
+
+    [HttpPatch("{goalId:guid}/active")]
+    public async Task<ActionResult<Result<bool>>> ActiveGaol(Guid  goalId)
+    {
+        var result = await mediator.Send(new ActiveGoalCommand(
+            UserId: UserId,
+            GoalId: goalId));
+        
+        return Result(result);
+    }
+
+    [HttpPatch("{goalId:guid}/fail")]
+    public async Task<ActionResult<Result<bool>>> FailGaol(Guid  goalId)
+    {
+        var result = await mediator.Send(new FailGoalCommand(
+            UserId: UserId,
+            GoalId: goalId));
+        
+        return Result(result);
+    }
+
+    [HttpPatch("{goalId:guid}/rollover")]
+    public async Task<ActionResult<Result<RolloverGoalCommandResult>>> RolloverGaol(Guid  goalId, RolloverGoalRequest request)
+    {
+        var result = await mediator.Send(new RolloverGoalCommand(
+            UserId: UserId,
+            GoalId: goalId,
+            PeriodStart: request.PeriodStart,
+            PeriodEnd: request.PeriodEnd
+        ));
+        
+        return Result(result);
+    }
+    
     [HttpDelete("{goalId:guid}")]
     [SwaggerOperation(OperationId = "DeleteGoal")]
-    public async Task<IActionResult> Delete(Guid goalId)
+    public async Task<ActionResult<Result<bool>>> Delete(Guid goalId)
     {
         var result = await mediator.Send(new DeleteGoalCommand(goalId, UserId));
         return Result(result);
@@ -61,9 +103,17 @@ public class GoalController(IMediator mediator) : BaseController
 
     [HttpGet]
     [SwaggerOperation(OperationId = "GetGoals")]
-    public async Task<IActionResult> GetAll()
+    public async Task<ActionResult<Result<GetAllGoalsByUserIdQueryResponse>>> GetAll()
     {
         var result = await mediator.Send(new GetAllGoalsByUserIdQuery(UserId));
+        return Result(result);
+    }
+    
+    [HttpGet("short")]
+    [SwaggerOperation(OperationId = "GetShortGoals")]
+    public async Task<ActionResult<Result<GetAllShortGoalsByUserIdQueryResponse>>> GetAllShortGoals()
+    {
+        var result = await mediator.Send(new GetAllShortGoalsByUserIdQuery(UserId));
         return Result(result);
     }
 }

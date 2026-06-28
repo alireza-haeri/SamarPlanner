@@ -17,7 +17,7 @@ public class UpdateGoalCommandHandler(
         if (goal is null)
             return Result<bool>.NotfoundFailure("هدف مورد نظر یافت نشد.");
 
-        goal.Update(request.Title, request.Description, request.GoalType, request.Priority, request.PeriodStart,
+        goal.Update(request.Title, request.Description, request.Priority, request.PeriodStart,
             request.PeriodEnd, request.ParentGoalId);
         var updateResult = await goalRepository.UpdateAsync(goal, cancellationToken);
         if (!updateResult)
