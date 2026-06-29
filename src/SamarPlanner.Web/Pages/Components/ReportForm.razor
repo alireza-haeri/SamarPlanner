@@ -1,0 +1,219 @@
+@namespace SamarPlanner.Web.Pages.Components
+@using SamarPlanner.Web.Helpers
+@using SamarPlanner.Web.Models
+@using SamarPlanner.Web.Services
+@inject IApiClient ApiClient
+@inject IApiService ApiService
+@inject IToastService ToastService
+
+<EditForm EditContext="@_editContext" OnSubmit="@HandleSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="text-danger mb-3" />
+
+    <div class="row g-3">
+        <div class="col-12">
+            <label class="form-label">عنوان گزارش</label>
+            <InputText class="form-control" @bind-Value="_model.Title" placeholder="اختیاری" />
+        </div>
+
+        <div class="col-12">
+            <label class="form-label">متن گزارش</label>
+            <InputTextArea class="form-control" @bind-Value="_model.Note" rows="4" placeholder="شرح گزارش را وارد کنید" />
+        </div>
+
+        <div class="col-12 col-md-4">
+            <label class="form-label">امتیاز</label>
+            <InputNumber TValue="int?" class="form-control" @bind-Value="_model.Score" />
+        </div>
+
+        <div class="col-12 col-md-4">
+            <label class="form-label">شروع دوره (شمسی)</label>
+            <InputText class="form-control" @bind-Value="_model.PeriodStart" placeholder="1404/01/01" />
+        </div>
+
+        <div class="col-12 col-md-4">
+            <label class="form-label">پایان دوره (شمسی)</label>
+            <InputText class="form-control" @bind-Value="_model.PeriodEnd" placeholder="1404/01/01" />
+        </div>
+
+        <div class="col-12">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <label class="form-label mb-0">نکات برجسته</label>
+                <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddHighlight">
+                    <i class="bi bi-plus-lg"></i> افزودن
+                </button>
+            </div>
+
+            <div class="d-grid gap-2">
+                @for (var i = 0; i < _model.Highlights.Count; i++)
+                {
+                    var index = i;
+                    var highlight = _model.Highlights[index];
+                    <div class="border rounded-3 p-3 bg-light" @key="index">
+                        <div class="row g-2 align-items-end">
+                            <div class="col-12 col-md-7">
+                                <label class="form-label small">متن</label>
+                                <InputText class="form-control" @bind-Value="highlight.Text" placeholder="متن نکته" />
+                            </div>
+                            <div class="col-8 col-md-3">
+                                <label class="form-label small">نوع</label>
+                                <InputSelect TValue="ReportHighlightDtoType" class="form-select" @bind-Value="highlight.Type">
+                                    <option value="@ReportHighlightDtoType.Positive">مثبت</option>
+                                    <option value="@ReportHighlightDtoType.Negative">منفی</option>
+                                    <option value="@ReportHighlightDtoType.Lesson">درس‌آموخته</option>
+                                </InputSelect>
+                            </div>
+                            <div class="col-4 col-md-2 text-end">
+                                <button type="button" class="btn btn-outline-danger w-100" @onclick="() => RemoveHighlight(index)" disabled="@(_model.Highlights.Count == 1)">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="col-12 pt-2">
+            <button type="submit" class="btn btn-primary w-100" disabled="@_isLoading">
+                @if (_isLoading)
+                {
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    <span>در حال ذخیره...</span>
+                }
+                else
+                {
+                    <span>@(ReportId.HasValue ? "به‌روزرسانی گزارش" : "ثبت گزارش")</span>
+                }
+            </button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter] public Guid? ReportId { get; set; }
+    [Parameter] public DateTimeOffset DefaultPeriodStart { get; set; } = DateTimeOffset.Now.Date;
+    [Parameter] public DateTimeOffset DefaultPeriodEnd { get; set; } = DateTimeOffset.Now.Date;
+    [Parameter] public ReportEditorModel? InitialModel { get; set; }
+    [Parameter] public EventCallback OnSaved { get; set; }
+
+    private ReportEditorModel _model = new();
+    private EditContext? _editContext;
+    private bool _isLoading;
+
+    protected override void OnParametersSet()
+    {
+        if (_editContext is not null)
+            return;
+
+        _model = InitialModel?.Clone() ?? new ReportEditorModel
+        {
+            PeriodStart = DefaultPeriodStart.ToPersianDate(),
+            PeriodEnd = DefaultPeriodEnd.ToPersianDate(),
+            Highlights = [new ReportHighlightModel()]
+        };
+
+        if (!_model.Highlights.Any())
+            _model.Highlights.Add(new ReportHighlightModel());
+
+        _editContext = new EditContext(_model);
+    }
+
+    private void AddHighlight()
+    {
+        _model.Highlights.Add(new ReportHighlightModel());
+        _editContext?.NotifyFieldChanged(new FieldIdentifier(_model, nameof(ReportEditorModel.Highlights)));
+    }
+
+    private void RemoveHighlight(int index)
+    {
+        if (_model.Highlights.Count <= 1)
+            return;
+
+        _model.Highlights.RemoveAt(index);
+        _editContext?.NotifyFieldChanged(new FieldIdentifier(_model, nameof(ReportEditorModel.Highlights)));
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (_isLoading)
+            return;
+
+        _isLoading = true;
+
+        if (_editContext is null || !_editContext.Validate())
+        {
+            _isLoading = false;
+            return;
+        }
+
+        var periodStart = PersianDateHelper.ToGregorianDateTime(_model.PeriodStart);
+        if (!periodStart.HasValue)
+        {
+            ToastService.ShowToastError("تاریخ شروع معتبر نیست!");
+            _isLoading = false;
+            return;
+        }
+
+        var periodEnd = PersianDateHelper.ToGregorianDateTime(_model.PeriodEnd);
+        if (!periodEnd.HasValue)
+        {
+            ToastService.ShowToastError("تاریخ پایان معتبر نیست!");
+            _isLoading = false;
+            return;
+        }
+
+        if (periodEnd.Value.Date < periodStart.Value.Date)
+        {
+            ToastService.ShowToastError("تاریخ پایان نمی‌تواند قبل از تاریخ شروع باشد!");
+            _isLoading = false;
+            return;
+        }
+
+        var highlights = _model.Highlights
+            .Where(x => !string.IsNullOrWhiteSpace(x.Text))
+            .Select(x => new ReportHighlightDto(x.Text.Trim(), x.Type))
+            .ToList();
+
+        if (ReportId.HasValue)
+        {
+            var request = new UpdateReportRequest(
+                title: string.IsNullOrWhiteSpace(_model.Title) ? null : _model.Title.Trim(),
+                note: _model.Note.Trim(),
+                score: _model.Score,
+                periodStart: periodStart.Value.DateTime,
+                periodEnd: periodEnd.Value.DateTime,
+                highlights: highlights);
+
+            var result = await ApiService.SendAsync(
+                apiCall: () => ApiClient.ReportsPUTAsync(ReportId.Value, request),
+                successMessage: "گزارش با موفقیت به‌روزرسانی شد!",
+                showErrorToast: true);
+
+            if (result?.IsSuccess is true)
+                await OnSaved.InvokeAsync();
+        }
+        else
+        {
+            var request = new CreateReportRequest(
+                title: string.IsNullOrWhiteSpace(_model.Title) ? null : _model.Title.Trim(),
+                note: _model.Note.Trim(),
+                score: _model.Score,
+                periodStart: periodStart.Value.DateTime,
+                periodEnd: periodEnd.Value.DateTime,
+                highlights: highlights);
+
+            var result = await ApiService.SendAsync(
+                apiCall: () => ApiClient.ReportsPOSTAsync(request),
+                successMessage: "گزارش با موفقیت ثبت شد!",
+                showErrorToast: true);
+
+            if (result?.IsSuccess is true)
+                await OnSaved.InvokeAsync();
+        }
+
+        _isLoading = false;
+    }
+}
+
+

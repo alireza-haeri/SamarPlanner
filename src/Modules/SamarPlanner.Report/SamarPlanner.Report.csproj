@@ -7,6 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Shared\SamarPlanner.Shared.Contracts\SamarPlanner.Shared.Contracts.csproj" />
+      <ProjectReference Include="..\..\Shared\SamarPlanner.Shared.Kernel\SamarPlanner.Shared.Kernel.csproj" />
       <ProjectReference Include="..\..\Shared\SamarPlanner.Shared\SamarPlanner.Shared.csproj" />
       <ProjectReference Include="..\SamarPlanner.Report.Application\SamarPlanner.Report.Application.csproj" />
       <ProjectReference Include="..\SamarPlanner.Report.Core\SamarPlanner.Report.Core.csproj" />

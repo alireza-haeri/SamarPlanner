@@ -24,6 +24,15 @@ public static class PersianDateHelper
         return $"{year:0000}/{month:00}/{day:00}";
     }
 
+    public static string ToPersianDate(this DateOnly dateOnly)
+    {
+        var dt = dateOnly.ToDateTime(TimeOnly.MinValue);
+        int year = PersianCalendar.GetYear(dt);
+        int month = PersianCalendar.GetMonth(dt);
+        int day = PersianCalendar.GetDayOfMonth(dt);
+        return $"{year:0000}/{month:00}/{day:00}";
+    }
+
     // تبدیل شمسی به میلادی (با زمان 00:00:00)
     public static DateTimeOffset? ToGregorianDateTime(string persianDate)
     {

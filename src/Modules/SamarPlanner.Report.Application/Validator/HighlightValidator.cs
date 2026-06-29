@@ -14,7 +14,6 @@ public class HighlightValidator : AbstractValidator<ReportHighlightDto>
             .WithName("متن");
         
         RuleFor(x=>x.Type)
-            .NotEmpty().WithMessage("{PropertyName} نمی‌تواند خالی باشد.")
             .NotNull().WithMessage("{PropertyName} نمی‌تواند null باشد.")
             .IsInEnum().WithMessage("{PropertyName} مقدار معتبری نیست.")
             .WithName("نوع");

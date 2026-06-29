@@ -1,4 +1,4 @@
-using SamarPlanner.Report.Core.Enums;
+using SamarPlanner.Shared.Contracts.Enums;
 
 namespace SamarPlanner.Report.Core.Entities;
 

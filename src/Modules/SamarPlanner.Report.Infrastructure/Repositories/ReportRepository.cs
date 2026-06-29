@@ -69,12 +69,12 @@ public class ReportRepository(ReportDbContext context) : IReportRepository
 
         return await context.Reports
             .AsNoTracking()
-            .Where(r => r.UserId == userId && r.PeriodStart <= periodStart && r.PeriodEnd >= periodEnd)
+            .Where(r => r.UserId == userId && r.PeriodStart == periodStart && r.PeriodEnd == periodEnd)
             .Select(r => new ReportSummary(
                 ReportId: r.Id,
                 Title: r.Title,
                 NotePreview: (r.Note.Length > notePreviewLenght)
-                    ? r.Note[..(notePreviewLenght + 1)] + "..."
+                    ? r.Note.Substring(0, notePreviewLenght) + "..."
                     : r.Note,
                 PeriodStart: r.PeriodStart,
                 PeriodEnd: r.PeriodEnd,

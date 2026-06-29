@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using SamarPlanner.Report.Application.Abstractions;
 using SamarPlanner.Report.Infrastructure.Persistence;
+using SamarPlanner.Report.Infrastructure.Repositories;
 using SamarPlanner.Shared.Kernel;
 
 namespace SamarPlanner.Report.Infrastructure;
@@ -21,6 +23,8 @@ public static class ServiceCollectionConfigurations
             });
         });
 
+        services.AddScoped<IReportRepository, ReportRepository>();
+        
         return services;
     }
 }

@@ -1,5 +1,5 @@
 using MediatR;
-using SamarPlanner.Report.Core.Enums;
+using SamarPlanner.Shared.Contracts.Enums;
 using SamarPlanner.Shared.Kernel;
 
 namespace SamarPlanner.Shared.Contracts.Queries;

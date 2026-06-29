@@ -1,0 +1,199 @@
+@page "/reports/{ReportId:guid}"
+@using Microsoft.AspNetCore.WebUtilities
+@using SamarPlanner.Web.Helpers
+@using SamarPlanner.Web.Models
+@attribute [Authorize]
+@layout ReportLayout
+@inject IApiClient ApiClient
+@inject IApiService ApiService
+@inject NavigationManager NavigationManager
+
+<div class="report-detail-page">
+    @if (_isLoading)
+    {
+        <div class="report-detail-loading">
+            <div class="spinner-border text-primary" role="status"></div>
+            <span>بارگذاری جزئیات گزارش...</span>
+        </div>
+    }
+    else if (_report is null)
+    {
+        <div class="report-detail-empty">
+            <div class="report-detail-empty-icon">🗒️</div>
+            <h3>گزارش پیدا نشد</h3>
+            <p class="text-muted">این گزارش حذف شده یا به آن دسترسی ندارید.</p>
+            <button class="btn btn-primary" @onclick="BackToReports">بازگشت به گزارش‌ها</button>
+        </div>
+    }
+    else
+    {
+        <div class="report-detail-header">
+            <div>
+                <h1 class="report-detail-title">@(string.IsNullOrWhiteSpace(_report.Title) ? "بدون عنوان" : _report.Title)</h1>
+                <div class="report-detail-meta">
+                    <span>@_report.PeriodStart.ToPersianDate() - @_report.PeriodEnd.ToPersianDate()</span>
+                    @if (_report.Score.HasValue)
+                    {
+                        <span class="report-detail-score">امتیاز: @_report.Score</span>
+                    }
+                </div>
+            </div>
+
+            <div class="report-detail-actions">
+                <button class="btn btn-outline-primary" @onclick="ToggleEdit">
+                    <i class="bi bi-pencil-square"></i> @(_isEditing ? "لغو ویرایش" : "ویرایش")
+                </button>
+                <button class="btn btn-outline-secondary" @onclick="BackToReports">
+                    <i class="bi bi-arrow-right"></i> بازگشت
+                </button>
+            </div>
+        </div>
+
+        @if (_isEditing)
+        {
+            <div class="report-detail-editor">
+                <ReportForm ReportId="@ReportId"
+                            InitialModel="@_editorModel"
+                            OnSaved="OnReportSaved" />
+            </div>
+        }
+        else
+        {
+            <div class="report-detail-body">
+                <div class="report-detail-section">
+                    <h2>متن گزارش</h2>
+                    <p class="report-detail-note">@_report.Note</p>
+                </div>
+
+                <div class="report-detail-section">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <h2 class="mb-0">نکات برجسته</h2>
+                        <span class="text-muted small">@_report.Highlights.Count مورد</span>
+                    </div>
+
+                    @if (_report.Highlights.Any())
+                    {
+                        <div class="report-highlight-list">
+                            @foreach (var highlight in _report.Highlights)
+                            {
+                                <div class="report-highlight-item highlight-@highlight.Type.ToString().ToLowerInvariant()">
+                                    <span class="report-highlight-type">@GetHighlightTypeLabel(highlight.Type)</span>
+                                    <p class="report-highlight-text">@highlight.Text</p>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="report-detail-empty-inline text-muted">برای این گزارش نکته‌ای ثبت نشده است.</div>
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    [Parameter] public Guid ReportId { get; set; }
+
+    private GetReportDetailQueryResponse? _report;
+    private ReportEditorModel? _editorModel;
+    private bool _isLoading = true;
+    private bool _isEditing;
+    private ReportPeriodView _currentPeriod = ReportPeriodView.Daily;
+    private DateTimeOffset _referenceDate = DateTimeOffset.Now;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        var queryParams = QueryHelpers.ParseQuery(uri.Query);
+
+        _currentPeriod = GetCurrentPeriod(uri, queryParams);
+        _referenceDate = GetReferenceDate(queryParams);
+        _isEditing = queryParams.TryGetValue("edit", out var editValue) && editValue == "1";
+
+        await LoadReport();
+    }
+
+    private async Task LoadReport()
+    {
+        _isLoading = true;
+
+        var result = await ApiService.SendAsync(
+            apiCall: () => ApiClient.ReportsGET2Async(ReportId),
+            successMessage: null,
+            showErrorToast: true);
+
+        if (result?.IsSuccess is true)
+        {
+            _report = result.Response;
+            _editorModel = _report is null ? null : ReportEditorModel.FromDetail(_report);
+        }
+        else
+        {
+            _report = null;
+            _editorModel = null;
+        }
+
+        _isLoading = false;
+        StateHasChanged();
+    }
+
+    private void ToggleEdit()
+    {
+        if (_report is null)
+            return;
+
+        _isEditing = !_isEditing;
+    }
+
+    private async Task OnReportSaved()
+    {
+        _isEditing = false;
+        await LoadReport();
+    }
+
+    private void BackToReports()
+    {
+        NavigationManager.NavigateTo(BuildReportsUrl(), forceLoad: false);
+    }
+
+    private string BuildReportsUrl()
+    {
+        return $"/reports/{_currentPeriod.ToRouteSegment()}?date={_referenceDate.ToPersianDate()}";
+    }
+
+    private static ReportPeriodView GetCurrentPeriod(Uri uri, IDictionary<string, Microsoft.Extensions.Primitives.StringValues> queryParams)
+    {
+        if (queryParams.TryGetValue("period", out var periodValue) && ReportPeriodHelper.TryParse(periodValue.ToString(), out var period))
+            return period;
+
+        var pathSegment = uri.AbsolutePath.Trim('/').Split('/', StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+        return ReportPeriodHelper.ParseOrDefault(pathSegment);
+    }
+
+    private static DateTimeOffset GetReferenceDate(IDictionary<string, Microsoft.Extensions.Primitives.StringValues> queryParams)
+    {
+        if (queryParams.TryGetValue("date", out var dateValue) && !string.IsNullOrWhiteSpace(dateValue))
+        {
+            var parsed = PersianDateHelper.ToGregorianDateTime(dateValue.ToString());
+            if (parsed.HasValue)
+                return parsed.Value;
+        }
+
+        return DateTimeOffset.Now;
+    }
+
+    private static string GetHighlightTypeLabel(ReportHighlightDtoType type)
+    {
+        return type switch
+        {
+            ReportHighlightDtoType.Positive => "مثبت",
+            ReportHighlightDtoType.Negative => "منفی",
+            ReportHighlightDtoType.Lesson => "درس‌آموخته",
+            _ => type.ToString()
+        };
+    }
+}
+
+
