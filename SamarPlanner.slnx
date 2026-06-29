@@ -15,6 +15,12 @@
     <Project Path="src/Modules/SamarPlanner.Identity.Infrastructure/SamarPlanner.Identity.Infrastructure.csproj" />
     <Project Path="src/Modules/SamarPlanner.Identity/SamarPlanner.Identity.csproj" />
   </Folder>
+  <Folder Name="/src/Modules/Report/">
+    <Project Path="src/Modules/SamarPlanner.Report.Application/SamarPlanner.Report.Application.csproj" />
+    <Project Path="src/Modules/SamarPlanner.Report.Core/SamarPlanner.Report.Core.csproj" />
+    <Project Path="src/Modules/SamarPlanner.Report/SamarPlanner.Report.csproj" />
+    <Project Path="src\Modules\SamarPlanner.Report.Infrastructure\SamarPlanner.Report.Infrastructure.csproj" />
+  </Folder>
   <Folder Name="/src/Modules/Task/">
     <Project Path="src/Modules/SamarPlanner.Task.Application/SamarPlanner.Task.Application.csproj" />
     <Project Path="src/Modules/SamarPlanner.Task.Core/SamarPlanner.Task.Core.csproj" />

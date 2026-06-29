@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Shared\SamarPlanner.Shared.Application\SamarPlanner.Shared.Application.csproj" />
+      <ProjectReference Include="..\..\Shared\SamarPlanner.Shared.Contracts\SamarPlanner.Shared.Contracts.csproj" />
+      <ProjectReference Include="..\..\Shared\SamarPlanner.Shared.Kernel\SamarPlanner.Shared.Kernel.csproj" />
+      <ProjectReference Include="..\SamarPlanner.Report.Core\SamarPlanner.Report.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
+            <HintPath>..\..\..\..\..\..\..\.nuget\packages\microsoft.extensions.dependencyinjection.abstractions\10.0.9\lib\net10.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="UseCases\Commands\" />
+    </ItemGroup>
+</Project>

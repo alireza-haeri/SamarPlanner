@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SamarPlanner.Goal;
 using SamarPlanner.Identity;
+using SamarPlanner.Report;
 using SamarPlanner.Shared.Kernel;
 using SamarPlanner.Task;
 using Scalar.AspNetCore;
@@ -14,7 +15,8 @@ var applicationSettings = builder.Configuration.GetSection("ApplicationSettings"
 builder.Services
     .AddIdentityServices()
     .AddGoalServices()
-    .AddTaskServices();
+    .AddTaskServices()
+    .AddReportServices();
 
 builder.Services.AddCors(options =>
 {

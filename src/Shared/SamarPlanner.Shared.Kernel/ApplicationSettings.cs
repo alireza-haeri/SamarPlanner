@@ -12,6 +12,7 @@ public sealed class DatabaseSettings
     public required string IdentityConnectionString { get; set; }
     public required string GoalConnectionString { get; set; }
     public required string  TaskConnectionString { get; set; }
+    public required string  ReportConnectionString { get; set; }
 }
 
 public sealed class JwtTokenSettings
