@@ -1,0 +1,172 @@
+@namespace SamarPlanner.Web.Components
+@using SamarPlanner.Web.Helpers
+@inject IApiClient ApiClient
+@inject IToastService ToastService
+@inject IApiService ApiService
+
+<div class="modal-overlay" @onclick="OnClose">
+    <div class="modal-content" @onclick:stopPropagation>
+        <div class="modal-header">
+            <h5>ویرایش هدف</h5>
+            <button class="btn-close" @onclick="OnClose"></button>
+        </div>
+        <div class="modal-body">
+            <EditForm EditContext="@_formHelper.EditContext" OnSubmit="@Submit">
+                <ValidationSummary class="text-danger mb-3" />
+
+                <div class="mb-3">
+                    <label class="form-label">عنوان هدف</label>
+                    <InputText class="form-control" @bind-Value="_formHelper.Model.Title" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">توضیحات (اختیاری)</label>
+                    <InputTextArea class="form-control" @bind-Value="_formHelper.Model.Description" rows="2" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">اولویت</label>
+                    <InputSelect class="form-select" @bind-Value="_formHelper.Model.Priority">
+                        <option value="@UpdateGoalRequestPriority.High">بالا</option>
+                        <option value="@UpdateGoalRequestPriority.Medium">متوسط</option>
+                        <option value="@UpdateGoalRequestPriority.Low">پایین</option>
+                    </InputSelect>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">زیرمجموعه هدف (اختیاری)</label>
+                    <select class="form-select" @bind="_formHelper.Model.ParentGoalId">
+                        <option value="">هیچکدام</option>
+                        @foreach (var g in ShortGoals)
+                        {
+                            <option value="@g.GoalId">@g.Title</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="row">
+                    <div class="col-6">
+                        <label class="form-label">تاریخ شروع (شمسی)</label>
+                        <InputText class="form-control" @bind-Value="_formHelper.Model.PeriodStart" placeholder="۱۴۰۴/۰۱/۰۱" />
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">تاریخ پایان (شمسی)</label>
+                        <InputText class="form-control" @bind-Value="_formHelper.Model.PeriodEnd" placeholder="۱۴۰۴/۱۲/۳۰" />
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 mt-3" disabled="@_isLoading">
+                    @if (_isLoading)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2"></span>
+                        <span>در حال ذخیره...</span>
+                    }
+                    else
+                    {
+                        <span>ذخیره تغییرات</span>
+                    }
+                </button>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public GetAllGoalsByUserIdQueryResponseGoals Goal { get; set; } = null!;
+    [Parameter] public Guid? ParentGoalId { get; set; }
+    [Parameter] public List<GetAllShortGoalsByUserIdQueryResponseGoals> ShortGoals { get; set; } = new();
+    [Parameter] public EventCallback OnGoalUpdated { get; set; }
+    [Parameter] public EventCallback OnCloseRequested { get; set; }
+
+    private FormHelper<EditGoalModel> _formHelper = null!;
+    private bool _isLoading;
+
+    protected override void OnInitialized()
+    {
+        _formHelper = new FormHelper<EditGoalModel>(new EditGoalModel
+        {
+            Title = Goal.Title,
+            Description = Goal.Description,
+            Priority = Goal.GoalPriority switch
+            {
+                GetAllGoalsByUserIdQueryResponseGoalsGoalPriority.High => UpdateGoalRequestPriority.High,
+                GetAllGoalsByUserIdQueryResponseGoalsGoalPriority.Low => UpdateGoalRequestPriority.Low,
+                GetAllGoalsByUserIdQueryResponseGoalsGoalPriority.Medium => UpdateGoalRequestPriority.Medium,
+                _ => null
+            },
+            PeriodStart = Goal.PeriodStart.ToPersianDate(),
+            PeriodEnd = Goal.PeriodEnd.ToPersianDate(),
+            ParentGoalId = ParentGoalId
+        });
+    }
+
+    private async Task Submit()
+    {
+        if (_isLoading) return;
+        _isLoading = true;
+
+        _formHelper.ClearErrors();
+        if (!_formHelper.Validate()) { _isLoading = false; return; }
+
+        DateTimeOffset? periodStart = null;
+        DateTimeOffset? periodEnd = null;
+
+        if (!string.IsNullOrEmpty(_formHelper.Model.PeriodStart))
+        {
+            var sd = PersianDateHelper.ToGregorianDateTime(_formHelper.Model.PeriodStart);
+            if (!sd.HasValue) { ToastService.ShowToastError("تاریخ شروع معتبر نیست!"); _isLoading = false; return; }
+            periodStart = sd.Value;
+        }
+
+        if (!string.IsNullOrEmpty(_formHelper.Model.PeriodEnd))
+        {
+            var ed = PersianDateHelper.ToGregorianDateTime(_formHelper.Model.PeriodEnd);
+            if (!ed.HasValue) { ToastService.ShowToastError("تاریخ پایان معتبر نیست!"); _isLoading = false; return; }
+            periodEnd = ed.Value;
+        }
+
+        var request = new UpdateGoalRequest(
+            goalId: Goal.GoalId,
+            title: _formHelper.Model.Title,
+            description: _formHelper.Model.Description ?? "",
+            priority: _formHelper.Model.Priority,
+            periodStart: periodStart ?? Goal.PeriodStart,
+            periodEnd: periodEnd ?? Goal.PeriodEnd,
+            parentGoalId: _formHelper.Model.ParentGoalId
+        );
+
+        var result = await ApiService.SendAsync(
+            () => ApiClient.UpdateGoalAsync(request),
+            successMessage: "هدف با موفقیت ویرایش شد!",
+            showErrorToast: false);
+
+        if (result != null)
+        {
+            if (result.IsSuccess)
+            {
+                await OnGoalUpdated.InvokeAsync();
+                await OnCloseRequested.InvokeAsync();
+            }
+            else
+            {
+                _formHelper.SetServerErrors(result.Errors);
+                ToastService.ShowToastWarning("لطفاً خطاها را بررسی کنید.");
+            }
+        }
+
+        _isLoading = false;
+    }
+
+    private async Task OnClose() => await OnCloseRequested.InvokeAsync();
+
+    public class EditGoalModel
+    {
+        [Required(ErrorMessage = "عنوان الزامی است")]
+        public string Title { get; set; } = "";
+        public string? Description { get; set; }
+        public UpdateGoalRequestPriority? Priority { get; set; }
+        public string? PeriodStart { get; set; }
+        public string? PeriodEnd { get; set; }
+        public Guid? ParentGoalId { get; set; }
+    }
+}

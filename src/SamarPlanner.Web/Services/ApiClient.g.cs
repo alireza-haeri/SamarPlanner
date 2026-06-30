@@ -76,7 +76,7 @@ namespace SamarPlanner.Web.Services
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<GetHighlightSuggestionsQueryResponseListResult> HighlightsAsync(string text = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<GetHighlightSuggestionsQueryResponseResult> GetHighlightsSuggestionsAsync(string text = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
@@ -86,27 +86,27 @@ namespace SamarPlanner.Web.Services
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<GuidResult> ReportsPOSTAsync(CreateReportRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<GuidResult> CreateReportAsync(CreateReportRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<GetReportsByUserIdQueryResponseResult> ReportsGETAsync(System.DateTimeOffset? periodStart = null, System.DateTimeOffset? periodEnd = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<GetReportsByUserIdQueryResponseResult> GetReportsAsync(System.DateTimeOffset? periodStart = null, System.DateTimeOffset? periodEnd = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<BooleanResult> ReportsPUTAsync(System.Guid reportId, UpdateReportRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<BooleanResult> UpdateReportAsync(System.Guid reportId, UpdateReportRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<BooleanResult> ReportsDELETEAsync(System.Guid reportId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<BooleanResult> DeleteReportAsync(System.Guid reportId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<GetReportDetailQueryResponseResult> ReportsGET2Async(System.Guid reportId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<GetReportDetailQueryResponseResult> GetReportDetailsAsync(System.Guid reportId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
@@ -883,7 +883,7 @@ namespace SamarPlanner.Web.Services
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<GetHighlightSuggestionsQueryResponseListResult> HighlightsAsync(string text = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<GetHighlightSuggestionsQueryResponseResult> GetHighlightsSuggestionsAsync(string text = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -930,7 +930,7 @@ namespace SamarPlanner.Web.Services
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<GetHighlightSuggestionsQueryResponseListResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetHighlightSuggestionsQueryResponseResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1035,7 +1035,7 @@ namespace SamarPlanner.Web.Services
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<GuidResult> ReportsPOSTAsync(CreateReportRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<GuidResult> CreateReportAsync(CreateReportRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1110,7 +1110,7 @@ namespace SamarPlanner.Web.Services
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<GetReportsByUserIdQueryResponseResult> ReportsGETAsync(System.DateTimeOffset? periodStart = null, System.DateTimeOffset? periodEnd = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<GetReportsByUserIdQueryResponseResult> GetReportsAsync(System.DateTimeOffset? periodStart = null, System.DateTimeOffset? periodEnd = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1191,7 +1191,7 @@ namespace SamarPlanner.Web.Services
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<BooleanResult> ReportsPUTAsync(System.Guid reportId, UpdateReportRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<BooleanResult> UpdateReportAsync(System.Guid reportId, UpdateReportRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (reportId == null)
                 throw new System.ArgumentNullException("reportId");
@@ -1270,7 +1270,7 @@ namespace SamarPlanner.Web.Services
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<BooleanResult> ReportsDELETEAsync(System.Guid reportId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<BooleanResult> DeleteReportAsync(System.Guid reportId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (reportId == null)
                 throw new System.ArgumentNullException("reportId");
@@ -1345,7 +1345,7 @@ namespace SamarPlanner.Web.Services
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<GetReportDetailQueryResponseResult> ReportsGET2Async(System.Guid reportId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<GetReportDetailQueryResponseResult> GetReportDetailsAsync(System.Guid reportId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (reportId == null)
                 throw new System.ArgumentNullException("reportId");
@@ -2998,10 +2998,10 @@ namespace SamarPlanner.Web.Services
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial record GetHighlightSuggestionsQueryResponseListResult
+    public partial record GetHighlightSuggestionsQueryResponseResult
     {
         [Newtonsoft.Json.JsonConstructor]
-        public GetHighlightSuggestionsQueryResponseListResult(GetHighlightSuggestionsQueryResponseListResultBadResultType? @badResultType, System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<string>> @errors, bool @isSuccess, System.Collections.Generic.ICollection<GetHighlightSuggestionsQueryResponse> @response)
+        public GetHighlightSuggestionsQueryResponseResult(GetHighlightSuggestionsQueryResponseResultBadResultType? @badResultType, System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<string>> @errors, bool @isSuccess, GetHighlightSuggestionsQueryResponse @response)
         {
             this.IsSuccess = @isSuccess;
             this.BadResultType = @badResultType;
@@ -3014,10 +3014,10 @@ namespace SamarPlanner.Web.Services
 
         [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public GetHighlightSuggestionsQueryResponseListResultBadResultType? BadResultType { get; init; }
+        public GetHighlightSuggestionsQueryResponseResultBadResultType? BadResultType { get; init; }
 
         [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<GetHighlightSuggestionsQueryResponse> Response { get; init; }
+        public GetHighlightSuggestionsQueryResponse Response { get; init; }
 
         [Newtonsoft.Json.JsonProperty("errors", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<string>> Errors { get; init; }
@@ -3923,7 +3923,7 @@ namespace SamarPlanner.Web.Services
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum GetHighlightSuggestionsQueryResponseListResultBadResultType
+    public enum GetHighlightSuggestionsQueryResponseResultBadResultType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]

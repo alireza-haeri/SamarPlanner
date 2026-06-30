@@ -6,6 +6,7 @@ using SamarPlanner.Shared;
 using SamarPlanner.Shared.Contracts.Command;
 using SamarPlanner.Shared.Contracts.Queries;
 using SamarPlanner.Shared.Kernel;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SamarPlanner.Report.Controllers;
 
@@ -14,6 +15,7 @@ namespace SamarPlanner.Report.Controllers;
 public class ReportController(IMediator mediator) : BaseController
 {
     [HttpPost]
+    [SwaggerOperation(OperationId = "CreateReport")]
     public async Task<ActionResult<Result<Guid>>> Create([FromBody] CreateReportRequest request)
     {
         var result = await mediator.Send(new CreateReportCommand(
@@ -30,6 +32,7 @@ public class ReportController(IMediator mediator) : BaseController
     }
 
     [HttpPut("{reportId:guid}")]
+    [SwaggerOperation(OperationId = "UpdateReport")]
     public async Task<ActionResult<Result<bool>>> Update([FromBody] UpdateReportRequest request, Guid reportId)
     {
         var result = await mediator.Send(new UpdateReportCommand(
@@ -47,6 +50,7 @@ public class ReportController(IMediator mediator) : BaseController
     }
 
     [HttpDelete("{reportId:guid}")]
+    [SwaggerOperation(OperationId = "DeleteReport")]
     public async Task<ActionResult<Result<bool>>> Delete(Guid reportId)
     {
         var result = await mediator.Send(new DeleteReportCommand(
@@ -58,6 +62,7 @@ public class ReportController(IMediator mediator) : BaseController
     }
 
     [HttpGet]
+    [SwaggerOperation(OperationId = "GetReports")]
     public async Task<ActionResult<Result<GetReportsByUserIdQueryResponse>>> GetReports(
         [FromQuery(Name = "periodStart")] DateOnly periodStart, [FromQuery(Name = "periodEnd")] DateOnly periodEnd)
     {
@@ -71,6 +76,7 @@ public class ReportController(IMediator mediator) : BaseController
     }
 
     [HttpGet("{reportId:guid}")]
+    [SwaggerOperation(OperationId = "GetReportDetails")]
     public async Task<ActionResult<Result<GetReportDetailQueryResponse>>> GetReportDetail(Guid reportId)
     {
         var result = await mediator.Send(new GetReportDetailQuery(

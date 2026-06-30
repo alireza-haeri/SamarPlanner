@@ -1,100 +1,101 @@
 @inherits LayoutComponentBase
 @using Blazored.Toast
 @using Blazored.Toast.Configuration
+@using SamarPlanner.Web.Components
 @using SamarPlanner.Web.Services
 @inject NavigationManager NavigationManager
+@inject ModalService ModalService
 
-<div class="task-layout">
-    <div class="task-header">
-        <div class="task-nav">
-            <NavLink href="/tasks/daily" class="nav-link" ActiveClass="active">
-                <i class="bi bi-calendar-day"></i> روزانه
+<div class="sub-layout">
+    @* ── Topbar ── *@
+    <SubTopbar />
+
+    @* ── Section Tabs ── *@
+    <header class="sub-header">
+        <nav class="task-nav">
+            <NavLink href="/tasks/daily" class="task-nav-link" ActiveClass="is-active">
+                <i class="bi bi-calendar-day"></i>
+                <span>روزانه</span>
             </NavLink>
-            <NavLink href="/tasks/weekly" class="nav-link" ActiveClass="active">
-                <i class="bi bi-calendar-week"></i> هفتگی
-            </NavLink>
-            <NavLink href="/tasks/month" class="nav-link" ActiveClass="active">
-                <i class="bi bi-calendar-month"></i> ماهانه
+            <NavLink href="/tasks/weekly" class="task-nav-link" ActiveClass="is-active">
+                <i class="bi bi-calendar-week"></i>
+                <span>هفتگی</span>
             </NavLink>
 
-            
-            <div class="nav-dropdown">
-                <button class="nav-link nav-dropdown-toggle" @onclick="ToggleDropdown">
-                    <i class="bi bi-three-dots-vertical"></i>
+            <div class="task-nav-divider"></div>
+
+            <div class="task-nav-more">
+                <button class="task-nav-link task-nav-more-btn" @onclick="ToggleDropdown">
+                    <i class="bi bi-three-dots"></i>
                 </button>
                 @if (_showDropdown)
                 {
-                    <div class="nav-dropdown-menu" @onclick:stopPropagation>
-                        <button class="dropdown-item" @onclick="@(() =>
-                                                                {
-                                                                    CloseDropdown();
-                                                                    NavigationManager.NavigateTo("/tasks/deleted");
-                                                                })">
-                            <i class="bi bi-trash3"></i> حذف شده‌ها
+                    <div class="task-nav-more-backdrop" @onclick="CloseDropdown"></div>
+                    <div class="task-nav-more-menu" @onclick:stopPropagation>
+                        <button class="task-nav-more-item" @onclick="@(() => { CloseDropdown(); NavigationManager.NavigateTo("/tasks/deleted"); })">
+                            <span class="task-nav-more-icon"><i class="bi bi-trash3"></i></span>
+                            <span>حذف شده‌ها</span>
                         </button>
                     </div>
                 }
             </div>
-        </div>
-    </div>
+        </nav>
+    </header>
 
-    <main class="task-content">
+    @* ── Content ── *@
+    <main class="sub-content">
         @Body
     </main>
 
-    <div class="fab-container">
-        <button class="btn-fab" @onclick="OpenAddTaskModal">
-            <i class="bi bi-plus-lg"></i>
+    @* ── FAB ── *@
+    <div class="sub-fab">
+        <button class="fab-button" @onclick="OpenAddTaskModal" title="تسک جدید">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
         </button>
     </div>
 </div>
 
-@if (_showAddTaskModal)
-{
-    <div class="modal-overlay">
-        <div class="modal-content" @onclick:stopPropagation>
-            <div class="modal-header">
-                <h5>تسک جدید</h5>
-                <button class="btn-close" @onclick="CloseModal"></button>
-            </div>
-            <div class="modal-body">
-                <AddTaskForm OnTaskAdded="OnTaskAdded"/>
-            </div>
-        </div>
-    </div>
-}
-
-<BlazoredToasts Position="ToastPosition.TopRight"/>
+<BottomNav ActiveSection="tasks" />
+<ModalPortal />
+<BlazoredToasts Position="ToastPosition.TopRight" />
+<script src="js/task-dropdown.js"></script>
 
 @code {
-    private bool _showAddTaskModal = false;
-    private bool _showDropdown = false;
+    private bool _showDropdown;
+
+    protected override void OnInitialized()
+    {
+        ModalService.OnChanged += HandleModalChanged;
+    }
+
+    private void HandleModalChanged() => InvokeAsync(StateHasChanged);
 
     private void OpenAddTaskModal()
     {
-        _showAddTaskModal = true;
+        ModalService.Show(builder =>
+        {
+            builder.OpenComponent<AddTaskFormModal>(0);
+            builder.AddAttribute(1, nameof(AddTaskFormModal.OnTaskAdded),
+                EventCallback.Factory.Create(this, () =>
+                {
+                    ModalService.Close();
+                    NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+                }));
+            builder.AddAttribute(2, nameof(AddTaskFormModal.OnCloseRequested),
+                EventCallback.Factory.Create(this, () => ModalService.Close()));
+            builder.CloseComponent();
+        });
     }
 
-    private void CloseModal()
+    private void ToggleDropdown() => _showDropdown = !_showDropdown;
+    private void CloseDropdown() => _showDropdown = false;
+
+    public void Dispose()
     {
-        _showAddTaskModal = false;
+        ModalService.OnChanged -= HandleModalChanged;
     }
-
-    private Task OnTaskAdded()
-    {
-        CloseModal();
-        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
-        return Task.CompletedTask;
-    }
-
-    private void ToggleDropdown()
-    {
-        _showDropdown = !_showDropdown;
-    }
-
-    private void CloseDropdown()
-    {
-        _showDropdown = false;
-    }
-
 }

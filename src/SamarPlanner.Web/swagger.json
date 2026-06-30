@@ -424,7 +424,7 @@
         "tags": [
           "Highlight"
         ],
-        "operationId": "highlights",
+        "operationId": "GetHighlightsSuggestions",
         "parameters": [
           {
             "name": "text",
@@ -440,17 +440,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetHighlightSuggestionsQueryResponseListResult"
+                  "$ref": "#/components/schemas/GetHighlightSuggestionsQueryResponseResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetHighlightSuggestionsQueryResponseListResult"
+                  "$ref": "#/components/schemas/GetHighlightSuggestionsQueryResponseResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetHighlightSuggestionsQueryResponseListResult"
+                  "$ref": "#/components/schemas/GetHighlightSuggestionsQueryResponseResult"
                 }
               }
             }
@@ -524,7 +524,7 @@
         "tags": [
           "Report"
         ],
-        "operationId": "reportsPOST",
+        "operationId": "CreateReport",
         "requestBody": {
           "content": {
             "application/json": {
@@ -583,7 +583,7 @@
         "tags": [
           "Report"
         ],
-        "operationId": "reportsGET",
+        "operationId": "GetReports",
         "parameters": [
           {
             "name": "periodStart",
@@ -631,7 +631,7 @@
         "tags": [
           "Report"
         ],
-        "operationId": "reportsPUT",
+        "operationId": "UpdateReport",
         "parameters": [
           {
             "name": "reportId",
@@ -701,7 +701,7 @@
         "tags": [
           "Report"
         ],
-        "operationId": "reportsDELETE",
+        "operationId": "DeleteReport",
         "parameters": [
           {
             "name": "reportId",
@@ -740,7 +740,7 @@
         "tags": [
           "Report"
         ],
-        "operationId": "reportsGET2",
+        "operationId": "GetReportDetails",
         "parameters": [
           {
             "name": "reportId",
@@ -2017,7 +2017,7 @@
           }
         }
       },
-      "GetHighlightSuggestionsQueryResponseListResult": {
+      "GetHighlightSuggestionsQueryResponseResult": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -2037,12 +2037,13 @@
             ]
           },
           "response": {
-            "type": "array",
             "readOnly": true,
             "nullable": true,
-            "items": {
-              "$ref": "#/components/schemas/GetHighlightSuggestionsQueryResponse"
-            }
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GetHighlightSuggestionsQueryResponse"
+              }
+            ]
           },
           "errors": {
             "type": "object",

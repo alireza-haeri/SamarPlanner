@@ -1,4 +1,5 @@
 @page "/goals"
+@using SamarPlanner.Web.Components
 @attribute [Authorize]
 @layout GoalLayout
 @inject IApiClient ApiClient
@@ -6,30 +7,41 @@
 @inject IApiService ApiService
 @inject NavigationManager NavigationManager
 
+<ModalPortal />
+
 <div class="goals-page">
-    <div class="page-header">
-        <h3>🎯 همه اهداف</h3>
-        <span class="text-muted small">@_totalCount هدف</span>
+
+    @* ── Header ── *@
+    <div class="goals-header">
+        <div class="goals-header-left">
+            <h1 class="goals-title">اهداف</h1>
+            @if (_totalCount > 0)
+            {
+                <span class="goals-count">@_totalCount هدف</span>
+            }
+        </div>
     </div>
 
     @if (_isLoading)
     {
-        <div class="text-center py-5">
-            <div class="spinner-border text-success" role="status"></div>
-            <span>بارگذاری...</span>
+        <div class="goals-loading">
+            <div class="goals-loading-spinner"></div>
+            <span>بارگذاری اهداف...</span>
         </div>
     }
     else if (_goals == null || !_goals.Any())
     {
-        <div class="empty-state">
-            <i class="bi bi-bullseye"></i>
-            <h4>هیچ هدفی تعریف نکرده‌اید</h4>
-            <p class="text-muted">برای شروع، یک هدف جدید ایجاد کنید.</p>
+        <div class="goals-empty">
+            <div class="goals-empty-icon">
+                <i class="bi bi-bullseye"></i>
+            </div>
+            <h3>هنوز هدفی تعریف نکرده‌اید</h3>
+            <p>هدف‌های شما اینجا نمایش داده می‌شوند</p>
         </div>
     }
     else
     {
-        <div class="goals-tree">
+        <div class="goals-list">
             @foreach (var goal in _goals)
             {
                 <GoalItem Goal="@goal" OnGoalUpdated="LoadGoals" />
@@ -41,7 +53,7 @@
 @code {
     private List<GetAllGoalsByUserIdQueryResponseGoals>? _goals;
     private bool _isLoading = true;
-    private int _totalCount = 0;
+    private int _totalCount;
 
     protected override async Task OnInitializedAsync()
     {
@@ -56,24 +68,23 @@
             var result = await ApiService.SendAsync(
                 () => ApiClient.GetGoalsAsync(),
                 successMessage: null,
-                showErrorToast: true
-            );
+                showErrorToast: true);
 
             if (result?.IsSuccess == true)
             {
-                _goals = result.Response?.Goals?.ToList() ?? new List<GetAllGoalsByUserIdQueryResponseGoals>();
+                _goals = result.Response?.Goals?.ToList() ?? new();
                 _totalCount = CountGoals(_goals);
             }
             else
             {
-                _goals = new List<GetAllGoalsByUserIdQueryResponseGoals>();
+                _goals = new();
                 _totalCount = 0;
             }
         }
         catch (Exception ex)
         {
             ToastService.ShowToastError($"خطا: {ex.Message}");
-            _goals = new List<GetAllGoalsByUserIdQueryResponseGoals>();
+            _goals = new();
             _totalCount = 0;
         }
         finally
@@ -87,10 +98,8 @@
     {
         if (goals == null) return 0;
         var count = goals.Count;
-        foreach (var goal in goals)
-        {
-            count += CountGoals(goal.Goals?.ToList());
-        }
+        foreach (var g in goals)
+            count += CountGoals(g.Goals?.ToList());
         return count;
     }
 }

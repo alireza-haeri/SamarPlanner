@@ -98,8 +98,9 @@ public class ReportRepository(ReportDbContext context) : IReportRepository
         return await context.Highlights
             .AsNoTracking()
             .Where(h => h.Report.UserId == userId && h.Text.Contains(text))
-            .Select(h => new ReportSuggestions(h.Text, h.Type))
-            .DistinctBy(h => new ReportSuggestions(h.Text, h.Type))
+            .Select(h => new { h.Text, h.Type })
+            .Distinct()
+            .Select(x => new ReportSuggestions(x.Text, x.Type))
             .Take(Core.Entities.Report.MaxSuggestionCount)
             .ToListAsync(cancellationToken);
     }

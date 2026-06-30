@@ -1,6 +1,7 @@
 ﻿@using Blazored.Toast
 @using Blazored.Toast.Configuration
 @using Microsoft.AspNetCore.Components.Authorization
+@using SamarPlanner.Web.Components
 @namespace SamarPlanner.Web.Layout
 @inherits LayoutComponentBase
 @inject CustomAuthenticationStateProvider AuthProvider
@@ -8,6 +9,7 @@
 @inject NavigationManager NavigationManager
 
 <div class="app-container">
+    @* ── Header ── *@
     <header class="main-header">
         <div class="header-content">
             <div class="brand-section">
@@ -24,10 +26,10 @@
             <div class="header-actions">
                 @if (_isAuthenticated)
                 {
-                    <span class="me-2 text-primary">@_userName</span>
-                    <button class="btn btn-outline-danger btn-sm rounded-pill px-3" @onclick="Logout">
-                        <i class="bi bi-box-arrow-right me-1"></i>
-                        خروج
+                    <span class="header-username">@_userName</span>
+                    <button class="btn-logout" @onclick="Logout">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>خروج</span>
                     </button>
                 }
                 else
@@ -41,62 +43,79 @@
         </div>
     </header>
 
+    @* ── Content ── *@
     <main class="main-content">
         @Body
     </main>
 
+    @* ── Footer (desktop only) ── *@
     <footer class="footer">
         <div class="container">
             <span>© 2026 SamarPlanner</span>
             <span class="footer-version">v1.0</span>
         </div>
     </footer>
-    
-    <BlazoredToasts Position="ToastPosition.TopRight"/>
+
+    <BlazoredToasts Position="ToastPosition.TopRight" />
 </div>
 
+@* ── Bottom Nav — outside app-container so it's fixed over everything *@
+@* فقط وقتی authenticated و روی صفحه home *@
+@if (_showBottomNav)
+{
+    <BottomNav ActiveSection="home" />
+}
+
 @code {
-    private bool _isAuthenticated = false;
+    private bool _isAuthenticated;
     private string _userName = "";
+    private bool _showBottomNav;
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        _isAuthenticated = user.Identity?.IsAuthenticated ?? false;
-        if (_isAuthenticated)
-        {
-            _userName = user.Identity?.Name ?? "کاربر";
-        }
-
-        AuthProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
+        UpdateAuthState(authState);
+        AuthProvider.AuthenticationStateChanged += OnAuthChanged;
+        NavigationManager.LocationChanged += OnLocationChanged;
+        UpdateNav(NavigationManager.Uri);
     }
 
-    private void OnAuthenticationStateChanged(Task<AuthenticationState> task)
+    private void OnAuthChanged(Task<AuthenticationState> task)
     {
-        var authState = task.Result;
-        var user = authState.User;
-        _isAuthenticated = user.Identity?.IsAuthenticated ?? false;
-        if (_isAuthenticated)
-        {
-            _userName = user.Identity?.Name ?? "کاربر";
-        }
+        UpdateAuthState(task.Result);
+        UpdateNav(NavigationManager.Uri);
+        InvokeAsync(StateHasChanged);
+    }
 
-        StateHasChanged();
+    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+    {
+        UpdateNav(e.Location);
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void UpdateAuthState(AuthenticationState state)
+    {
+        var user = state.User;
+        _isAuthenticated = user.Identity?.IsAuthenticated ?? false;
+        _userName = _isAuthenticated ? (user.Identity?.Name ?? "کاربر") : "";
+    }
+
+    private void UpdateNav(string url)
+    {
+        var path = new Uri(url).AbsolutePath.ToLowerInvariant();
+        _showBottomNav = _isAuthenticated && path == "/";
     }
 
     private async Task Logout()
     {
         await AuthService.LogoutAsync();
-    
         AuthProvider.NotifyUserLogout();
-    
         NavigationManager.NavigateTo("/login", true);
     }
 
     public void Dispose()
     {
-        AuthProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
+        AuthProvider.AuthenticationStateChanged -= OnAuthChanged;
+        NavigationManager.LocationChanged -= OnLocationChanged;
     }
-
 }

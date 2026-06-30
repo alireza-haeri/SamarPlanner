@@ -2,111 +2,116 @@
 @using Blazored.Toast
 @using Blazored.Toast.Configuration
 @using Microsoft.AspNetCore.WebUtilities
+@using SamarPlanner.Web.Components
 @using SamarPlanner.Web.Helpers
 @using SamarPlanner.Web.Services
 @inject NavigationManager NavigationManager
 
-<div class="report-layout">
-	<div class="report-header">
-		<div class="report-nav">
-			<NavLink href="/reports/daily" class="nav-link" ActiveClass="active" Match="NavLinkMatch.Prefix">
-				<i class="bi bi-calendar-day"></i> روزانه
-			</NavLink>
-			<NavLink href="/reports/weekly" class="nav-link" ActiveClass="active" Match="NavLinkMatch.Prefix">
-				<i class="bi bi-calendar-week"></i> هفتگی
-			</NavLink>
-			<NavLink href="/reports/monthly" class="nav-link" ActiveClass="active" Match="NavLinkMatch.Prefix">
-				<i class="bi bi-calendar-month"></i> ماهانه
-			</NavLink>
-			<NavLink href="/reports/yearly" class="nav-link" ActiveClass="active" Match="NavLinkMatch.Prefix">
-				<i class="bi bi-calendar3"></i> سالانه
-			</NavLink>
-		</div>
-	</div>
+<div class="sub-layout">
+    @* ── Topbar ── *@
+    <SubTopbar />
 
-	<main class="report-content">
-		@Body
-	</main>
+    @* ── Section Tabs ── *@
+    <header class="sub-header">
+        <div class="report-nav">
+            <NavLink href="/reports/daily" class="nav-link" ActiveClass="active" Match="NavLinkMatch.Prefix">
+                <i class="bi bi-calendar-day"></i> روزانه
+            </NavLink>
+            <NavLink href="/reports/weekly" class="nav-link" ActiveClass="active" Match="NavLinkMatch.Prefix">
+                <i class="bi bi-calendar-week"></i> هفتگی
+            </NavLink>
+            <NavLink href="/reports/monthly" class="nav-link" ActiveClass="active" Match="NavLinkMatch.Prefix">
+                <i class="bi bi-calendar-month"></i> ماهانه
+            </NavLink>
+            <NavLink href="/reports/yearly" class="nav-link" ActiveClass="active" Match="NavLinkMatch.Prefix">
+                <i class="bi bi-calendar3"></i> سالانه
+            </NavLink>
+        </div>
+    </header>
 
-	<div class="fab-container">
-		<button class="btn-fab" @onclick="OpenAddReportModal">
-			<i class="bi bi-plus-lg"></i>
-		</button>
-	</div>
+    @* ── Content ── *@
+    <main class="sub-content">
+        @Body
+    </main>
+
+    @* ── FAB ── *@
+    <div class="sub-fab">
+        <button class="fab-button" @onclick="OpenAddReportModal">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+        </button>
+    </div>
 </div>
+
+<BottomNav ActiveSection="reports" />
 
 @if (_showAddReportModal)
 {
-	<div class="modal-overlay" @onclick="CloseModal">
-		<div class="modal-content" @onclick:stopPropagation>
-			<div class="modal-header">
-				<h5>گزارش جدید</h5>
-				<button class="btn-close" @onclick="CloseModal"></button>
-			</div>
-			<div class="modal-body">
-				<ReportForm DefaultPeriodStart="_defaultPeriodStart"
-							DefaultPeriodEnd="_defaultPeriodEnd"
-							OnSaved="OnReportSaved" />
-			</div>
-		</div>
-	</div>
+    <div class="modal-overlay" @onclick="CloseModal">
+        <div class="modal-content" @onclick:stopPropagation>
+            <div class="modal-header">
+                <h5>گزارش جدید</h5>
+                <button class="btn-close" @onclick="CloseModal"></button>
+            </div>
+            <div class="modal-body">
+                <ReportForm DefaultPeriodStart="_defaultPeriodStart"
+                            DefaultPeriodEnd="_defaultPeriodEnd"
+                            OnSaved="OnReportSaved" />
+            </div>
+        </div>
+    </div>
 }
 
 <BlazoredToasts Position="ToastPosition.TopRight" />
 
 @code {
-	private bool _showAddReportModal;
-	private DateTimeOffset _defaultPeriodStart = DateTimeOffset.Now.Date;
-	private DateTimeOffset _defaultPeriodEnd = DateTimeOffset.Now.Date;
+    private bool _showAddReportModal;
+    private DateTimeOffset _defaultPeriodStart = DateTimeOffset.Now.Date;
+    private DateTimeOffset _defaultPeriodEnd = DateTimeOffset.Now.Date;
 
-	private void OpenAddReportModal()
-	{
-		SetDefaultPeriodContext();
-		_showAddReportModal = true;
-	}
+    private void OpenAddReportModal()
+    {
+        SetDefaultPeriodContext();
+        _showAddReportModal = true;
+    }
 
-	private void CloseModal()
-	{
-		_showAddReportModal = false;
-	}
+    private void CloseModal() => _showAddReportModal = false;
 
-	private Task OnReportSaved()
-	{
-		CloseModal();
-		NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
-		return Task.CompletedTask;
-	}
+    private Task OnReportSaved()
+    {
+        CloseModal();
+        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+        return Task.CompletedTask;
+    }
 
-	private void SetDefaultPeriodContext()
-	{
-		var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-		var queryParams = QueryHelpers.ParseQuery(uri.Query);
+    private void SetDefaultPeriodContext()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        var queryParams = QueryHelpers.ParseQuery(uri.Query);
 
-		var period = GetCurrentPeriod(uri, queryParams);
-		var referenceDate = GetReferenceDate(queryParams);
-		(_defaultPeriodStart, _defaultPeriodEnd) = ReportPeriodHelper.GetBounds(period, referenceDate);
-	}
+        var period = GetCurrentPeriod(uri, queryParams);
+        var referenceDate = GetReferenceDate(queryParams);
+        (_defaultPeriodStart, _defaultPeriodEnd) = ReportPeriodHelper.GetBounds(period, referenceDate);
+    }
 
-	private static ReportPeriodView GetCurrentPeriod(Uri uri, IDictionary<string, Microsoft.Extensions.Primitives.StringValues> queryParams)
-	{
-		if (queryParams.TryGetValue("period", out var periodValue) && ReportPeriodHelper.TryParse(periodValue.ToString(), out var period))
-			return period;
+    private static ReportPeriodView GetCurrentPeriod(Uri uri, IDictionary<string, Microsoft.Extensions.Primitives.StringValues> queryParams)
+    {
+        if (queryParams.TryGetValue("period", out var pv) && ReportPeriodHelper.TryParse(pv.ToString(), out var p))
+            return p;
+        var seg = uri.AbsolutePath.Trim('/').Split('/', StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+        return ReportPeriodHelper.ParseOrDefault(seg);
+    }
 
-		var pathSegment = uri.AbsolutePath.Trim('/').Split('/', StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
-		return ReportPeriodHelper.ParseOrDefault(pathSegment);
-	}
-
-	private static DateTimeOffset GetReferenceDate(IDictionary<string, Microsoft.Extensions.Primitives.StringValues> queryParams)
-	{
-		if (queryParams.TryGetValue("date", out var dateValue) && !string.IsNullOrWhiteSpace(dateValue))
-		{
-			var parsed = PersianDateHelper.ToGregorianDateTime(dateValue.ToString());
-			if (parsed.HasValue)
-				return parsed.Value;
-		}
-
-		return DateTimeOffset.Now;
-	}
+    private static DateTimeOffset GetReferenceDate(IDictionary<string, Microsoft.Extensions.Primitives.StringValues> queryParams)
+    {
+        if (queryParams.TryGetValue("date", out var dv) && !string.IsNullOrWhiteSpace(dv))
+        {
+            var parsed = PersianDateHelper.ToGregorianDateTime(dv.ToString());
+            if (parsed.HasValue) return parsed.Value;
+        }
+        return DateTimeOffset.Now;
+    }
 }
-
-

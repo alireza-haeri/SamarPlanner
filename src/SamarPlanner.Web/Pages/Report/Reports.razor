@@ -128,7 +128,7 @@
 		_isLoading = true;
 
 		var result = await ApiService.SendAsync(
-			apiCall: () => ApiClient.ReportsGETAsync(_periodStart, _periodEnd),
+			apiCall: () => ApiClient.GetReportsAsync(_periodStart, _periodEnd),
 			successMessage: null,
 			showErrorToast: true);
 

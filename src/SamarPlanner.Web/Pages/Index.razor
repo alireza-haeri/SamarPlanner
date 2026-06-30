@@ -8,19 +8,8 @@
     </div>
     <h1>به SamarPlanner خوش آمدید</h1>
     <p class="subtitle">برنامه‌ریزی روزانه‌تان را آسان کنید</p>
-    <a href="/login" class="btn btn-login">
+    <a href="/tasks/daily" class="btn btn-login">
         <i class="bi bi-box-arrow-in-right"></i>
         شروع کنید
     </a>
 </div>
-
-@code
-{
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        
-        ToastService.ShowToastInfo("kazem");
-        t.ShowWarning("k");
-    }
-}

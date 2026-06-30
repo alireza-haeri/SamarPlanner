@@ -2,12 +2,15 @@
 @using System.Globalization
 @using SamarPlanner.Web.Helpers
 @using Microsoft.AspNetCore.WebUtilities
+@using SamarPlanner.Web.Components
 @attribute [Authorize]
 @layout TaskLayout
 @inject IApiClient ApiClient
 @inject IApiService ApiService
 @inject IToastService ToastService
 @inject NavigationManager NavigationManager
+
+<ModalPortal />
 
 <div class="daily-tasks">
     <div class="daily-header">
@@ -31,6 +34,25 @@
             </button>
         </div>
     </div>
+    
+    @if (_tasks != null && _tasks.Any())
+    {
+        <div class="daily-progress">
+            <div class="daily-progress-info">
+                <span class="daily-progress-count">
+                    <span class="daily-progress-done">@_doneTasks.Count</span>
+                    <span class="daily-progress-separator">/</span>
+                    <span>@_tasks.Count</span>
+                </span>
+                <span>تسک انجام شده</span>
+            </div>
+            <div class="daily-progress-track">
+                <div class="daily-progress-fill"
+                     style="width: @(_tasks.Count > 0 ? (_doneTasks.Count * 100 / _tasks.Count) : 0)%">
+                </div>
+            </div>
+        </div>
+    }
 
     @if (_isLoading)
     {

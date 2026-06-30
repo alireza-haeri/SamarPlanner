@@ -1,63 +1,74 @@
 @inherits LayoutComponentBase
 @using Blazored.Toast
 @using Blazored.Toast.Configuration
+@using SamarPlanner.Web.Components
 @using SamarPlanner.Web.Services
 @inject NavigationManager NavigationManager
+@inject ModalService ModalService
 
-<div class="goal-layout">
-    <div class="goal-header">
-        <div class="goal-nav">
-            <NavLink href="/goals" class="nav-link" ActiveClass="active" Match="NavLinkMatch.All">
-                <i class="bi bi-list-ul"></i> اهداف
-            </NavLink>
-        </div>
-    </div>
+<div class="sub-layout">
+    @* ── Topbar ── *@
+    <SubTopbar />
 
-    <main class="goal-content">
+    @* $1$ ── Section Header ── #1# *@
+    @* <header class="sub-header"> *@
+    @*     <nav class="goal-nav-pill"> *@
+    @*         <NavLink href="/goals" class="goal-pill-link" ActiveClass="is-active" Match="NavLinkMatch.All"> *@
+    @*             <i class="bi bi-bullseye"></i> *@
+    @*             <span>اهداف</span> *@
+    @*         </NavLink> *@
+    @*     </nav> *@
+    @* </header> *@
+
+    @* ── Content ── *@
+    <main class="sub-content">
         @Body
     </main>
 
-    <div class="fab-container">
-        <button class="btn-fab" @onclick="OpenAddGoalModal">
-            <i class="bi bi-plus-lg"></i>
+    @* ── FAB ── *@
+    <div class="sub-fab">
+        <button class="fab-button" @onclick="OpenAddGoalModal" title="هدف جدید">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
         </button>
     </div>
 </div>
 
-@if (_showAddGoalModal)
-{
-    <div class="modal-overlay" @onclick="CloseModal">
-        <div class="modal-content" @onclick:stopPropagation>
-            <div class="modal-header">
-                <h5>هدف جدید</h5>
-                <button class="btn-close" @onclick="CloseModal"></button>
-            </div>
-            <div class="modal-body">
-                <AddGoalForm OnGoalAdded="OnGoalAdded" />
-            </div>
-        </div>
-    </div>
-}
-
+<BottomNav ActiveSection="goals" />
+<ModalPortal />
 <BlazoredToasts Position="ToastPosition.TopRight" />
+<script src="js/task-dropdown.js"></script>
 
 @code {
-    private bool _showAddGoalModal = false;
+    protected override void OnInitialized()
+    {
+        ModalService.OnChanged += HandleModalChanged;
+    }
+
+    private void HandleModalChanged() => InvokeAsync(StateHasChanged);
 
     private void OpenAddGoalModal()
     {
-        _showAddGoalModal = true;
+        ModalService.Show(builder =>
+        {
+            builder.OpenComponent<AddGoalFormModal>(0);
+            builder.AddAttribute(1, nameof(AddGoalFormModal.OnGoalAdded),
+                EventCallback.Factory.Create(this, () =>
+                {
+                    ModalService.Close();
+                    NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+                }));
+            builder.AddAttribute(2, nameof(AddGoalFormModal.OnCloseRequested),
+                EventCallback.Factory.Create(this, () => ModalService.Close()));
+            builder.CloseComponent();
+        });
     }
 
-    private void CloseModal()
+    public void Dispose()
     {
-        _showAddGoalModal = false;
-    }
-
-    private Task OnGoalAdded()
-    {
-        CloseModal();
-        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
-        return Task.CompletedTask;
+        ModalService.OnChanged -= HandleModalChanged;
     }
 }

@@ -89,8 +89,8 @@
                 _formHelper.Model.Password,
                 _formHelper.Model.PhoneNumber
             )),
-            successMessage: null,
-            showErrorToast: false
+            successMessage: "با موفقیت وارد شدید.",
+            showErrorToast: true
         );
 
         if (result != null)
@@ -100,8 +100,6 @@
                 await AuthService.LoginAsync(result.Response.Token, result.Response.ExpireInMinutes);
 
                 AuthProvider.NotifyUserAuthentication(result.Response.Token);
-
-                ToastService.ShowToastSuccess("ورود موفق!");
                 NavigationManager.NavigateTo(_returnUrl!, true);
             }
             else

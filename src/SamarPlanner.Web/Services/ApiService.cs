@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using Microsoft.AspNetCore.Components;
 
 namespace SamarPlanner.Web.Services;
 
@@ -9,7 +10,7 @@ public interface IApiService
         bool showErrorToast = true);
 }
 
-public class ApiService(IToastService toastService) : IApiService
+public class ApiService(IToastService toastService, NavigationManager navigationManager) : IApiService
 {
     public async Task<TResult?> SendAsync<TResult>(
         Func<Task<TResult>> apiCall,

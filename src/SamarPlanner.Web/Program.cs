@@ -9,18 +9,18 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddHttpClient<IApiClient,ApiClient>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5009/");
-}).AddTypedClient<IApiClient>((httpClient, sp) =>
-{
-    var apiClient = new ApiClient(httpClient)
+builder.Services.AddHttpClient<IApiClient, ApiClient>(client =>
     {
-        ReadResponseAsString = true
-    };
-    return apiClient;
-})
-.AddHttpMessageHandler<AuthorizationMessageHandler>();
+        client.BaseAddress = new Uri("http://localhost:5009/");
+    }).AddTypedClient<IApiClient>((httpClient, sp) =>
+    {
+        var apiClient = new ApiClient(httpClient)
+        {
+            ReadResponseAsString = true
+        };
+        return apiClient;
+    })
+    .AddHttpMessageHandler<AuthorizationMessageHandler>();
 
 builder.Services.AddBlazoredToast();
 
@@ -33,5 +33,6 @@ builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<AuthorizationMessageHandler>();
 builder.Services.AddScoped<IStorageService, StorageService>();
 builder.Services.AddAuthorizationCore();
+builder.Services.AddScoped<ModalService>();
 
 await builder.Build().RunAsync();
