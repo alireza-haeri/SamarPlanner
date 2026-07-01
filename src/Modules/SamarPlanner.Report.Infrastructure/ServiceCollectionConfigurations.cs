@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SamarPlanner.Report.Application.Abstractions;
@@ -10,12 +12,13 @@ namespace SamarPlanner.Report.Infrastructure;
 
 public static class ServiceCollectionConfigurations
 {
-    public static IServiceCollection ConfigureInfrastructure(this IServiceCollection services)
+    public static WebApplicationBuilder ConfigureInfrastructure(this WebApplicationBuilder builder)
     {
-        var applicationSettings = services.BuildServiceProvider().GetRequiredService<IOptions<ApplicationSettings>>().Value;
+        var applicationSettings = builder.Configuration.GetSection(nameof(ApplicationSettings)).Get<ApplicationSettings>()
+            ?? throw new InvalidOperationException(nameof(ApplicationSettings));
         var databaseSettings = applicationSettings.Databases.ReportConnectionString;
 
-        services.AddDbContext<ReportDbContext>(options =>
+        builder.Services.AddDbContext<ReportDbContext>(options =>
         {
             options.UseSqlServer(databaseSettings, sqlOptions =>
             {
@@ -23,8 +26,8 @@ public static class ServiceCollectionConfigurations
             });
         });
 
-        services.AddScoped<IReportRepository, ReportRepository>();
+        builder.Services.AddScoped<IReportRepository, ReportRepository>();
         
-        return services;
+        return builder;
     }
 }

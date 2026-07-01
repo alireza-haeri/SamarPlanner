@@ -1,17 +1,26 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using SamarPlanner.Identity.Core;
 using SamarPlanner.Identity.Infrastructure;
+using SamarPlanner.Identity.Infrastructure.Persistence;
+using SamarPlanner.Shared.Infrastructure;
 
 namespace SamarPlanner.Identity;
 
 public static class ServiceCollectionConfiguration
 {
-    public static IServiceCollection AddIdentityServices(this IServiceCollection services)
+    public static WebApplicationBuilder AddIdentityServices(this WebApplicationBuilder builder)
     {
-        services
+        builder
             .ConfigureCore()
             .ConfigureInfrastructure();
         
-        return services;
+        return builder;
+    }
+    
+    public static async Task<WebApplication> UseIdentityModuleAsync(this WebApplication app)
+    {
+        await app.MigrateModuleDatabaseAsync<IdentityDbContext>();
+        return app;
     }
 }

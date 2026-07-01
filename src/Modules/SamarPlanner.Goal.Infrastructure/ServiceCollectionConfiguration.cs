@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SamarPlanner.Goal.Application.Abstractions;
@@ -10,12 +12,13 @@ namespace SamarPlanner.Goal.Infrastructure;
 
 public static class ServiceCollectionConfiguration
 {
-    public static IServiceCollection ConfigureInfrastructure(this IServiceCollection services)
+    public static WebApplicationBuilder ConfigureInfrastructure(this WebApplicationBuilder builder) 
     {
-        var applicationSettings = services.BuildServiceProvider().GetRequiredService<IOptions<ApplicationSettings>>().Value;
+        var applicationSettings = builder.Configuration.GetSection(nameof(ApplicationSettings)).Get<ApplicationSettings>()
+            ?? throw new InvalidOperationException(nameof(ApplicationSettings));
         var databaseSettings = applicationSettings.Databases;
         
-        services.AddDbContext<GoalDbContext>(options =>
+        builder.Services.AddDbContext<GoalDbContext>(options =>
         {
             options.UseSqlServer(databaseSettings.GoalConnectionString, sqlOptions =>
             {
@@ -23,8 +26,8 @@ public static class ServiceCollectionConfiguration
             });
         });
 
-        services.AddScoped<IGoalRepository, GoalRepository>();
+        builder.Services.AddScoped<IGoalRepository, GoalRepository>();
         
-        return services;
+        return builder;
     }
 }

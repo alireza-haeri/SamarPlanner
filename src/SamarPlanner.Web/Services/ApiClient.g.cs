@@ -29,141 +29,225 @@ namespace SamarPlanner.Web.Services
     {
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// CreateGoal
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<CreateGoalCommandResponseResult> CreateGoalAsync(CreateGoalRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// UpdateGoal
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<BooleanResult> UpdateGoalAsync(UpdateGoalRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// GetGoals
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<GetAllGoalsByUserIdQueryResponseResult> GetGoalsAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// AchieveGoal
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<BooleanResult> AchieveAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<BooleanResult> AchieveGoalAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// ActiveGoal
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<BooleanResult> ActiveAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<BooleanResult> ActiveGoalAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// FailGoal
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<BooleanResult> FailAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<BooleanResult> FailGoalAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// RolloverGoal
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<RolloverGoalCommandResultResult> RolloverAsync(System.Guid goalId, RolloverGoalRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<RolloverGoalCommandResultResult> RolloverGoalAsync(System.Guid goalId, RolloverGoalRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// DeleteGoal
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<BooleanResult> DeleteGoalAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// GetShortGoals
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<GetAllShortGoalsByUserIdQueryResponseResult> GetShortGoalsAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// GetHighlightsSuggestions
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<GetHighlightSuggestionsQueryResponseResult> GetHighlightsSuggestionsAsync(string text = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// RegisterOrLogin
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<RegisterOrLoginCommandResponseResult> RegisterOrLoginAsync(RegisterOrLoginRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// CreateReport
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<GuidResult> CreateReportAsync(CreateReportRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// GetReports
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<GetReportsByUserIdQueryResponseResult> GetReportsAsync(System.DateTimeOffset? periodStart = null, System.DateTimeOffset? periodEnd = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// UpdateReport
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<BooleanResult> UpdateReportAsync(System.Guid reportId, UpdateReportRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// DeleteReport
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<BooleanResult> DeleteReportAsync(System.Guid reportId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// GetReportDetails
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<GetReportDetailQueryResponseResult> GetReportDetailsAsync(System.Guid reportId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// CreateTask
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<CreateTaskCommandResponseResult> CreateTaskAsync(CreateTaskRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// UpdateTask
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<BooleanResult> UpdateTaskAsync(System.Guid taskId, UpdateTaskRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// DeleteTask
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<BooleanResult> DeleteTaskAsync(System.Guid taskId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// GetTaskDetail
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<GetTaskDetailQueryResultResult> GetTaskDetailAsync(System.Guid taskId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// SoftDeleteTask
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<BooleanResult> SoftDeleteTaskAsync(System.Guid taskId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// RestoreTask
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<BooleanResult> RestoreTaskAsync(System.Guid taskId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// GetTasksWithOccurrences
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<GetTasksWithOccurrencesQueryResultResult> GetTasksWithOccurrencesAsync(System.DateTimeOffset? from = null, System.DateTimeOffset? to = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// GetDeletedTasks
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<GetDeletedTasksQueryResultResult> GetDeletedTasksAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// ChangeOccurrenceDate
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<BooleanResult> ChangeOccurrenceDateAsync(System.Guid taskId, ChangeOccurrenceDateRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// ChangeOccurrenceTime
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<BooleanResult> ChangeOccurrenceTimeAsync(System.Guid taskId, ChangeOccurrenceTimeRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// SkipOccurrence
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<BooleanResult> SkipOccurrenceAsync(System.Guid taskId, SkipOccurrenceRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// ChangeOccurrenceStatus
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<BooleanResult> ChangeOccurrenceStatusAsync(System.Guid taskId, ChangeOccurrenceStatusRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
@@ -203,6 +287,9 @@ namespace SamarPlanner.Web.Services
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// CreateGoal
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<CreateGoalCommandResponseResult> CreateGoalAsync(CreateGoalRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
@@ -278,6 +365,9 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// UpdateGoal
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<BooleanResult> UpdateGoalAsync(UpdateGoalRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
@@ -353,6 +443,9 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// GetGoals
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<GetAllGoalsByUserIdQueryResponseResult> GetGoalsAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
@@ -424,9 +517,12 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// AchieveGoal
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<BooleanResult> AchieveAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<BooleanResult> AchieveGoalAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (goalId == null)
                 throw new System.ArgumentNullException("goalId");
@@ -501,9 +597,12 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// ActiveGoal
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<BooleanResult> ActiveAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<BooleanResult> ActiveGoalAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (goalId == null)
                 throw new System.ArgumentNullException("goalId");
@@ -578,9 +677,12 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// FailGoal
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<BooleanResult> FailAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<BooleanResult> FailGoalAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (goalId == null)
                 throw new System.ArgumentNullException("goalId");
@@ -655,9 +757,12 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// RolloverGoal
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<RolloverGoalCommandResultResult> RolloverAsync(System.Guid goalId, RolloverGoalRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<RolloverGoalCommandResultResult> RolloverGoalAsync(System.Guid goalId, RolloverGoalRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (goalId == null)
                 throw new System.ArgumentNullException("goalId");
@@ -735,6 +840,9 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// DeleteGoal
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<BooleanResult> DeleteGoalAsync(System.Guid goalId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
@@ -810,6 +918,9 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// GetShortGoals
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<GetAllShortGoalsByUserIdQueryResponseResult> GetShortGoalsAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
@@ -881,6 +992,9 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// GetHighlightsSuggestions
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<GetHighlightSuggestionsQueryResponseResult> GetHighlightsSuggestionsAsync(string text = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
@@ -958,6 +1072,9 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// RegisterOrLogin
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<RegisterOrLoginCommandResponseResult> RegisterOrLoginAsync(RegisterOrLoginRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
@@ -1033,6 +1150,9 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// CreateReport
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<GuidResult> CreateReportAsync(CreateReportRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
@@ -1108,6 +1228,9 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// GetReports
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<GetReportsByUserIdQueryResponseResult> GetReportsAsync(System.DateTimeOffset? periodStart = null, System.DateTimeOffset? periodEnd = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
@@ -1189,6 +1312,9 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// UpdateReport
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<BooleanResult> UpdateReportAsync(System.Guid reportId, UpdateReportRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
@@ -1268,6 +1394,9 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// DeleteReport
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<BooleanResult> DeleteReportAsync(System.Guid reportId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
@@ -1343,6 +1472,9 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// GetReportDetails
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<GetReportDetailQueryResponseResult> GetReportDetailsAsync(System.Guid reportId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
@@ -1418,6 +1550,9 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// CreateTask
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<CreateTaskCommandResponseResult> CreateTaskAsync(CreateTaskRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
@@ -1493,6 +1628,9 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// UpdateTask
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<BooleanResult> UpdateTaskAsync(System.Guid taskId, UpdateTaskRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
@@ -1572,6 +1710,9 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// DeleteTask
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<BooleanResult> DeleteTaskAsync(System.Guid taskId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
@@ -1647,6 +1788,9 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// GetTaskDetail
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<GetTaskDetailQueryResultResult> GetTaskDetailAsync(System.Guid taskId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
@@ -1722,6 +1866,9 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// SoftDeleteTask
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<BooleanResult> SoftDeleteTaskAsync(System.Guid taskId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
@@ -1799,6 +1946,9 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// RestoreTask
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<BooleanResult> RestoreTaskAsync(System.Guid taskId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
@@ -1876,6 +2026,9 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// GetTasksWithOccurrences
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<GetTasksWithOccurrencesQueryResultResult> GetTasksWithOccurrencesAsync(System.DateTimeOffset? from = null, System.DateTimeOffset? to = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
@@ -1957,6 +2110,9 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// GetDeletedTasks
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<GetDeletedTasksQueryResultResult> GetDeletedTasksAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
@@ -2028,6 +2184,9 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// ChangeOccurrenceDate
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<BooleanResult> ChangeOccurrenceDateAsync(System.Guid taskId, ChangeOccurrenceDateRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
@@ -2108,6 +2267,9 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// ChangeOccurrenceTime
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<BooleanResult> ChangeOccurrenceTimeAsync(System.Guid taskId, ChangeOccurrenceTimeRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
@@ -2188,6 +2350,9 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// SkipOccurrence
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<BooleanResult> SkipOccurrenceAsync(System.Guid taskId, SkipOccurrenceRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
@@ -2268,6 +2433,9 @@ namespace SamarPlanner.Web.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// ChangeOccurrenceStatus
+        /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<BooleanResult> ChangeOccurrenceStatusAsync(System.Guid taskId, ChangeOccurrenceStatusRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))

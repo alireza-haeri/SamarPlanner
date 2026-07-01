@@ -3,9 +3,11 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -19,14 +21,15 @@ namespace SamarPlanner.Identity.Infrastructure;
 
 public static class ServiceCollectionConfiguration
 {
-    public static IServiceCollection ConfigureInfrastructure(this IServiceCollection services)
+    public static WebApplicationBuilder ConfigureInfrastructure(this WebApplicationBuilder builder)
     {
         var applicationSettings =
-            services.BuildServiceProvider().GetRequiredService<IOptions<ApplicationSettings>>().Value;
+            builder.Configuration.GetSection(nameof(ApplicationSettings)).Get<ApplicationSettings>()
+            ?? throw new InvalidOperationException(nameof(ApplicationSettings));
         var databaseSettings = applicationSettings.Databases;
         var jwtSettings = applicationSettings.JwtToken;
 
-        services.AddDbContext<IdentityDbContext>(options =>
+        builder.Services.AddDbContext<IdentityDbContext>(options =>
         {
             options.UseSqlServer(databaseSettings.IdentityConnectionString,
                 sqlOptions =>
@@ -37,7 +40,7 @@ public static class ServiceCollectionConfiguration
         });
 
         // Identity
-        services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
+        builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
             {
                 options.Password.RequiredLength = 6;
                 options.Password.RequireNonAlphanumeric = false;
@@ -49,31 +52,10 @@ public static class ServiceCollectionConfiguration
             })
             .AddEntityFrameworkStores<IdentityDbContext>()
             .AddDefaultTokenProviders();
+        
+        builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-        // JWT Authentication
-        var key = Encoding.UTF8.GetBytes(jwtSettings.SigningKey);
-        services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = true,
-                    ValidAudience = jwtSettings.Audience,
-                    ValidateAudience = true,
-                    ValidIssuer = jwtSettings.Issuer,
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero
-                };
-            });
-
-        services.AddScoped<IJwtTokenService, JwtTokenService>();
-        services.AddScoped<IUserRepository, UserRepository>();
-
-        return services;
+        return builder;
     }
 }

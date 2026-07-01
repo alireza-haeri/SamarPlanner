@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.4",
   "info": {
-    "title": "SamarPlanner.Api",
-    "version": "1.0"
+    "title": "SamarPlanner API",
+    "version": "v1"
   },
   "paths": {
     "/api/v1/goals": {
@@ -10,6 +10,7 @@
         "tags": [
           "Goal"
         ],
+        "summary": "CreateGoal",
         "operationId": "CreateGoal",
         "requestBody": {
           "content": {
@@ -69,6 +70,7 @@
         "tags": [
           "Goal"
         ],
+        "summary": "UpdateGoal",
         "operationId": "UpdateGoal",
         "requestBody": {
           "content": {
@@ -128,6 +130,7 @@
         "tags": [
           "Goal"
         ],
+        "summary": "GetGoals",
         "operationId": "GetGoals",
         "responses": {
           "200": {
@@ -158,7 +161,8 @@
         "tags": [
           "Goal"
         ],
-        "operationId": "achieve",
+        "summary": "AchieveGoal",
+        "operationId": "AchieveGoal",
         "parameters": [
           {
             "name": "goalId",
@@ -199,7 +203,8 @@
         "tags": [
           "Goal"
         ],
-        "operationId": "active",
+        "summary": "ActiveGoal",
+        "operationId": "ActiveGoal",
         "parameters": [
           {
             "name": "goalId",
@@ -240,7 +245,8 @@
         "tags": [
           "Goal"
         ],
-        "operationId": "fail",
+        "summary": "FailGoal",
+        "operationId": "FailGoal",
         "parameters": [
           {
             "name": "goalId",
@@ -281,7 +287,8 @@
         "tags": [
           "Goal"
         ],
-        "operationId": "rollover",
+        "summary": "RolloverGoal",
+        "operationId": "RolloverGoal",
         "parameters": [
           {
             "name": "goalId",
@@ -353,6 +360,7 @@
         "tags": [
           "Goal"
         ],
+        "summary": "DeleteGoal",
         "operationId": "DeleteGoal",
         "parameters": [
           {
@@ -394,6 +402,7 @@
         "tags": [
           "Goal"
         ],
+        "summary": "GetShortGoals",
         "operationId": "GetShortGoals",
         "responses": {
           "200": {
@@ -424,6 +433,7 @@
         "tags": [
           "Highlight"
         ],
+        "summary": "GetHighlightsSuggestions",
         "operationId": "GetHighlightsSuggestions",
         "parameters": [
           {
@@ -463,6 +473,7 @@
         "tags": [
           "Identity"
         ],
+        "summary": "RegisterOrLogin",
         "operationId": "RegisterOrLogin",
         "requestBody": {
           "content": {
@@ -524,6 +535,7 @@
         "tags": [
           "Report"
         ],
+        "summary": "CreateReport",
         "operationId": "CreateReport",
         "requestBody": {
           "content": {
@@ -583,6 +595,7 @@
         "tags": [
           "Report"
         ],
+        "summary": "GetReports",
         "operationId": "GetReports",
         "parameters": [
           {
@@ -631,6 +644,7 @@
         "tags": [
           "Report"
         ],
+        "summary": "UpdateReport",
         "operationId": "UpdateReport",
         "parameters": [
           {
@@ -701,6 +715,7 @@
         "tags": [
           "Report"
         ],
+        "summary": "DeleteReport",
         "operationId": "DeleteReport",
         "parameters": [
           {
@@ -740,6 +755,7 @@
         "tags": [
           "Report"
         ],
+        "summary": "GetReportDetails",
         "operationId": "GetReportDetails",
         "parameters": [
           {
@@ -781,6 +797,7 @@
         "tags": [
           "Task"
         ],
+        "summary": "CreateTask",
         "operationId": "CreateTask",
         "requestBody": {
           "content": {
@@ -842,6 +859,7 @@
         "tags": [
           "Task"
         ],
+        "summary": "UpdateTask",
         "operationId": "UpdateTask",
         "parameters": [
           {
@@ -912,6 +930,7 @@
         "tags": [
           "Task"
         ],
+        "summary": "DeleteTask",
         "operationId": "DeleteTask",
         "parameters": [
           {
@@ -951,6 +970,7 @@
         "tags": [
           "Task"
         ],
+        "summary": "GetTaskDetail",
         "operationId": "GetTaskDetail",
         "parameters": [
           {
@@ -992,6 +1012,7 @@
         "tags": [
           "Task"
         ],
+        "summary": "SoftDeleteTask",
         "operationId": "SoftDeleteTask",
         "parameters": [
           {
@@ -1033,6 +1054,7 @@
         "tags": [
           "Task"
         ],
+        "summary": "RestoreTask",
         "operationId": "RestoreTask",
         "parameters": [
           {
@@ -1074,6 +1096,7 @@
         "tags": [
           "Task"
         ],
+        "summary": "GetTasksWithOccurrences",
         "operationId": "GetTasksWithOccurrences",
         "parameters": [
           {
@@ -1122,6 +1145,7 @@
         "tags": [
           "Task"
         ],
+        "summary": "GetDeletedTasks",
         "operationId": "GetDeletedTasks",
         "responses": {
           "200": {
@@ -1152,6 +1176,7 @@
         "tags": [
           "TaskOccurrence"
         ],
+        "summary": "ChangeOccurrenceDate",
         "operationId": "ChangeOccurrenceDate",
         "parameters": [
           {
@@ -1224,6 +1249,7 @@
         "tags": [
           "TaskOccurrence"
         ],
+        "summary": "ChangeOccurrenceTime",
         "operationId": "ChangeOccurrenceTime",
         "parameters": [
           {
@@ -1296,6 +1322,7 @@
         "tags": [
           "TaskOccurrence"
         ],
+        "summary": "SkipOccurrence",
         "operationId": "SkipOccurrence",
         "parameters": [
           {
@@ -1368,6 +1395,7 @@
         "tags": [
           "TaskOccurrence"
         ],
+        "summary": "ChangeOccurrenceStatus",
         "operationId": "ChangeOccurrenceStatus",
         "parameters": [
           {
@@ -2833,8 +2861,21 @@
           }
         }
       }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "description": "توکن JWT را وارد کنید (نیازی به نوشتن کلمه‌ی Bearer نیست)",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
     }
   },
+  "security": [
+    {
+      "Bearer": []
+    }
+  ],
   "tags": [
     {
       "name": "Goal"

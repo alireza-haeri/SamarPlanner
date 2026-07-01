@@ -51,6 +51,7 @@ public class GoalController(IMediator mediator) : BaseController
     }
 
     [HttpPatch("{goalId:guid}/achieve")]
+    [SwaggerOperation(OperationId = "AchieveGoal")]
     public async Task<ActionResult<Result<bool>>> AchieveGaol(Guid  goalId)
     {
         var result = await mediator.Send(new AchieveGoalCommand(
@@ -61,6 +62,7 @@ public class GoalController(IMediator mediator) : BaseController
     }
 
     [HttpPatch("{goalId:guid}/active")]
+    [SwaggerOperation(OperationId = "ActiveGoal")]
     public async Task<ActionResult<Result<bool>>> ActiveGaol(Guid  goalId)
     {
         var result = await mediator.Send(new ActiveGoalCommand(
@@ -71,6 +73,7 @@ public class GoalController(IMediator mediator) : BaseController
     }
 
     [HttpPatch("{goalId:guid}/fail")]
+    [SwaggerOperation(OperationId = "FailGoal")]
     public async Task<ActionResult<Result<bool>>> FailGaol(Guid  goalId)
     {
         var result = await mediator.Send(new FailGoalCommand(
@@ -81,6 +84,7 @@ public class GoalController(IMediator mediator) : BaseController
     }
 
     [HttpPatch("{goalId:guid}/rollover")]
+    [SwaggerOperation(OperationId = "RolloverGoal")]
     public async Task<ActionResult<Result<RolloverGoalCommandResult>>> RolloverGaol(Guid  goalId, RolloverGoalRequest request)
     {
         var result = await mediator.Send(new RolloverGoalCommand(

@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />
         <PackageReference Include="Scalar.AspNetCore" Version="2.16.6" />
     </ItemGroup>
 
@@ -16,6 +15,7 @@
       <ProjectReference Include="..\Modules\SamarPlanner.Identity\SamarPlanner.Identity.csproj" />
       <ProjectReference Include="..\Modules\SamarPlanner.Report\SamarPlanner.Report.csproj" />
       <ProjectReference Include="..\Modules\SamarPlanner.Task\SamarPlanner.Task.csproj" />
+      <ProjectReference Include="..\Shared\SamarPlanner.Shared.Infrastructure\SamarPlanner.Shared.Infrastructure.csproj" />
       <ProjectReference Include="..\Shared\SamarPlanner.Shared.Kernel\SamarPlanner.Shared.Kernel.csproj" />
     </ItemGroup>
 

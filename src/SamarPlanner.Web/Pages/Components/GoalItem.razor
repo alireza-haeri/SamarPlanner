@@ -190,7 +190,7 @@
     private async Task OnAchieve()
     {
         var result = await ApiService.SendAsync(
-            () => ApiClient.AchieveAsync(Goal.GoalId),
+            () => ApiClient.AchieveGoalAsync(Goal.GoalId),
             successMessage: "هدف با موفقیت انجام شد!",
             showErrorToast: true);
         if (result?.IsSuccess == true) await OnGoalUpdated.InvokeAsync();
@@ -199,7 +199,7 @@
     private async Task OnActive()
     {
         var result = await ApiService.SendAsync(
-            () => ApiClient.ActiveAsync(Goal.GoalId),
+            () => ApiClient.ActiveGoalAsync(Goal.GoalId),
             successMessage: "هدف بعنوان فعال ثبت شد!",
             showErrorToast: true);
         if (result?.IsSuccess == true) await OnGoalUpdated.InvokeAsync();
@@ -208,7 +208,7 @@
     private async Task OnFail()
     {
         var result = await ApiService.SendAsync(
-            () => ApiClient.FailAsync(Goal.GoalId),
+            () => ApiClient.FailGoalAsync(Goal.GoalId),
             successMessage: "هدف بعنوان ناموفق ثبت شد!",
             showErrorToast: true);
         if (result?.IsSuccess == true) await OnGoalUpdated.InvokeAsync();
@@ -221,7 +221,7 @@
         var request = new RolloverGoalRequest(periodEnd: end, periodStart: start);
 
         var result = await ApiService.SendAsync(
-            () => ApiClient.RolloverAsync(Goal.GoalId, request),
+            () => ApiClient.RolloverGoalAsync(Goal.GoalId, request),
             successMessage: "هدف با موفقیت به دوره بعد انتقال یافت.",
             showErrorToast: true);
         if (result?.IsSuccess == true) await OnGoalUpdated.InvokeAsync();
