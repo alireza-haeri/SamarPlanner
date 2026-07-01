@@ -477,6 +477,6 @@
     .weekly-task-actions { opacity: 1; }
 }
 
-@media (min-width: 992px) {
-    .weekly-day-list { max-width: 720px; }
-}
+/*@media (min-width: 992px) {*/
+/*    .weekly-day-list { max-width: 720px; }*/
+/*}*/

@@ -597,14 +597,13 @@ h1, h2, h3, h4, h5, h6 {
    Task Nav (sub-header tabs)
    ============================================ */
 
+/* ── Task Nav (sub-header tabs) ── */
 .task-nav {
     display: flex;
     align-items: center;
     gap: 4px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
     padding: 10px 0;
+    position: relative;
 }
 
 .task-nav::-webkit-scrollbar { display: none; }
@@ -672,6 +671,8 @@ h1, h2, h3, h4, h5, h6 {
     position: absolute;
     top: calc(100% + 6px);
     right: 0;
+    left: auto !important;
+    float: none !important;
     min-width: 180px;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
@@ -683,6 +684,8 @@ h1, h2, h3, h4, h5, h6 {
     padding: 6px;
     z-index: 61;
     animation: tiMenuIn 0.2s var(--ease);
+    margin: 0;
+    transform: none !important;
 }
 
 .task-nav-more-item {
@@ -1149,4 +1152,30 @@ h1, h2, h3, h4, h5, h6 {
     /* Dropdown cancel on mobile */
     .ti-dropdown-cancel-mobile { display: flex !important; }
 
+}
+
+/* ============================================
+   Theme Toggle
+   ============================================ */
+
+.theme-toggle {
+    width: 34px;
+    height: 34px;
+    border-radius: var(--r-sm);
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+}
+
+.theme-toggle:hover {
+    color: var(--primary);
+    background: var(--primary-subtle);
+    border-color: var(--primary);
+    transform: scale(1.05);
 }

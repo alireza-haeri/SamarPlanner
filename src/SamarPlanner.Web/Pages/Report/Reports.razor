@@ -8,6 +8,7 @@
 @inject IApiService ApiService
 @inject IToastService ToastService
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
 
 <div class="reports-page">
 	<div class="reports-header">
@@ -78,9 +79,12 @@
 						<NavLink class="btn btn-outline-primary btn-sm" href="@BuildReportDetailUrl(report.ReportId)" Match="NavLinkMatch.All">
 							<i class="bi bi-eye"></i> جزئیات
 						</NavLink>
-						<NavLink class="btn btn-outline-secondary btn-sm" href="@BuildReportEditUrl(report.ReportId)">
+						<NavLink class="btn btn-outline-warning btn-sm" href="@BuildReportEditUrl(report.ReportId)" Match="NavLinkMatch.All">
 							<i class="bi bi-pencil-square"></i> ویرایش
 						</NavLink>
+						<button class="btn btn-outline-danger btn-sm" @onclick="() => ConfirmAndDelete(report.ReportId)">
+							<i class="bi bi-trash"></i> حذف
+						</button>
 					</div>
 				</div>
 			}
@@ -172,6 +176,26 @@
 	private string BuildReportEditUrl(Guid reportId)
 	{
 		return $"/reports/{reportId}?period={_currentPeriod.ToRouteSegment()}&date={_referenceDate.ToPersianDate()}&edit=1";
+	}
+
+	private async Task ConfirmAndDelete(Guid reportId)
+	{
+		// استفاده از JS Interop برای نمایش Confirm box مرورگر
+		var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "آیا مطمئن هستید که می‌خواهید این گزارش را حذف کنید؟");
+		if (confirmed)
+		{
+			await DeleteReport(reportId);
+		}
+	}
+	
+	private async Task DeleteReport(Guid reportId)
+	{
+		var result = await ApiService.SendAsync(
+			() => ApiClient.DeleteReportAsync(reportId),
+			"گزارش با موفقیت حذف شد.");
+
+		if (result?.IsSuccess is true)
+			await LoadReports();
 	}
 
 	private static DateTimeOffset GetReferenceDate(IDictionary<string, Microsoft.Extensions.Primitives.StringValues> queryParams)

@@ -1,0 +1,24 @@
+@inject IJSRuntime JS
+
+<button class="theme-toggle" @onclick="Toggle" title="@(_isDark ? "حالت روشن" : "حالت تاریک")">
+    <i class="bi @(_isDark ? "bi-sun" : "bi-moon")"></i>
+</button>
+
+@code {
+    private bool _isDark;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _isDark = await JS.InvokeAsync<bool>("themeHelper.getTheme");
+            StateHasChanged();
+        }
+    }
+
+    private async Task Toggle()
+    {
+        _isDark = !_isDark;
+        await JS.InvokeVoidAsync("themeHelper.setTheme", _isDark ? "dark" : "light");
+    }
+}

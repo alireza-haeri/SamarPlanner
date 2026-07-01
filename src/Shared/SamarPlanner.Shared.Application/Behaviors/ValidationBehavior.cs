@@ -14,7 +14,7 @@ public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TReq
             typeof(TResponse).GetGenericTypeDefinition() == typeof(Result<>))
         {
             if (!validators.Any())
-                return await next(cancellationToken);
+                return await next();
 
             var context = new ValidationContext<TRequest>(request);
             var results = await Task.WhenAll(validators.Select(v => v.ValidateAsync(context, cancellationToken)));
@@ -27,7 +27,6 @@ public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TReq
                     .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray());
 
                 var resultType = typeof(TResponse); 
-                
                 var validationFailureMethod = resultType.GetMethod(
                     "ValidationFailure",
                     BindingFlags.Public | BindingFlags.Static,
@@ -43,6 +42,6 @@ public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TReq
             }
         }
 
-        return await next(cancellationToken);
+        return await next(); 
     }
 }

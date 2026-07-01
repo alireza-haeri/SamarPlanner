@@ -95,7 +95,7 @@
         var result = await ApiService.SendAsync(
             apiCall: () => ApiClient.ChangeOccurrenceStatusAsync(TaskId, request),
             successMessage: "وضعیت با موفقیت تغییر یافت!",
-            showErrorToast: false
+            showErrorToast: true
         );
 
         if (result != null)
