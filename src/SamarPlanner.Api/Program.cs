@@ -7,9 +7,22 @@ using SamarPlanner.Shared.Kernel;
 using SamarPlanner.Shared.Swagger;
 using SamarPlanner.Task;
 using Scalar.AspNetCore;
+using Serilog;
 
 const string webApplicationCorsPolicyName = "WebApplicationCors";
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.ClearProviders();
+builder.Host.UseSerilog((context, services, configuration) => configuration
+    .ReadFrom.Configuration(context.Configuration)
+    .ReadFrom.Services(services)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File(
+        path: Path.Combine(builder.Environment.ContentRootPath, "Logs", "log-.txt"),
+        rollingInterval: RollingInterval.Day
+    )
+);
 
 builder.Services.Configure<ApplicationSettings>(builder.Configuration.GetSection("ApplicationSettings"));
 var applicationSettings = builder.Configuration.GetSection("ApplicationSettings").Get<ApplicationSettings>()
@@ -86,9 +99,21 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-await app.UseTaskModuleAsync();
-await app.UseReportModuleAsync();
-await app.UseIdentityModuleAsync();
-await app.UseGoalModuleAsync();
+try
+{
+    await app.UseTaskModuleAsync();
+    await app.UseReportModuleAsync();
+    await app.UseIdentityModuleAsync();
+    await app.UseGoalModuleAsync();
 
-await app.RunAsync();
+    Log.Information("Starting SamarPlanner API");
+    await app.RunAsync();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

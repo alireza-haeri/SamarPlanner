@@ -9,8 +9,8 @@
   },
   "codeGenerators": {
     "openApiToCSharpClient": {
-      "namespace": "SamarPlanner.Web.Services",
-      "output": "Services/ApiClient.g.cs",
+      "namespace": "SamarPlanner.Web.Shared.Services",
+      "output": "../SamarPlanner.Web.Shared/Services/ApiClient.g.cs",
       "generateClientInterfaces": true,
       "generateClientClasses": true,
       "generateExceptionClasses": true,
@@ -19,7 +19,7 @@
       "useBaseUrl": false,
       "generateBaseUrlProperty": false,
       "injectHttpClient": true,
-      "disposeHttpClient": true,
+      "disposeHttpClient": false, //true
       "operationGenerationMode": "SingleClientFromOperationId",
       "className": "ApiClient",
       "clientClassAccessModifier": "public",

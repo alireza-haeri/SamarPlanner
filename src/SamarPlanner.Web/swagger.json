@@ -5,6 +5,48 @@
     "version": "v1"
   },
   "paths": {
+    "/api/v1/client-logs": {
+      "post": {
+        "tags": [
+          "ClientLogs"
+        ],
+        "summary": "LogClientEntries",
+        "operationId": "LogClientEntries",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ClientLogEntry"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ClientLogEntry"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ClientLogEntry"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/v1/goals": {
       "post": {
         "tags": [
@@ -1554,6 +1596,32 @@
           }
         }
       },
+      "ClientLogEntry": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "level": {
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "exception": {
+            "type": "string",
+            "nullable": true
+          },
+          "source": {
+            "type": "string",
+            "nullable": true
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "CreateGoalCommandResponse": {
         "type": "object",
         "additionalProperties": false,
@@ -2877,6 +2945,9 @@
     }
   ],
   "tags": [
+    {
+      "name": "ClientLogs"
+    },
     {
       "name": "Goal"
     },

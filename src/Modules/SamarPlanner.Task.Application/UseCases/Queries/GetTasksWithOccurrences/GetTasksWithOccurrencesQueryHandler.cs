@@ -110,7 +110,6 @@ public class GetTasksWithOccurrencesQueryHandler(ITaskRepository taskRepository)
 
     private static bool IsMonthlyMatch(RepeatPattern pattern, DateOnly date)
     {
-        //todo math with persian month
         if (!pattern.MonthDays!.Contains(date.Day))
             return false;
 

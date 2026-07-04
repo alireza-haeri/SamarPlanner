@@ -1,11 +1,15 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using SamarPlanner.Goal.Application.Abstractions;
 using SamarPlanner.Shared.Contracts.Events;
 using SamarPlanner.Shared.Contracts.Queries;
 
 namespace SamarPlanner.Goal.Application.UseCases.Events;
 
-public class TaskGoalStatusChangedHandler(IGoalRepository goalRepository, IMediator mediator)
+public class TaskGoalStatusChangedHandler(
+    IGoalRepository goalRepository,
+    IMediator mediator,
+    ILogger<TaskGoalStatusChangedHandler> logger)
     : INotificationHandler<TaskGoalStatusChangedEvent>
 {
     public async System.Threading.Tasks.Task Handle(TaskGoalStatusChangedEvent notification, CancellationToken ct)
@@ -14,8 +18,11 @@ public class TaskGoalStatusChangedHandler(IGoalRepository goalRepository, IMedia
         {
             var goal = await goalRepository.GetAsTrackingAsync(notification.GoalId, notification.UserId, ct);
             if (goal == null)
-                //todo: logging
+            {
+                logger.LogWarning("Goal with id {GoalId} for user {UserId} not found", notification.GoalId,
+                    notification.UserId);
                 return;
+            }
 
             var result = await mediator.Send(
                 new GetGoalProgressQuery(
@@ -31,7 +38,7 @@ public class TaskGoalStatusChangedHandler(IGoalRepository goalRepository, IMedia
         catch (Exception e)
         {
             Console.WriteLine(e);
-            //todo Logging
+            logger.LogError(e, e.Message);
         }
     }
 }

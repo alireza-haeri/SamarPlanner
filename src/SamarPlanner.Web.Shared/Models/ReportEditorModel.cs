@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using SamarPlanner.Web.Services;
 using SamarPlanner.Web.Shared.Helpers;
+using SamarPlanner.Web.Shared.Services;
 
 namespace SamarPlanner.Web.Shared.Models;
 

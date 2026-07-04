@@ -1,6 +1,5 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Components;
-using SamarPlanner.Web.Services;
 using SamarPlanner.Web.Shared.Abstractions;
 
 namespace SamarPlanner.Web.Shared.Services;
