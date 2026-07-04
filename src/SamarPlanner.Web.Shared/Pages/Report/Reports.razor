@@ -1,0 +1,216 @@
+@page "/reports"
+@page "/reports/{Period}"
+@using Microsoft.AspNetCore.WebUtilities
+@using SamarPlanner.Web.Services
+@using SamarPlanner.Web.Shared.Helpers
+@using SamarPlanner.Web.Shared.Services
+@attribute [Authorize]
+@layout ReportLayout
+@inject IApiClient ApiClient
+@inject IApiService ApiService
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
+
+<div class="reports-page">
+	<div class="reports-header">
+		<div class="reports-header-left">
+			<h1 class="reports-title">📊 گزارش‌ها</h1>
+			<div class="reports-period">
+				<span class="reports-period-name">@_currentPeriod.ToDisplayName()</span>
+				<span class="reports-period-range">@ReportPeriodHelper.GetPeriodLabel(_currentPeriod, _periodStart, _periodEnd)</span>
+			</div>
+		</div>
+
+		<div class="reports-nav">
+			<button class="reports-nav-btn" @onclick="() => GoToPeriod(-1)" title="دوره قبل">
+				<i class="bi bi-chevron-right"></i>
+			</button>
+			<button class="reports-nav-btn reports-nav-today" @onclick="GoToToday" title="امروز">
+				امروز
+			</button>
+			<button class="reports-nav-btn" @onclick="() => GoToPeriod(1)" title="دوره بعد">
+				<i class="bi bi-chevron-left"></i>
+			</button>
+		</div>
+	</div>
+
+	@if (_isLoading)
+	{
+		<div class="reports-loading">
+			<div class="spinner-border text-primary" role="status"></div>
+			<span>بارگذاری گزارش‌ها...</span>
+		</div>
+	}
+	else if (_reports == null || !_reports.Any())
+	{
+		<div class="reports-empty">
+			<div class="reports-empty-icon">🗂️</div>
+			<h3>گزارشی در این دوره ندارید</h3>
+			<p class="text-muted">برای ثبت گزارش جدید، دکمهٔ + پایین صفحه را بزنید.</p>
+		</div>
+	}
+	else
+	{
+		<div class="reports-list">
+			@foreach (var report in _reports)
+			{
+				<div class="report-card">
+					<div class="report-card-header">
+						<div>
+							<h3 class="report-card-title">@(string.IsNullOrWhiteSpace(report.Title) ? "بدون عنوان" : report.Title)</h3>
+							<div class="report-card-meta">
+								<span>@report.PeriodStart.ToPersianDate() - @report.PeriodEnd.ToPersianDate()</span>
+							</div>
+						</div>
+						<div class="report-score">
+							@if (report.Score.HasValue)
+							{
+								<span class="score-badge">@report.Score</span>
+							}
+							else
+							{
+								<span class="score-badge muted">بدون امتیاز</span>
+							}
+						</div>
+					</div>
+
+					<p class="report-card-note">@report.Note</p>
+
+					<div class="report-card-actions">
+						<NavLink class="btn btn-outline-primary btn-sm" href="@BuildReportDetailUrl(report.ReportId)" Match="NavLinkMatch.All">
+							<i class="bi bi-eye"></i> جزئیات
+						</NavLink>
+						<NavLink class="btn btn-outline-warning btn-sm" href="@BuildReportEditUrl(report.ReportId)" Match="NavLinkMatch.All">
+							<i class="bi bi-pencil-square"></i> ویرایش
+						</NavLink>
+						<button class="btn btn-outline-danger btn-sm" @onclick="() => ConfirmAndDelete(report.ReportId)">
+							<i class="bi bi-trash"></i> حذف
+						</button>
+					</div>
+				</div>
+			}
+		</div>
+	}
+</div>
+
+@code {
+	[Parameter] public string? Period { get; set; }
+
+	[SupplyParameterFromQuery]
+	public string? Date { get; set; }
+
+	private List<GetReportsByUserIdQueryResponseReport> _reports = [];
+	private bool _isLoading = true;
+	private ReportPeriodView _currentPeriod = ReportPeriodView.Daily;
+	private DateTimeOffset _referenceDate = DateTimeOffset.Now.Date;
+	private DateTimeOffset _periodStart = DateTimeOffset.Now.Date;
+	private DateTimeOffset _periodEnd = DateTimeOffset.Now.Date;
+
+	protected override async Task OnParametersSetAsync()
+	{
+		_currentPeriod = ReportPeriodHelper.ParseOrDefault(Period);
+
+		// خواندن تاریخ از Query String
+		_referenceDate = GetReferenceDateFromString(Date);
+		(_periodStart, _periodEnd) = ReportPeriodHelper.GetBounds(_currentPeriod, _referenceDate);
+
+		await LoadReports();
+	}
+
+	private static DateTimeOffset GetReferenceDateFromString(string? dateValue)
+	{
+		if (!string.IsNullOrWhiteSpace(dateValue))
+		{
+			var parsed = PersianDateHelper.ToGregorianDateTime(dateValue);
+			if (parsed.HasValue)
+				return parsed.Value;
+		}
+		return DateTimeOffset.Now;
+	}
+
+	private async Task LoadReports()
+	{
+		_isLoading = true;
+
+		var result = await ApiService.SendAsync(
+			apiCall: () => ApiClient.GetReportsAsync(_periodStart, _periodEnd),
+			successMessage: null,
+			showErrorToast: true);
+
+		if (result?.IsSuccess is true)
+		{
+			_reports = result.Response.Reports
+				.OrderByDescending(r => r.PeriodStart)
+				.ThenByDescending(r => r.PeriodEnd)
+				.ToList();
+		}
+		else
+		{
+			_reports = [];
+		}
+
+		_isLoading = false;
+		StateHasChanged();
+	}
+
+	private void GoToPeriod(int direction)
+	{
+		var nextReference = ReportPeriodHelper.ShiftReference(_currentPeriod, _referenceDate, direction);
+		NavigationManager.NavigateTo(BuildReportsUrl(_currentPeriod, nextReference), forceLoad: false);
+	}
+
+	private void GoToToday()
+	{
+		NavigationManager.NavigateTo(BuildReportsUrl(_currentPeriod, DateTimeOffset.Now), forceLoad: false);
+	}
+
+	private string BuildReportsUrl(ReportPeriodView period, DateTimeOffset referenceDate)
+	{
+		return $"/reports/{period.ToRouteSegment()}?date={referenceDate.ToPersianDate()}";
+	}
+
+	private string BuildReportDetailUrl(Guid reportId)
+	{
+		return $"/reports/{reportId}?period={_currentPeriod.ToRouteSegment()}&date={_referenceDate.ToPersianDate()}";
+	}
+
+	private string BuildReportEditUrl(Guid reportId)
+	{
+		return $"/reports/{reportId}?period={_currentPeriod.ToRouteSegment()}&date={_referenceDate.ToPersianDate()}&edit=1";
+	}
+
+	private async Task ConfirmAndDelete(Guid reportId)
+	{
+		// استفاده از JS Interop برای نمایش Confirm box مرورگر
+		var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "آیا مطمئن هستید که می‌خواهید این گزارش را حذف کنید؟");
+		if (confirmed)
+		{
+			await DeleteReport(reportId);
+		}
+	}
+	
+	private async Task DeleteReport(Guid reportId)
+	{
+		var result = await ApiService.SendAsync(
+			() => ApiClient.DeleteReportAsync(reportId),
+			"گزارش با موفقیت حذف شد.");
+
+		if (result?.IsSuccess is true)
+			await LoadReports();
+	}
+
+	private static DateTimeOffset GetReferenceDate(IDictionary<string, Microsoft.Extensions.Primitives.StringValues> queryParams)
+	{
+		if (queryParams.TryGetValue("date", out var dateValue) && !string.IsNullOrWhiteSpace(dateValue))
+		{
+			var parsed = PersianDateHelper.ToGregorianDateTime(dateValue.ToString());
+			if (parsed.HasValue)
+				return parsed.Value;
+		}
+
+		return DateTimeOffset.Now;
+	}
+}
+
+

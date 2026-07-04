@@ -1,14 +1,7 @@
 using Microsoft.JSInterop;
+using SamarPlanner.Web.Shared.Abstractions;
 
 namespace SamarPlanner.Web.Services;
-
-public interface IStorageService
-{
-    Task SetValueAsync<T>(string key, T value);
-    Task<T?> GetValueAsync<T>(string key);
-    Task RemoveAsync(string key);
-    Task ClearAsync();
-}
 
 public class StorageService(IJSRuntime jsRuntime) : IStorageService
 {

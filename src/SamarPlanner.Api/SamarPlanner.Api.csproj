@@ -17,6 +17,7 @@
       <ProjectReference Include="..\Modules\SamarPlanner.Task\SamarPlanner.Task.csproj" />
       <ProjectReference Include="..\Shared\SamarPlanner.Shared.Infrastructure\SamarPlanner.Shared.Infrastructure.csproj" />
       <ProjectReference Include="..\Shared\SamarPlanner.Shared.Kernel\SamarPlanner.Shared.Kernel.csproj" />
+      <ProjectReference Include="..\Shared\SamarPlanner.Shared\SamarPlanner.Shared.csproj" />
     </ItemGroup>
 
 </Project>

@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using SamarPlanner.Web;
 using SamarPlanner.Web.Services;
+using SamarPlanner.Web.Shared;
+using SamarPlanner.Web.Shared.Abstractions;
+using SamarPlanner.Web.Shared.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -11,7 +14,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddHttpClient<IApiClient, ApiClient>(client =>
     {
-        client.BaseAddress = new Uri("http://localhost:5009/");
+        client.BaseAddress = new Uri("http://192.168.1.10:5009/");
     }).AddTypedClient<IApiClient>((httpClient, sp) =>
     {
         var apiClient = new ApiClient(httpClient)
@@ -34,5 +37,6 @@ builder.Services.AddScoped<AuthorizationMessageHandler>();
 builder.Services.AddScoped<IStorageService, StorageService>();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<ModalService>();
+builder.Services.AddSingleton<BackNavigationService>();
 
 await builder.Build().RunAsync();

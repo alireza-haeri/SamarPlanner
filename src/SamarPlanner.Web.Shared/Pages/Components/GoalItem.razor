@@ -1,0 +1,296 @@
+@namespace SamarPlanner.Web.Shared.Pages.Components
+@using SamarPlanner.Web.Services
+@using SamarPlanner.Web.Shared.Components
+@using SamarPlanner.Web.Shared.Helpers
+@using SamarPlanner.Web.Shared.Services
+@inject IApiClient ApiClient
+@inject IToastService ToastService
+@inject IApiService ApiService
+@inject ModalService ModalService
+
+@* همین خط اول رو عوض کن — بقیه دقیقاً مثل قبل *@
+<div
+    class="goal-item goal-status-@Goal.Status.ToString().ToLowerInvariant() @(_showMenu ? "is-menu-open" : "") @(Goal.Goals != null && Goal.Goals.Any() ? "has-children" : "")">
+    @* ── Header Row ── *@
+    <div class="goal-row">
+
+        @* Expand toggle *@
+        @if (Goal.Goals != null && Goal.Goals.Any())
+        {
+            <button class="goal-expand-btn @(_expanded ? "is-expanded" : "")" @onclick="ToggleExpand"
+                    @onclick:stopPropagation>
+                <i class="bi bi-chevron-left"></i>
+            </button>
+        }
+        else
+        {
+            <div class="goal-expand-spacer"></div>
+        }
+
+        @* Status indicator *@
+        <div class="goal-status-badge @GetStatusBadgeClass()">
+            @GetStatusIcon()
+        </div>
+
+        @* Content *@
+        <div class="goal-content" @onclick="ToggleExpand">
+            <div class="goal-title-row">
+                <span class="goal-title">@Goal.Title</span>
+                @if (Goal.GoalPriority != GetAllGoalsByUserIdQueryResponseGoalsGoalPriority.Low || true)
+                {
+                    <span class="goal-priority-chip goal-priority-@GetPriorityName()">
+                        @GetPriorityLabel()
+                    </span>
+                }
+            </div>
+            @if (!string.IsNullOrEmpty(Goal.Description))
+            {
+                <div class="goal-desc">@Goal.Description</div>
+            }
+            <div class="goal-meta-row">
+                <span class="goal-meta-chip">
+                    <i class="bi bi-calendar3"></i>
+                    @Goal.PeriodStart.ToPersianDate() — @Goal.PeriodEnd.ToPersianDate()
+                </span>
+                @if (Goal.Goals != null && Goal.Goals.Any())
+                {
+                    <span class="goal-meta-chip">
+                        <i class="bi bi-diagram-3"></i>
+                        @Goal.Goals.Count() زیرهدف
+                    </span>
+                }
+            </div>
+        </div>
+
+        @* Progress *@
+        <div class="goal-progress-section">
+            <div class="goal-progress-ring">
+                <svg viewBox="0 0 36 36" class="goal-progress-svg">
+                    <path class="goal-progress-track"
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                    <path class="goal-progress-fill"
+                          stroke-dasharray="@(Goal.Progress.ToString("0")), 100"
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                </svg>
+                <span class="goal-progress-text">@Goal.Progress.ToString("0")%</span>
+            </div>
+        </div>
+
+        @* Actions *@
+        <div class="goal-actions">
+            <button class="btn-action btn-action-edit" @onclick="OpenEditModal" @onclick:stopPropagation title="ویرایش">
+                <i class="bi bi-pencil"></i>
+            </button>
+
+            <TaskItemDropdown @bind-IsOpen="_showMenu" Title="بیشتر">
+                <ButtonContent>
+                    <i class="bi bi-three-dots"></i>
+                </ButtonContent>
+                <ChildContent>
+                    @switch (Goal.Status)
+                    {
+                        case GetAllGoalsByUserIdQueryResponseGoalsStatus.Active:
+                            <button class="ti-dropdown-item" @onclick="OnAchieve">
+                                <span class="ti-dropdown-icon"><i class="bi bi-check2-circle"></i></span>
+                                <span>انجام شد</span>
+                            </button>
+                            <button class="ti-dropdown-item" @onclick="OnFail">
+                                <span class="ti-dropdown-icon"><i class="bi bi-x-circle"></i></span>
+                                <span>ناموفق</span>
+                            </button>
+                            <button class="ti-dropdown-item" @onclick="OnRollover">
+                                <span class="ti-dropdown-icon"><i class="bi bi-arrow-repeat"></i></span>
+                                <span>انتقال به دوره بعد</span>
+                            </button>
+                            break;
+                        case GetAllGoalsByUserIdQueryResponseGoalsStatus.Achieved:
+                            <button class="ti-dropdown-item" @onclick="OnActive">
+                                <span class="ti-dropdown-icon"><i class="bi bi-circle"></i></span>
+                                <span>تغییر به فعال</span>
+                            </button>
+                            <button class="ti-dropdown-item" @onclick="OnFail">
+                                <span class="ti-dropdown-icon"><i class="bi bi-x-circle"></i></span>
+                                <span>تغییر به ناموفق</span>
+                            </button>
+                            break;
+                        case GetAllGoalsByUserIdQueryResponseGoalsStatus.Failed:
+                            <button class="ti-dropdown-item" @onclick="OnActive">
+                                <span class="ti-dropdown-icon"><i class="bi bi-circle"></i></span>
+                                <span>تغییر به فعال</span>
+                            </button>
+                            <button class="ti-dropdown-item" @onclick="OnAchieve">
+                                <span class="ti-dropdown-icon"><i class="bi bi-check2-circle"></i></span>
+                                <span>تغییر به انجام شده</span>
+                            </button>
+                            break;
+                    }
+                    <div class="ti-dropdown-divider"></div>
+                    <button class="ti-dropdown-item ti-dropdown-item--danger" @onclick="OnDelete">
+                        <span class="ti-dropdown-icon"><i class="bi bi-trash3"></i></span>
+                        <span>حذف هدف</span>
+                    </button>
+                </ChildContent>
+            </TaskItemDropdown>
+        </div>
+    </div>
+
+    @* ── Children ── *@
+    @if (_expanded && Goal.Goals != null && Goal.Goals.Any())
+    {
+        <div class="goal-children">
+            @foreach (var child in Goal.Goals)
+            {
+                <GoalItem Goal="@child" ParentGoalId="@Goal.GoalId" OnGoalUpdated="OnGoalUpdated"/>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public GetAllGoalsByUserIdQueryResponseGoals Goal { get; set; } = null!;
+    [Parameter] public EventCallback OnGoalUpdated { get; set; }
+    [Parameter] public Guid? ParentGoalId { get; set; }
+
+    private bool _expanded = true;
+    private bool _showMenu;
+
+    private void ToggleExpand()
+    {
+        _expanded = !_expanded;
+    }
+
+    // ── Edit Modal via Portal ──
+
+    private async Task OpenEditModal()
+    {
+        var goal = Goal;
+        var parentGoalId = ParentGoalId;
+
+        var shortGoalResult = await ApiService.SendAsync(
+            () => ApiClient.GetShortGoalsAsync(),
+            showErrorToast: true);
+
+        var shortGoals = shortGoalResult?.IsSuccess is true
+            ? shortGoalResult.Response.Goals.ToList()
+            : new List<GetAllShortGoalsByUserIdQueryResponseGoals>();
+
+        ModalService.Show(builder =>
+        {
+            builder.OpenComponent<EditGoalModal>(0);
+            builder.AddAttribute(1, nameof(EditGoalModal.Goal), goal);
+            builder.AddAttribute(2, nameof(EditGoalModal.ParentGoalId), parentGoalId);
+            builder.AddAttribute(3, nameof(EditGoalModal.ShortGoals), shortGoals);
+            builder.AddAttribute(4, nameof(EditGoalModal.OnGoalUpdated),
+                EventCallback.Factory.Create(this, async () =>
+                {
+                    ModalService.Close();
+                    await OnGoalUpdated.InvokeAsync();
+                }));
+            builder.AddAttribute(5, nameof(EditGoalModal.OnCloseRequested),
+                EventCallback.Factory.Create(this, () => ModalService.Close()));
+            builder.CloseComponent();
+        });
+    }
+
+    // ── Status Changes ──
+
+    private async Task OnAchieve()
+    {
+        var result = await ApiService.SendAsync(
+            () => ApiClient.AchieveGoalAsync(Goal.GoalId),
+            successMessage: "هدف با موفقیت انجام شد!",
+            showErrorToast: true);
+        if (result?.IsSuccess == true) await OnGoalUpdated.InvokeAsync();
+    }
+
+    private async Task OnActive()
+    {
+        var result = await ApiService.SendAsync(
+            () => ApiClient.ActiveGoalAsync(Goal.GoalId),
+            successMessage: "هدف بعنوان فعال ثبت شد!",
+            showErrorToast: true);
+        if (result?.IsSuccess == true) await OnGoalUpdated.InvokeAsync();
+    }
+
+    private async Task OnFail()
+    {
+        var result = await ApiService.SendAsync(
+            () => ApiClient.FailGoalAsync(Goal.GoalId),
+            successMessage: "هدف بعنوان ناموفق ثبت شد!",
+            showErrorToast: true);
+        if (result?.IsSuccess == true) await OnGoalUpdated.InvokeAsync();
+    }
+
+    private async Task OnRollover()
+    {
+        var start = DateTime.Now;
+        var end = start.Add(Goal.PeriodEnd - Goal.PeriodStart);
+        var request = new RolloverGoalRequest(periodEnd: end, periodStart: start);
+
+        var result = await ApiService.SendAsync(
+            () => ApiClient.RolloverGoalAsync(Goal.GoalId, request),
+            successMessage: "هدف با موفقیت به دوره بعد انتقال یافت.",
+            showErrorToast: true);
+        if (result?.IsSuccess == true) await OnGoalUpdated.InvokeAsync();
+    }
+
+    private async Task OnDelete()
+    {
+        var result = await ApiService.SendAsync(
+            () => ApiClient.DeleteGoalAsync(Goal.GoalId),
+            successMessage: "هدف با موفقیت حذف شد!",
+            showErrorToast: true);
+        if (result?.IsSuccess == true) await OnGoalUpdated.InvokeAsync();
+    }
+
+    // ── Helpers ──
+
+    private string GetStatusBadgeClass()
+    {
+        return Goal.Status switch
+        {
+            GetAllGoalsByUserIdQueryResponseGoalsStatus.Active => "goal-badge-active",
+            GetAllGoalsByUserIdQueryResponseGoalsStatus.Achieved => "goal-badge-achieved",
+            GetAllGoalsByUserIdQueryResponseGoalsStatus.Failed => "goal-badge-failed",
+            GetAllGoalsByUserIdQueryResponseGoalsStatus.RolledOver => "goal-badge-rolled",
+            _ => "goal-badge-active"
+        };
+    }
+
+    private MarkupString GetStatusIcon()
+    {
+        return Goal.Status switch
+        {
+            GetAllGoalsByUserIdQueryResponseGoalsStatus.Achieved =>
+                new MarkupString(@"<svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M22 11.08V12a10 10 0 1 1-5.93-9.14'/><polyline points='22 4 12 14.01 9 11.01'/></svg>"),
+            GetAllGoalsByUserIdQueryResponseGoalsStatus.Failed =>
+                new MarkupString(@"<svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='15' y1='9' x2='9' y2='15'/><line x1='9' y1='9' x2='15' y2='15'/></svg>"),
+            GetAllGoalsByUserIdQueryResponseGoalsStatus.RolledOver =>
+                new MarkupString(@"<svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='23 4 23 10 17 10'/><path d='M20.49 15a9 9 0 1 1-2.12-9.36L23 10'/></svg>"),
+            _ =>
+                new MarkupString(@"<svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/></svg>")
+        };
+    }
+
+    private string GetPriorityName()
+    {
+        return Goal.GoalPriority switch
+        {
+            GetAllGoalsByUserIdQueryResponseGoalsGoalPriority.High => "high",
+            GetAllGoalsByUserIdQueryResponseGoalsGoalPriority.Medium => "medium",
+            _ => "low"
+        };
+    }
+
+    private string GetPriorityLabel()
+    {
+        return Goal.GoalPriority switch
+        {
+            GetAllGoalsByUserIdQueryResponseGoalsGoalPriority.High => "بالا",
+            GetAllGoalsByUserIdQueryResponseGoalsGoalPriority.Medium => "متوسط",
+            _ => "پایین"
+        };
+    }
+
+
+}
