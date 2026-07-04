@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SamarPlanner.Task.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -46,8 +46,7 @@ namespace SamarPlanner.Task.Infrastructure.Persistence.Migrations
                     Time = table.Column<TimeOnly>(type: "time", unicode: false, nullable: true),
                     Status = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
                     Score = table.Column<int>(type: "int", unicode: false, maxLength: 50, nullable: true),
-                    IsSkipped = table.Column<bool>(type: "bit", unicode: false, nullable: false),
-                    SoftDeleted = table.Column<bool>(type: "bit", unicode: false, nullable: false)
+                    IsSkipped = table.Column<bool>(type: "bit", unicode: false, nullable: false)
                 },
                 constraints: table =>
                 {

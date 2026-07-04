@@ -12,8 +12,8 @@ using SamarPlanner.Task.Infrastructure.Persistence;
 namespace SamarPlanner.Task.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(TaskDbContext))]
-    [Migration("20260615175856_init")]
-    partial class init
+    [Migration("20260704174033_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,7 +21,7 @@ namespace SamarPlanner.Task.Infrastructure.Persistence.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("task")
-                .HasAnnotation("ProductVersion", "10.0.8")
+                .HasAnnotation("ProductVersion", "8.0.28")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -94,10 +94,6 @@ namespace SamarPlanner.Task.Infrastructure.Persistence.Migrations
                         .IsUnicode(false)
                         .HasColumnType("int");
 
-                    b.Property<bool>("SoftDeleted")
-                        .IsUnicode(false)
-                        .HasColumnType("bit");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -122,35 +118,39 @@ namespace SamarPlanner.Task.Infrastructure.Persistence.Migrations
                 {
                     b.OwnsOne("SamarPlanner.Task.Core.Entities.RepeatPattern", "RepeatPattern", b1 =>
                         {
-                            b1.Property<Guid>("TaskId");
+                            b1.Property<Guid>("TaskId")
+                                .HasColumnType("uniqueidentifier");
 
                             b1.Property<DateOnly>("AnchorDate")
-                                .IsUnicode(false);
+                                .IsUnicode(false)
+                                .HasColumnType("date");
 
                             b1.Property<int?>("Interval")
                                 .HasMaxLength(50)
-                                .IsUnicode(false);
+                                .IsUnicode(false)
+                                .HasColumnType("int");
 
                             b1.Property<string>("MonthDays")
                                 .HasMaxLength(50)
-                                .IsUnicode(false);
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)");
 
                             b1.Property<string>("Type")
                                 .IsRequired()
                                 .HasMaxLength(50)
-                                .IsUnicode(false);
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)");
 
                             b1.Property<string>("WeekDays")
                                 .HasMaxLength(50)
-                                .IsUnicode(false);
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)");
 
                             b1.HasKey("TaskId");
 
                             b1.ToTable("Task", "task");
 
-                            b1
-                                .ToJson("RepeatPattern")
-                                .HasColumnType("nvarchar(max)");
+                            b1.ToJson("RepeatPattern");
 
                             b1.WithOwner()
                                 .HasForeignKey("TaskId");

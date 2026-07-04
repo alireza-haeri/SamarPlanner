@@ -71,14 +71,14 @@ public class ReportRepository(ReportDbContext context) : IReportRepository
             .AsNoTracking()
             .Where(r => r.UserId == userId && r.PeriodStart == periodStart && r.PeriodEnd == periodEnd)
             .Select(r => new ReportSummary(
-                ReportId: r.Id,
-                Title: r.Title,
-                NotePreview: (r.Note.Length > notePreviewLenght)
+                r.Id,
+                r.Title,
+                (r.Note.Length > notePreviewLenght)
                     ? r.Note.Substring(0, notePreviewLenght) + "..."
                     : r.Note,
-                PeriodStart: r.PeriodStart,
-                PeriodEnd: r.PeriodEnd,
-                Score: r.Score)
+                r.PeriodStart,
+                r.PeriodEnd,
+                r.Score)
             )
             .ToListAsync(cancellationToken);
     }
