@@ -1,0 +1,198 @@
+@namespace SamarPlanner.Web.Shared.Pages.Components
+@using SamarPlanner.Web.Services
+@using SamarPlanner.Web.Shared.Helpers
+@using SamarPlanner.Web.Shared.Services
+@inject IApiClient ApiClient
+@inject IApiService ApiService
+@inject IToastService ToastService
+
+<EditForm EditContext="@_formHelper.EditContext" OnSubmit="@HandleSubmit">
+    <ValidationSummary class="text-danger"/>
+
+    <div class="mb-3">
+        <label class="form-label">عنوان هدف</label>
+        <InputText class="form-control" @bind-Value="_formHelper.Model.Title"
+                   placeholder="مثلاً: یادگیری زبان انگلیسی"/>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">توضیح (اختیاری)</label>
+        <InputTextArea class="form-control" @bind-Value="_formHelper.Model.Description"
+                       placeholder="توضیحات بیشتر درباره هدف" rows="3"/>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">اولویت</label>
+        <InputSelect class="form-select" @bind-Value="_formHelper.Model.Priority">
+            <option value="">انتخاب نکنید</option>
+            <option value="@CreateGoalRequestPriority.High">بالا</option>
+            <option value="@CreateGoalRequestPriority.Medium">متوسط</option>
+            <option value="@CreateGoalRequestPriority.Low">پایین</option>
+        </InputSelect>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">زیرمجموعه هدف (اختیاری)</label>
+        <select class="form-select" @bind="_selectedParentGoalId">
+            <option value="">هیچکدام</option>
+            @foreach (var goal in ShortGoals)
+            {
+                <option value="@goal.GoalId">@goal.Title</option>
+            }
+        </select>
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <label class="form-label">تاریخ شروع (شمسی)</label>
+            <InputText class="form-control" @bind-Value="_formHelper.Model.PeriodStart" placeholder="۱۴۰۴/۰۱/۰۱"/>
+            <small class="text-muted">فرمت: سال/ماه/روز</small>
+        </div>
+        <div class="col-6">
+            <label class="form-label">تاریخ پایان (شمسی)</label>
+            <InputText class="form-control" @bind-Value="_formHelper.Model.PeriodEnd" placeholder="۱۴۰۴/۱۲/۳۰"/>
+            <small class="text-muted">فرمت: سال/ماه/روز</small>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100 mt-3" disabled="@_isLoading">
+        @if (_isLoading)
+        {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            <span>در حال ثبت...</span>
+        }
+        else
+        {
+            <span>ایجاد هدف</span>
+        }
+    </button>
+</EditForm>
+
+@code {
+    private FormHelper<CreateGoalModel> _formHelper = null!;
+    private bool _isLoading;
+    private Guid? _selectedParentGoalId;
+
+    [Parameter] public EventCallback OnGoalAdded { get; set; }
+    private List<GetAllShortGoalsByUserIdQueryResponseGoals> ShortGoals { get; set; } = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await ApiService.SendAsync(
+            () => ApiClient.GetShortGoalsAsync(),
+            showErrorToast: true);
+
+        if (result?.IsSuccess is true)
+            ShortGoals = result.Response.Goals.ToList();
+    }
+
+    protected override void OnInitialized()
+    {
+        _formHelper = new FormHelper<CreateGoalModel>(new CreateGoalModel
+        {
+            Title = "",
+            Description = "",
+            Priority = null,
+            PeriodStart = PersianDateHelper.TodayPersian(),
+            PeriodEnd = ""
+        });
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (_isLoading) return;
+        _isLoading = true;
+
+        _formHelper.ClearErrors();
+
+        if (!_formHelper.Validate())
+        {
+            _isLoading = false;
+            return;
+        }
+
+        DateTimeOffset? periodStart = null;
+        DateTimeOffset? periodEnd = null;
+
+        if (!string.IsNullOrEmpty(_formHelper.Model.PeriodStart))
+        {
+            var startDate = PersianDateHelper.ToGregorianDateTime(_formHelper.Model.PeriodStart);
+            if (!startDate.HasValue)
+            {
+                ToastService.ShowToastError("تاریخ شروع معتبر نیست!");
+                _isLoading = false;
+                return;
+            }
+
+            periodStart = startDate.Value;
+        }
+
+        if (!string.IsNullOrEmpty(_formHelper.Model.PeriodEnd))
+        {
+            var endDate = PersianDateHelper.ToGregorianDateTime(_formHelper.Model.PeriodEnd);
+            if (!endDate.HasValue)
+            {
+                ToastService.ShowToastError("تاریخ پایان معتبر نیست!");
+                _isLoading = false;
+                return;
+            }
+
+            periodEnd = endDate.Value;
+        }
+
+        var request = new CreateGoalRequest(
+            title: _formHelper.Model.Title,
+            description: _formHelper.Model.Description,
+            priority: _formHelper.Model.Priority,
+            periodStart: periodStart ?? DateTimeOffset.Now,
+            periodEnd: periodEnd ?? DateTimeOffset.Now.AddDays(30),
+            parentGoalId: _selectedParentGoalId
+        );
+
+        var result = await ApiService.SendAsync(
+            () => ApiClient.CreateGoalAsync(request),
+            "هدف با موفقیت ایجاد شد!",
+            false
+        );
+
+        if (result != null)
+        {
+            if (result.IsSuccess)
+            {
+                _formHelper.Model.Title = "";
+                _formHelper.Model.Description = "";
+                _formHelper.Model.Priority = null;
+                _formHelper.Model.PeriodStart = PersianDateHelper.TodayPersian();
+                _formHelper.Model.PeriodEnd = "";
+                _formHelper.ClearErrors();
+
+                await OnGoalAdded.InvokeAsync();
+            }
+            else
+            {
+                _formHelper.SetServerErrors(result.Errors);
+                ToastService.ShowToastWarning("لطفاً خطاها را بررسی کنید.");
+            }
+        }
+
+        _isLoading = false;
+    }
+
+    public class CreateGoalModel
+    {
+        [Required(ErrorMessage = "عنوان الزامی است")]
+        public string Title { get; set; } = "";
+
+        public string? Description { get; set; }
+
+        public CreateGoalRequestPriority? Priority { get; set; }
+
+        public string? PeriodStart { get; set; }
+
+        public string? PeriodEnd { get; set; }
+    }
+
+}
+
+
+

@@ -1,0 +1,41 @@
+@using Microsoft.AspNetCore.Components.Authorization
+@using SamarPlanner.Web.Services
+@using SamarPlanner.Web.Shared.Services
+@namespace SamarPlanner.Web.Shared.Components
+@inject CustomAuthenticationStateProvider AuthProvider
+@inject IAuthenticationService AuthService
+@inject NavigationManager NavigationManager
+
+<div class="sub-topbar">
+    <a href="/" class="sub-brand">
+        <div class="sub-brand-icon"><i class="bi bi-calendar2-week-fill"></i></div>
+        <span class="sub-brand-text">SamarPlanner</span>
+    </a>
+    <div class="sub-topbar-right">
+        <ThemeToggle />
+        @if (!string.IsNullOrEmpty(_userName))
+        {
+            <span class="sub-topbar-user">@_userName</span>
+        }
+        <button class="sub-topbar-logout" @onclick="Logout" title="خروج">
+            <i class="bi bi-box-arrow-right"></i>
+        </button>
+    </div>
+</div>
+
+@code {
+    private string _userName = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthProvider.GetAuthenticationStateAsync();
+        _userName = state.User.Identity?.Name ?? "کاربر";
+    }
+
+    private async Task Logout()
+    {
+        await AuthService.LogoutAsync();
+        AuthProvider.NotifyUserLogout();
+        NavigationManager.NavigateTo("/login", true);
+    }
+}

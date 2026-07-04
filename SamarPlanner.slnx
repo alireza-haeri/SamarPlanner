@@ -1,6 +1,8 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/SamarPlanner.Api/SamarPlanner.Api.csproj" />
+    <Project Path="src/SamarPlanner.Maui/SamarPlanner.Maui.csproj" />
+    <Project Path="src/SamarPlanner.Web.Shared/SamarPlanner.Web.Shared.csproj" />
     <Project Path="src\SamarPlanner.Web\SamarPlanner.Web.csproj" />
   </Folder>
   <Folder Name="/src/Modules/" />

@@ -1,0 +1,25 @@
+@namespace SamarPlanner.Web.Shared.Components
+
+@using SamarPlanner.Web.Services
+@using SamarPlanner.Web.Shared.Services
+@inject ModalService ModalService
+@implements IDisposable
+
+@if (ModalService.IsOpen)
+{
+    @ModalService.Content
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        ModalService.OnChanged += HandleChanged;
+    }
+
+    private void HandleChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose()
+    {
+        ModalService.OnChanged -= HandleChanged;
+    }
+}

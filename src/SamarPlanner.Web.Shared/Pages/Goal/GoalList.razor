@@ -1,0 +1,108 @@
+@page "/goals"
+@using SamarPlanner.Web.Services
+@using SamarPlanner.Web.Shared.Components
+@using SamarPlanner.Web.Shared.Pages.Components
+@using SamarPlanner.Web.Shared.Services
+@attribute [Authorize]
+@layout GoalLayout
+@inject IApiClient ApiClient
+@inject IToastService ToastService
+@inject IApiService ApiService
+@inject NavigationManager NavigationManager
+
+<ModalPortal />
+
+<div class="goals-page">
+
+    @* ── Header ── *@
+    <div class="goals-header">
+        <div class="goals-header-left">
+            <h1 class="goals-title">اهداف</h1>
+            @if (_totalCount > 0)
+            {
+                <span class="goals-count">@_totalCount هدف</span>
+            }
+        </div>
+    </div>
+
+    @if (_isLoading)
+    {
+        <div class="goals-loading">
+            <div class="goals-loading-spinner"></div>
+            <span>بارگذاری اهداف...</span>
+        </div>
+    }
+    else if (_goals == null || !_goals.Any())
+    {
+        <div class="goals-empty">
+            <div class="goals-empty-icon">
+                <i class="bi bi-bullseye"></i>
+            </div>
+            <h3>هنوز هدفی تعریف نکرده‌اید</h3>
+            <p>هدف‌های شما اینجا نمایش داده می‌شوند</p>
+        </div>
+    }
+    else
+    {
+        <div class="goals-list">
+            @foreach (var goal in _goals)
+            {
+                <GoalItem Goal="@goal" OnGoalUpdated="LoadGoals" />
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<GetAllGoalsByUserIdQueryResponseGoals>? _goals;
+    private bool _isLoading = true;
+    private int _totalCount;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadGoals();
+    }
+
+    private async Task LoadGoals()
+    {
+        try
+        {
+            _isLoading = true;
+            var result = await ApiService.SendAsync(
+                () => ApiClient.GetGoalsAsync(),
+                successMessage: null,
+                showErrorToast: true);
+
+            if (result?.IsSuccess == true)
+            {
+                _goals = result.Response?.Goals?.ToList() ?? new();
+                _totalCount = CountGoals(_goals);
+            }
+            else
+            {
+                _goals = new();
+                _totalCount = 0;
+            }
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowToastError($"خطا: {ex.Message}");
+            _goals = new();
+            _totalCount = 0;
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private int CountGoals(List<GetAllGoalsByUserIdQueryResponseGoals>? goals)
+    {
+        if (goals == null) return 0;
+        var count = goals.Count;
+        foreach (var g in goals)
+            count += CountGoals(g.Goals?.ToList());
+        return count;
+    }
+}

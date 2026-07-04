@@ -1,0 +1,139 @@
+@namespace SamarPlanner.Web.Shared.Pages.Components
+@using SamarPlanner.Web.Services
+@using SamarPlanner.Web.Shared.Services
+@inherits ComponentBase
+@inject IApiClient ApiClient
+@inject IToastService ToastService
+@inject IApiService ApiService
+
+<div class="modal-overlay">
+    <div class="modal-content" @onclick:stopPropagation>
+        <div class="modal-header">
+            <h5>تغییر وضعیت تسک</h5>
+            <button class="btn-close" @onclick="OnClose"></button>
+        </div>
+        <div class="modal-body">
+            <EditForm EditContext="@_formHelper.EditContext" OnSubmit="@Submit">
+                <ValidationSummary class="text-danger mb-3"/>
+
+                <div class="mb-3">
+                    <label class="form-label">وضعیت جدید</label>
+                    <InputSelect class="form-select" @bind-Value="_formHelper.Model.Status">
+                        <option value="@GetTasksWithOccurrencesQueryResultTaskOccurrencesStatus.Pending">⏳ در انتظار
+                        </option>
+                        <option value="@GetTasksWithOccurrencesQueryResultTaskOccurrencesStatus.Done">✅ انجام شد
+                        </option>
+                        <option value="@GetTasksWithOccurrencesQueryResultTaskOccurrencesStatus.NotDone">❌ انجام نشد
+                        </option>
+                        <option value="@GetTasksWithOccurrencesQueryResultTaskOccurrencesStatus.AlmostDone">🔄 تقریباً
+                            انجام شد
+                        </option>
+                    </InputSelect>
+                </div>
+
+                @if (_formHelper.Model.Status == GetTasksWithOccurrencesQueryResultTaskOccurrencesStatus.AlmostDone)
+                {
+                    <div class="mb-3">
+                        <label class="form-label">امتیاز (اختیاری)</label>
+                        <InputNumber class="form-control" @bind-Value="_formHelper.Model.Score" min="0" max="10"/>
+                        <small class="text-muted">مقداری بین ۰ تا ۱۰۰</small>
+                    </div>
+                }
+
+                <button type="submit" class="btn btn-primary w-100" disabled="@_isLoading">
+                    @if (_isLoading)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2"></span>
+                        <span>در حال ثبت...</span>
+                    }
+                    else
+                    {
+                        <span>تغییر وضعیت</span>
+                    }
+                </button>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public Guid TaskId { get; set; }
+    [Parameter] public DateTimeOffset Date { get; set; }
+    [Parameter] public GetTasksWithOccurrencesQueryResultTaskOccurrencesStatus CurrentStatus { get; set; }
+    [Parameter] public int? CurrentScore { get; set; }
+    [Parameter] public EventCallback OnStatusChanged { get; set; }
+    [Parameter] public EventCallback OnCloseRequested { get; set; }
+
+    private FormHelper<ChangeStatusModel> _formHelper = null!;
+    private bool _isLoading = false;
+
+    protected override void OnInitialized()
+    {
+        _formHelper = new FormHelper<ChangeStatusModel>(new ChangeStatusModel
+        {
+            Status = CurrentStatus,
+            Score = CurrentScore ?? 5
+        });
+    }
+
+    private async Task Submit()
+    {
+        if (_isLoading) return;
+        _isLoading = true;
+
+        _formHelper.ClearErrors();
+
+        if (!_formHelper.Validate())
+        {
+            _isLoading = false;
+            return;
+        }
+
+        var score = _formHelper.Model.Status == GetTasksWithOccurrencesQueryResultTaskOccurrencesStatus.AlmostDone
+            ? _formHelper.Model.Score
+            : null;
+
+        var request = new ChangeOccurrenceStatusRequest(
+            date: Date,
+            score: score,
+            status: (ChangeOccurrenceStatusRequestStatus)_formHelper.Model.Status
+        );
+
+        var result = await ApiService.SendAsync(
+            apiCall: () => ApiClient.ChangeOccurrenceStatusAsync(TaskId, request),
+            successMessage: "وضعیت با موفقیت تغییر یافت!",
+            showErrorToast: true
+        );
+
+        if (result != null)
+        {
+            if (result.IsSuccess)
+            {
+                await OnStatusChanged.InvokeAsync();
+                await OnClose();
+            }
+            else
+            {
+                _formHelper.SetServerErrors(result.Errors);
+                ToastService.ShowToastWarning("لطفاً خطاها را بررسی کنید.");
+            }
+        }
+
+        _isLoading = false;
+    }
+
+    private async Task OnClose()
+    {
+        await OnCloseRequested.InvokeAsync();
+    }
+
+    public class ChangeStatusModel
+    {
+        [Required(ErrorMessage = "وضعیت الزامی است")]
+        public GetTasksWithOccurrencesQueryResultTaskOccurrencesStatus Status { get; set; }
+
+        [Range(0, 100, ErrorMessage = "امتیاز باید بین ۰ تا ۱۰۰ باشد")]
+        public int? Score { get; set; }
+    }
+
+}

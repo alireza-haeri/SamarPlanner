@@ -1,0 +1,382 @@
+@namespace SamarPlanner.Web.Shared.Pages.Components
+@using SamarPlanner.Web.Services
+@using SamarPlanner.Web.Shared.Helpers
+@using SamarPlanner.Web.Shared.Services
+@inherits ComponentBase
+@inject IApiClient ApiClient
+@inject IToastService ToastService
+@inject IApiService ApiService
+
+<div class="modal-overlay">
+    <div class="modal-content" @onclick:stopPropagation>
+        <div class="modal-header">
+            <h5>ویرایش تسک</h5>
+            <button class="btn-close" @onclick="OnClose"></button>
+        </div>
+        <div class="modal-body">
+            <EditForm EditContext="@_formHelper?.EditContext" OnSubmit="@Submit" class="edit-task-form">
+                <ValidationSummary class="text-danger mb-3"/>
+
+                <div class="mb-3">
+                    <label class="form-label">عنوان تسک</label>
+                    <InputText class="form-control" @bind-Value="_formHelper.Model.Title"
+                               placeholder="عنوان را وارد کنید"/>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">توضیحات</label>
+                    <InputTextArea class="form-control" @bind-Value="_formHelper.Model.Description"
+                                   placeholder="توضیحات (اختیاری)" rows="2"/>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">زمان پیش‌فرض (اختیاری)</label>
+                    <InputText class="form-control" @bind-Value="_formHelper.Model.DefaultTime"
+                               placeholder="مثلاً 14:30"/>
+                    <small class="text-muted">فرمت: ساعت:دقیقه</small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">اولویت</label>
+                    <InputSelect class="form-select" @bind-Value="_formHelper.Model.Priority">
+                        <option value="">بدون اولویت</option>
+                        <option value="@UpdateTaskRequestPriority.High">بالا</option>
+                        <option value="@UpdateTaskRequestPriority.Medium">متوسط</option>
+                        <option value="@UpdateTaskRequestPriority.Low">پایین</option>
+                    </InputSelect>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">زیرمجموعه هدف (اختیاری)</label>
+                    <select class="form-select" @bind="_formHelper.Model.ParentGoalId">
+                        <option value="">هیچکدام</option>
+                        @foreach (var goal in ShortGoals)
+                        {
+                            <option value="@goal.GoalId">@goal.Title</option>
+                        }
+                    </select>
+                </div>
+
+
+                <div class="mb-3 border-top pt-3">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <label class="form-label mb-0 fw-semibold">تکرار</label>
+                        <span class="text-muted small">(اختیاری)</span>
+                    </div>
+
+                    <div class="mb-2">
+                        <InputSelect class="form-select" @bind-Value="_formHelper.Model.RepeatType">
+                            <option value="">بدون تکرار</option>
+                            <option value="@RepeatPatternDtoType.Daily">روزانه</option>
+                            <option value="@RepeatPatternDtoType.WeeklyOnDays">هفتگی (روزهای مشخص)</option>
+                            <option value="@RepeatPatternDtoType.MonthlyOnDays">ماهانه (روزهای مشخص)</option>
+                        </InputSelect>
+                    </div>
+
+                    @if (_formHelper?.Model?.RepeatType == RepeatPatternDtoType.WeeklyOnDays)
+                    {
+                        <div class="mb-2">
+                            <label class="form-label small">روزهای هفته</label>
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach (var day in new[] { ("شنبه", WeekDays._1), ("یکشنبه", WeekDays._2), ("دوشنبه", WeekDays._3), ("سه‌شنبه", WeekDays._4), ("چهارشنبه", WeekDays._5), ("پنجشنبه", WeekDays._6), ("جمعه", WeekDays._0) })
+                                {
+                                    var currentDay = day.Item2;
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"
+                                               checked="@(_formHelper?.Model?.WeekDays.Contains(currentDay) == true)"
+                                               @onchange="() => ToggleWeekDay(currentDay)"/>
+                                        <label class="form-check-label small">@day.Item1</label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    @if (_formHelper?.Model?.RepeatType == RepeatPatternDtoType.MonthlyOnDays)
+                    {
+                        <div class="mb-2">
+                            <label class="form-label small">روزهای ماه (اعداد ۱ تا ۳۱، با کاما جدا کنید)</label>
+                            <InputText class="form-control" @bind-Value="_formHelper.Model.MonthDaysText"
+                                       placeholder="مثلاً ۱,۱۵,۳۰"/>
+                            <small class="text-muted">مثلاً برای روزهای ۱، ۱۵ و ۳۰ وارد کنید: 1,15,30</small>
+                        </div>
+                    }
+
+                    @if (_formHelper?.Model?.RepeatType is not null)
+                    {
+                        <div class="row">
+                            <div class="col-6">
+                                <label class="form-label small">فاصله تکرار</label>
+                                <InputNumber class="form-control" @bind-Value="_formHelper.Model.Interval" min="1"/>
+                                <small class="text-muted">پیش‌فرض: ۱</small>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small">تاریخ شروع (شمسی)</label>
+                                <InputText class="form-control" @bind-Value="_formHelper.Model.AnchorDate"
+                                           placeholder="همان تاریخ تسک"/>
+                                <small class="text-muted">خالی = همان تاریخ</small>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100" disabled="@_isLoading">
+                    @if (_isLoading)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2"></span>
+                        <span>در حال ذخیره...</span>
+                    }
+                    else
+                    {
+                        <span>ذخیره تغییرات</span>
+                    }
+                </button>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public Guid TaskId { get; set; }
+    private DateTimeOffset CurrentDate { get; set; }
+    private UpdateTaskRequestType CurrentType { get; set; } = UpdateTaskRequestType.Task;
+    [Parameter] public EventCallback OnTaskUpdated { get; set; }
+    [Parameter] public EventCallback OnCloseRequested { get; set; }
+
+    private FormHelper<EditTaskModel> _formHelper = null!;
+    private bool _isLoading = false;
+
+    private List<GetAllShortGoalsByUserIdQueryResponseGoals> ShortGoals { get; set; } = [];
+
+    protected override void OnInitialized()
+    {
+        _formHelper = new FormHelper<EditTaskModel>(new EditTaskModel());
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var taskDetail = await ApiService.SendAsync(
+            () => ApiClient.GetTaskDetailAsync(taskId: TaskId),
+            showErrorToast: true);
+
+        if (taskDetail?.IsSuccess == false || taskDetail?.Response is null)
+        {
+            await OnClose();
+            return;
+        }
+
+        var result = taskDetail.Response;
+        CurrentDate = DateTimeOffset.Now;
+        CurrentType = (UpdateTaskRequestType)result.Type;
+
+        var model = new EditTaskModel
+        {
+            Title = result.Title,
+            Description = result.Description,
+            DefaultTime = result.DefaultTime?.ToString(@"hh\:mm"),
+            Priority = result.Priority,
+            RepeatType = result.RepeatPattern?.Type,
+            Interval = result.RepeatPattern?.Interval,
+            AnchorDate = result.RepeatPattern?.AnchorDate.ToPersianDate(),
+            WeekDays = result.RepeatPattern?.WeekDays?.ToList() ?? new List<WeekDays>(),
+            MonthDaysText = result.RepeatPattern?.MonthDays != null && result.RepeatPattern.MonthDays.Any()
+                ? string.Join(",", result.RepeatPattern.MonthDays)
+                : "",
+            ParentGoalId = result.ParentGoalId
+        };
+
+        _formHelper = new FormHelper<EditTaskModel>(model);
+
+        var shortGoalResult = await ApiService.SendAsync(
+            () => ApiClient.GetShortGoalsAsync(),
+            showErrorToast: true);
+
+        if (shortGoalResult?.IsSuccess is true)
+            ShortGoals = shortGoalResult.Response.Goals.ToList();
+    }
+
+    private void ToggleWeekDay(WeekDays day)
+    {
+        var list = _formHelper.Model.WeekDays;
+        if (list.Contains(day))
+            list.Remove(day);
+        else
+            list.Add(day);
+        _formHelper.EditContext.NotifyFieldChanged(new FieldIdentifier(_formHelper.Model, nameof(EditTaskModel.WeekDays)));
+    }
+
+    private async Task Submit()
+    {
+        if (_isLoading) return;
+        _isLoading = true;
+
+        _formHelper.ClearErrors();
+
+        if (!_formHelper.Validate())
+        {
+            _isLoading = false;
+            return;
+        }
+
+        TimeSpan? defaultTime = null;
+        if (!string.IsNullOrEmpty(_formHelper.Model.DefaultTime))
+        {
+            if (TimeSpan.TryParse(_formHelper.Model.DefaultTime, out var time))
+                defaultTime = time;
+            else
+            {
+                ToastService.ShowToastError("زمان وارد شده معتبر نیست! (فرمت: HH:mm)");
+                _isLoading = false;
+                return;
+            }
+        }
+
+        RepeatPatternDto? repeatPattern = null;
+        if (_formHelper.Model.RepeatType.HasValue)
+        {
+            var anchorDate = CurrentDate;
+            if (!string.IsNullOrEmpty(_formHelper.Model.AnchorDate))
+            {
+                var parsed = PersianDateHelper.ToGregorianDateTime(_formHelper.Model.AnchorDate);
+                if (parsed.HasValue)
+                    anchorDate = parsed.Value;
+                else
+                {
+                    ToastService.ShowToastError("تاریخ شروع معتبر نیست!");
+                    _isLoading = false;
+                    return;
+                }
+            }
+
+            var type = _formHelper.Model.RepeatType.Value;
+            if (type == RepeatPatternDtoType.WeeklyOnDays && (_formHelper.Model.WeekDays == null || !_formHelper.Model.WeekDays.Any()))
+            {
+                ToastService.ShowToastError("حداقل یک روز هفته را انتخاب کنید.");
+                _isLoading = false;
+                return;
+            }
+
+            if (type == RepeatPatternDtoType.MonthlyOnDays)
+            {
+                var monthDays = new List<int>();
+                if (!string.IsNullOrEmpty(_formHelper.Model.MonthDaysText))
+                {
+                    var parts = _formHelper.Model.MonthDaysText.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var p in parts)
+                    {
+                        if (int.TryParse(p.Trim(), out var d) && d >= 1 && d <= 31)
+                            monthDays.Add(d);
+                        else
+                        {
+                            ToastService.ShowToastError($"عدد '{p.Trim()}' معتبر نیست. روزهای ماه باید بین ۱ تا ۳۱ باشند.");
+                            _isLoading = false;
+                            return;
+                        }
+                    }
+                }
+
+                if (!monthDays.Any())
+                {
+                    ToastService.ShowToastError("حداقل یک روز ماه را وارد کنید.");
+                    _isLoading = false;
+                    return;
+                }
+
+                repeatPattern = new RepeatPatternDto(
+                    anchorDate: anchorDate,
+                    interval: _formHelper.Model.Interval ?? 1,
+                    monthDays: monthDays,
+                    type: type,
+                    weekDays: null
+                );
+            }
+            else if (type == RepeatPatternDtoType.WeeklyOnDays)
+            {
+                repeatPattern = new RepeatPatternDto(
+                    anchorDate: anchorDate,
+                    interval: _formHelper.Model.Interval ?? 1,
+                    monthDays: null,
+                    type: type,
+                    weekDays: _formHelper.Model.WeekDays
+                );
+            }
+            else
+            {
+                repeatPattern = new RepeatPatternDto(
+                    anchorDate: anchorDate,
+                    interval: _formHelper.Model.Interval ?? 1,
+                    monthDays: null,
+                    type: type,
+                    weekDays: null
+                );
+            }
+        }
+
+        var request = new UpdateTaskRequest(
+            title: _formHelper.Model.Title,
+            priority: (UpdateTaskRequestPriority?)_formHelper.Model.Priority,
+            date: CurrentDate,
+            type: CurrentType,
+            repeatPattern: repeatPattern,
+            parentGoalId: _formHelper.Model.ParentGoalId,
+            description: _formHelper.Model.Description,
+            defaultTime: defaultTime
+        );
+
+        var result = await ApiService.SendAsync(
+            apiCall: () => ApiClient.UpdateTaskAsync(TaskId, request),
+            successMessage: "تسک با موفقیت ویرایش شد!",
+            showErrorToast: false
+        );
+
+        if (result != null)
+        {
+            if (result.IsSuccess)
+            {
+                await OnTaskUpdated.InvokeAsync();
+                await OnCloseRequested.InvokeAsync();
+            }
+            else
+            {
+                _formHelper.SetServerErrors(result.Errors);
+                ToastService.ShowToastWarning("لطفاً خطاها را بررسی کنید.");
+            }
+        }
+
+        _isLoading = false;
+    }
+
+    private async Task OnClose()
+    {
+        await OnCloseRequested.InvokeAsync();
+    }
+
+    private async Task OnOverlayClick()
+    {
+        await OnCloseRequested.InvokeAsync();
+    }
+
+    public class EditTaskModel
+    {
+        [Required(ErrorMessage = "عنوان الزامی است")]
+        public string Title { get; set; } = "";
+
+        public string? Description { get; set; }
+
+        public string? DefaultTime { get; set; }
+
+        public GetTaskDetailQueryResultPriority? Priority { get; set; }
+
+        public RepeatPatternDtoType? RepeatType { get; set; }
+
+        public int? Interval { get; set; } = 1;
+
+        public string? AnchorDate { get; set; }
+
+        public List<WeekDays> WeekDays { get; set; } = new();
+
+        public string? MonthDaysText { get; set; }
+        public Guid? ParentGoalId { get; set; }
+    }
+
+}
