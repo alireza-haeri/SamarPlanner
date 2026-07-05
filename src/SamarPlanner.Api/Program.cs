@@ -1,6 +1,7 @@
 using Microsoft.OpenApi;
 using SamarPlanner.Goal;
 using SamarPlanner.Identity;
+using SamarPlanner.Note;
 using SamarPlanner.Report;
 using SamarPlanner.Shared.Infrastructure;
 using SamarPlanner.Shared.Kernel;
@@ -32,7 +33,8 @@ builder
     .AddTaskServices()
     .AddReportServices()
     .AddIdentityServices()
-    .AddGoalServices();
+    .AddGoalServices()
+    .AddNoteServices();
 
 builder.Services.AddControllers();
 builder.AddSharedAuthentication();
@@ -105,6 +107,7 @@ try
     await app.UseReportModuleAsync();
     await app.UseIdentityModuleAsync();
     await app.UseGoalModuleAsync();
+    await app.UseNoteModuleAsync();
 
     Log.Information("Starting SamarPlanner API");
     await app.RunAsync();

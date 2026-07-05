@@ -5,6 +5,7 @@ public sealed class ApplicationSettings
     public required JwtTokenSettings JwtToken { get; set; }
     public required DatabaseSettings Databases { get; set; }
     public required CorsPolicySettings CorsPolicy { get; set; }
+    public required NoteFilesSettings NoteFiles { get; set; }
 }
 
 public sealed class DatabaseSettings
@@ -13,6 +14,7 @@ public sealed class DatabaseSettings
     public required string GoalConnectionString { get; set; }
     public required string  TaskConnectionString { get; set; }
     public required string  ReportConnectionString { get; set; }
+    public required string NoteConnectionString { get; set; }
 }
 
 public sealed class JwtTokenSettings
@@ -26,4 +28,9 @@ public sealed class JwtTokenSettings
 public sealed class CorsPolicySettings
 {
     public required string[] Origins { get; set; }
+}
+
+public sealed class NoteFilesSettings
+{
+    public required string FilesPath { get; set; }
 }

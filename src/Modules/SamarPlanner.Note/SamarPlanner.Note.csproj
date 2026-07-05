@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Shared\SamarPlanner.Shared\SamarPlanner.Shared.csproj" />
+      <ProjectReference Include="..\SamarPlanner.Note.Application\SamarPlanner.Note.Application.csproj" />
+      <ProjectReference Include="..\SamarPlanner.Note.Core\SamarPlanner.Note.Core.csproj" />
+      <ProjectReference Include="..\SamarPlanner.Note.Infrastructure\SamarPlanner.Note.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>
