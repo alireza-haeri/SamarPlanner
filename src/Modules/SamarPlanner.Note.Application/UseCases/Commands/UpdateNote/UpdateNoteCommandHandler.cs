@@ -11,7 +11,7 @@ public class UpdateNoteCommandHandler(INoteRepository noteRepository, IFileStora
 {
     public async Task<Result<bool>> Handle(UpdateNoteCommand request, CancellationToken cancellationToken)
     {
-        var note = await noteRepository.GetByIdAsTrackingAsync(request.UserId, request.NoteId, cancellationToken);
+        var note = await noteRepository.GetByIdAsTrackingWithFilesAsync(request.UserId, request.NoteId, cancellationToken);
         if (note is null)
             return Result<bool>.NotfoundFailure("یادداشت مورد نظر یافت نشد.");
 

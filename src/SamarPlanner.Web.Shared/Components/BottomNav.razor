@@ -14,6 +14,11 @@
         <span class="bottom-nav-label">گزارش‌ها</span>
         @if (ActiveSection == "reports") { <span class="bottom-nav-dot"></span> }
     </a>
+    <a href="/notes" class="bottom-nav-item @(ActiveSection == "notes" ? "is-active" : "")">
+        <div class="bottom-nav-icon"><i class="bi bi-journal-text"></i></div>
+        <span class="bottom-nav-label">یادداشت‌ها</span>
+        @if (ActiveSection == "notes") { <span class="bottom-nav-dot"></span> }
+    </a>
     <a href="/goals" class="bottom-nav-item @(ActiveSection == "goals" ? "is-active" : "")">
         <div class="bottom-nav-icon"><i class="bi bi-bullseye"></i></div>
         <span class="bottom-nav-label">اهداف</span>

@@ -17,4 +17,11 @@
         <ProjectReference Include="$(MSBuildProjectDirectory)\..\SamarPlanner.Web.Shared\SamarPlanner.Web.Shared.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\js\file-utils.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\fileHelper.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\task-dropdown.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\theme.js" />
+    </ItemGroup>
+
 </Project>

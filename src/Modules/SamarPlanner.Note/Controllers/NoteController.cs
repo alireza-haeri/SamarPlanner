@@ -69,7 +69,7 @@ public class NoteController(IMediator mediator) : BaseController
 
     [HttpGet("{noteId:guid}")]
     [SwaggerOperation(OperationId = "GetNoteDetail")]
-    public async Task<ActionResult<GetNoteDetailQueryResponse>> GetNoteDetail(Guid noteId)
+    public async Task<ActionResult<Result<GetNoteDetailQueryResponse>>> GetNoteDetail(Guid noteId)
     {
         var result = await mediator.Send(new GetNoteDetailQuery(
             UserId: UserId,

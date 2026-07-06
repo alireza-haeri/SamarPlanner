@@ -1,0 +1,433 @@
+@page "/notes/{NoteId:guid}"
+@attribute [Authorize]
+@layout NoteLayout
+@using System.Text.Json
+@using SamarPlanner.Web.Pages.Components
+@inject IApiClient ApiClient
+@inject IApiService ApiService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+@inject IToastService ToastService
+@implements IAsyncDisposable
+
+<div class="note-detail-page">
+    @if (_isLoading)
+    {
+        <div class="note-detail-loading">
+            <div class="spinner-border text-primary" role="status"></div>
+            <span>بارگذاری جزئیات یادداشت...</span>
+        </div>
+    }
+    else if (_note is null)
+    {
+        <div class="note-detail-empty">
+            <div class="note-detail-empty-icon">
+                <i class="bi bi-journal-x"></i>
+            </div>
+            <h3>یادداشت پیدا نشد</h3>
+            <p>این یادداشت حذف شده یا به آن دسترسی ندارید.</p>
+            <button class="btn btn-primary" @onclick="BackToNotes">بازگشت به یادداشت‌ها</button>
+        </div>
+    }
+    else
+    {
+        <div class="note-detail-header">
+            <div class="note-detail-heading">
+                <h1 class="note-detail-title">@(string.IsNullOrWhiteSpace(_note.Title) ? "بدون عنوان" : _note.Title)</h1>
+                <div class="note-detail-meta">
+                    <span>@_note.UpdateAt.ToPersianDate()</span>
+                    <span>@GetCategoryTitle()</span>
+                </div>
+            </div>
+
+            <div class="note-detail-actions">
+                <button class="btn btn-outline-primary" @onclick="OpenEditModal">
+                    <i class="bi bi-pencil-square"></i>
+                    <span>ویرایش</span>
+                </button>
+                <button class="btn btn-outline-danger" @onclick="DeleteNote">
+                    <i class="bi bi-trash3"></i>
+                    <span>حذف</span>
+                </button>
+                <button class="btn btn-outline-secondary" @onclick="BackToNotes">
+                    <i class="bi bi-arrow-right"></i>
+                    <span>بازگشت</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="note-detail-body">
+            @* ── Text ── *@
+            <section class="note-detail-section">
+                <h2>متن یادداشت</h2>
+                <div class="note-detail-text">
+                    @if (string.IsNullOrWhiteSpace(_note.Text))
+                    {
+                        <span class="text-muted">متنی ثبت نشده است.</span>
+                    }
+                    else
+                    {
+                        <p>@_note.Text</p>
+                    }
+                </div>
+            </section>
+
+            @* ── Files ── *@
+            @{
+                var images = _fileStates.Where(f => f.FileType == GetNoteDetailQueryResponseFileFileType.Image && f.BlobUrl is not null).ToList();
+                var others = _fileStates.Where(f => f.FileType != GetNoteDetailQueryResponseFileFileType.Image).ToList();
+            }
+
+            <section class="note-detail-section">
+                <div class="note-detail-section-header">
+                    <h2>فایل‌های پیوست</h2>
+                    <span class="text-muted small">@_fileStates.Count مورد</span>
+                </div>
+
+                @if (_filesLoading)
+                {
+                    <div class="ndf-files-loading">
+                        <span class="spinner-border spinner-border-sm"></span>
+                        <span>بارگذاری فایل‌ها...</span>
+                    </div>
+                }
+                else if (!_fileStates.Any())
+                {
+                    <div class="note-detail-empty-inline">برای این یادداشت فایلی ثبت نشده است.</div>
+                }
+                else
+                {
+                    @* ── Image Gallery ── *@
+                    @if (images.Any())
+                    {
+                        <div class="ndf-gallery">
+                            @foreach (var img in images)
+                            {
+                                <div class="ndf-gallery-item" @onclick="() => OpenLightbox(img)">
+                                    <img src="@img.BlobUrl" alt="@img.Title" loading="lazy" />
+                                    <div class="ndf-gallery-overlay">
+                                        <span class="ndf-gallery-title">@img.Title</span>
+                                        <button class="ndf-gallery-download"
+                                                @onclick:stopPropagation
+                                                @onclick="() => DownloadFile(img)"
+                                                title="دانلود">
+                                            <i class="bi bi-download"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    @* ── Other Files ── *@
+                    @if (others.Any())
+                    {
+                        <div class="ndf-file-list">
+                            @foreach (var file in others)
+                            {
+                                <div class="ndf-file-item">
+                                    <div class="ndf-file-icon ndf-file-@file.FileType.ToString().ToLowerInvariant()">
+                                        <i class="@GetFileIcon(file.FileType)"></i>
+                                    </div>
+                                    <div class="ndf-file-body">
+                                        <span class="ndf-file-name">@file.Title</span>
+                                        <span class="ndf-file-type">@GetFileTypeLabel(file.FileType)</span>
+                                    </div>
+                                    <button class="ndf-download-btn" @onclick="() => DownloadFile(file)" title="دانلود">
+                                        <i class="bi bi-download"></i>
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    }
+                }
+            </section>
+        </div>
+    }
+</div>
+
+@* ── Lightbox ── *@
+@if (_showLightbox && _lightboxState is not null)
+{
+    <div class="ndf-lightbox" @onclick="CloseLightbox">
+        <div class="ndf-lightbox-toolbar">
+            <span class="ndf-lightbox-title">@_lightboxState.Title</span>
+            <div class="ndf-lightbox-actions">
+                <button class="ndf-lightbox-btn" @onclick:stopPropagation @onclick="() => DownloadFile(_lightboxState)" title="دانلود">
+                    <i class="bi bi-download"></i>
+                </button>
+                <button class="ndf-lightbox-btn" @onclick="CloseLightbox" title="بستن">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+        </div>
+        <div class="ndf-lightbox-body" @onclick:stopPropagation>
+            <img src="@_lightboxState.BlobUrl" alt="@_lightboxState.Title" />
+        </div>
+    </div>
+}
+
+@* ── Edit Modal ── *@
+@if (_showEditModal)
+{
+    <div class="modal-overlay" @onclick="CloseEditModal">
+        <div class="modal-content modal-content-wide" @onclick:stopPropagation>
+            <div class="modal-header">
+                <h5>ویرایش یادداشت</h5>
+                <button class="btn-close" @onclick="CloseEditModal"></button>
+            </div>
+            <div class="modal-body">
+                <NoteForm NoteId="NoteId" OnSaved="OnNoteEdited" />
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public Guid NoteId { get; set; }
+
+    private GetNoteDetailQueryResponse? _note;
+    private string? _categoryTitle;
+    private bool _isLoading = true;
+    private bool _filesLoading;
+    private bool _showEditModal;
+
+    // File state
+    private readonly List<FileState> _fileStates = [];
+
+    // Lightbox
+    private bool _showLightbox;
+    private FileState? _lightboxState;
+
+    // Tracks blob URLs for cleanup
+    private readonly List<string> _blobUrls = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadNote();
+    }
+
+    private async Task LoadNote()
+    {
+        _isLoading = true;
+        await RevokeAllBlobs();
+        _fileStates.Clear();
+
+        var result = await ApiService.SendAsync(
+            apiCall: () => ApiClient.GetNoteDetailAsync(NoteId),
+            showErrorToast: true);
+
+        if (result?.IsSuccess is true)
+        {
+            _note = result.Response;
+            await LoadCategoryTitle();
+            _ = LoadAllFiles();
+        }
+        else
+        {
+            _note = null;
+        }
+
+        _isLoading = false;
+        StateHasChanged();
+    }
+
+    private async Task LoadAllFiles()
+    {
+        if (_note?.Files is null || !_note.Files.Any())
+            return;
+
+        _filesLoading = true;
+        StateHasChanged();
+
+        foreach (var file in _note.Files)
+        {
+            var state = new FileState
+            {
+                NoteFileId = file.NoteFileId,
+                Title = file.Title,
+                FileType = file.FileType
+            };
+
+            try
+            {
+                var result = await ApiService.SendAsync(
+                    apiCall: () => ApiClient.GetNoteFileAsync(file.NoteFileId),
+                    showErrorToast: false);
+
+                if (result?.IsSuccess is true && result.Response is not null)
+                {
+                    var resp = result.Response;
+                    var base64 = Convert.ToBase64String(resp.Content);
+                    state.BlobUrl = await JS.InvokeAsync<string>("fileUtils.createBlobUrl", base64, resp.ContentType);
+                    state.ContentBase64 = base64;
+                    state.ContentType = resp.ContentType;
+                    state.FileName = resp.FileName;
+
+                    if (state.BlobUrl is not null)
+                        _blobUrls.Add(state.BlobUrl);
+                }
+            }
+            catch { }
+
+            _fileStates.Add(state);
+            StateHasChanged();
+        }
+
+        _filesLoading = false;
+        StateHasChanged();
+    }
+
+    // ── Download ──
+
+    private async Task DownloadFile(FileState file)
+    {
+        if (file.ContentBase64 is null)
+        {
+            try
+            {
+                var result = await ApiService.SendAsync(
+                    apiCall: () => ApiClient.GetNoteFileAsync(file.NoteFileId),
+                    showErrorToast: true);
+
+                if (result?.IsSuccess is true && result.Response is not null)
+                {
+                    file.ContentBase64 = Convert.ToBase64String(result.Response.Content);
+                    file.ContentType = result.Response.ContentType;
+                    file.FileName = result.Response.FileName;
+                }
+            }
+            catch
+            {
+                ToastService.ShowToastError("خطا در دریافت فایل برای دانلود.");
+                return;
+            }
+        }
+
+        if (file.ContentBase64 is null) return;
+
+        await JS.InvokeVoidAsync("fileUtils.downloadFromBase64",
+            file.FileName ?? file.Title,
+            file.ContentType ?? "application/octet-stream",
+            file.ContentBase64);
+    }
+
+    // ── Lightbox ──
+
+    private void OpenLightbox(FileState file)
+    {
+        _lightboxState = file;
+        _showLightbox = true;
+    }
+
+    private void CloseLightbox()
+    {
+        _showLightbox = false;
+        _lightboxState = null;
+    }
+
+    // ── Category ──
+
+    private async Task LoadCategoryTitle()
+    {
+        _categoryTitle = null;
+        if (_note?.CategoryId is null) return;
+
+        var result = await ApiService.SendAsync(
+            apiCall: () => ApiClient.GetUserNotesGroupedByCategoryAsync(),
+            showErrorToast: false);
+
+        if (result?.IsSuccess is true)
+        {
+            var group = result.Response?.Groups?.FirstOrDefault(g => g.CategoryId == _note!.CategoryId);
+            _categoryTitle = group?.Title;
+        }
+    }
+
+    private string GetCategoryTitle()
+    {
+        if (_note?.CategoryId is null) return "بدون دسته‌بندی";
+        return string.IsNullOrWhiteSpace(_categoryTitle) ? "دسته‌بندی نامشخص" : _categoryTitle!;
+    }
+
+    // ── Edit Modal ──
+
+    private void OpenEditModal() => _showEditModal = true;
+    private void CloseEditModal() => _showEditModal = false;
+
+    private async Task OnNoteEdited()
+    {
+        CloseEditModal();
+        await LoadNote();
+    }
+
+    // ── Delete ──
+
+    private async Task DeleteNote()
+    {
+        var ok = await JS.InvokeAsync<bool>("confirm", "آیا مطمئن هستید؟");
+        if (!ok) return;
+
+        var result = await ApiService.SendAsync(
+            apiCall: () => ApiClient.DeleteNoteAsync(NoteId),
+            successMessage: "یادداشت با موفقیت حذف شد.",
+            showErrorToast: true);
+
+        if (result?.IsSuccess == true)
+        {
+            await RevokeAllBlobs();
+            BackToNotes();
+        }
+    }
+
+    private void BackToNotes() => NavigationManager.NavigateTo("/notes");
+
+    // ── Blob Cleanup ──
+
+    private async Task RevokeAllBlobs()
+    {
+        if (_blobUrls.Any())
+        {
+            try
+            {
+                await JS.InvokeVoidAsync("fileUtils.revokeAll", _blobUrls.ToList());
+            }
+            catch { }
+            _blobUrls.Clear();
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await RevokeAllBlobs();
+    }
+
+    // ── Helpers ──
+
+    private static string GetFileIcon(GetNoteDetailQueryResponseFileFileType t) => t switch
+    {
+        GetNoteDetailQueryResponseFileFileType.Image => "bi bi-image",
+        GetNoteDetailQueryResponseFileFileType.Document => "bi bi-file-earmark-text",
+        _ => "bi bi-paperclip"
+    };
+
+    private static string GetFileTypeLabel(GetNoteDetailQueryResponseFileFileType t) => t switch
+    {
+        GetNoteDetailQueryResponseFileFileType.Image => "تصویر",
+        GetNoteDetailQueryResponseFileFileType.Document => "سند",
+        _ => t.ToString()
+    };
+
+    // ── File State Model ──
+
+    private sealed class FileState
+    {
+        public Guid NoteFileId { get; set; }
+        public string Title { get; set; } = "";
+        public GetNoteDetailQueryResponseFileFileType FileType { get; set; }
+        public string? BlobUrl { get; set; }
+        public string? ContentBase64 { get; set; }
+        public string? ContentType { get; set; }
+        public string? FileName { get; set; }
+    }
+}

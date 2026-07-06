@@ -23,11 +23,12 @@ public class NoteRepository(NoteDbContext context, ILogger<NoteRepository> logge
         }
     }
 
-    public async Task<Core.Entities.Note?> GetByIdAsTrackingAsync(Guid userId, Guid noteId,
+    public async Task<Core.Entities.Note?> GetByIdAsTrackingWithFilesAsync(Guid userId, Guid noteId,
         CancellationToken cancellationToken = default)
     {
         return await context.Notes
             .AsTracking()
+            .Include(n => n.Files)
             .FirstOrDefaultAsync(n => n.Id == noteId && n.UserId == userId, cancellationToken);
     }
 

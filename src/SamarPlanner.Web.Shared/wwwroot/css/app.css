@@ -1179,3 +1179,27 @@ h1, h2, h3, h4, h5, h6 {
     border-color: var(--primary);
     transform: scale(1.05);
 }
+
+.sub-content {
+    width: 100%;
+    padding-right: 1rem;
+    padding-left: 1rem;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+@media (min-width: 576px) {
+    .sub-content { max-width: 540px; }
+}
+@media (min-width: 768px) {
+    .sub-content { max-width: 720px; }
+}
+@media (min-width: 992px) {
+    .sub-content { max-width: 960px; }
+}
+@media (min-width: 1200px) {
+    .sub-content { max-width: 1140px; } /* به جای 1320px تا کوچک‌تر شود */
+}
+@media (min-width: 1400px) {
+    .sub-content { max-width: 1200px; } /* حتی می‌توانید 1100px بگذارید تا باز هم کوچک‌تر شود */
+}

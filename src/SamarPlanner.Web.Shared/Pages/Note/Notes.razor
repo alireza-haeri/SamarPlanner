@@ -1,0 +1,373 @@
+@page "/notes"
+@attribute [Authorize]
+@layout NoteLayout
+@using SamarPlanner.Web.Pages.Components
+@inject IApiClient ApiClient
+@inject IApiService ApiService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime Js
+
+<div class="notes-page">
+    <div class="notes-header">
+        <div class="notes-header-left">
+            <h1 class="notes-title">یادداشت‌ها</h1>
+            <div class="notes-summary">
+                <span>@_noteCount یادداشت</span>
+            </div>
+        </div>
+
+        <div class="notes-header-actions">
+            <button class="notes-action-btn notes-action-btn-primary" @onclick="@(() => OpenAddNoteModal())">
+                <i class="bi bi-plus-circle"></i>
+                <span>یادداشت جدید</span>
+            </button>
+            <button class="notes-action-btn" @onclick="@OpenCreateCategoryModal">
+                <i class="bi bi-folder-plus"></i>
+                <span>دسته‌بندی جدید</span>
+            </button>
+        </div>
+    </div>
+
+    @if (_isLoading)
+    {
+        <div class="notes-loading">
+            <div class="spinner-border text-primary" role="status"></div>
+            <span>بارگذاری یادداشت‌ها...</span>
+        </div>
+    }
+    else if (!_groups.Any())
+    {
+        <div class="notes-empty">
+            <div class="notes-empty-icon">
+                <i class="bi bi-journal-text"></i>
+            </div>
+            <h3>هنوز یادداشتی ثبت نکرده‌اید</h3>
+            <p>یادداشت‌های شما به تفکیک دسته‌بندی اینجا نمایش داده می‌شوند.</p>
+        </div>
+    }
+    else
+    {
+        <div class="notes-groups">
+            @foreach (var group in GetOrderedGroups())
+            {
+                <section class="note-group-card">
+                    <div class="note-group-header">
+                        <div class="note-group-heading">
+                            <h2 class="note-group-title">@GetGroupTitle(group)</h2>
+                            <span class="note-group-meta">@GetGroupCount(group) یادداشت</span>
+                        </div>
+
+                        <div class="note-group-actions">
+                            <button class="note-group-action note-group-action-primary"
+                                    @onclick="() => OpenAddNoteModal(group.CategoryId)">
+                                <i class="bi bi-plus-circle"></i>
+                                <span>یادداشت</span>
+                            </button>
+
+                            @if (group.CategoryId.HasValue)
+                            {
+                                <button class="note-group-action" @onclick="() => OpenEditCategoryModal(group)">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                                <button class="note-group-action note-group-action-danger"
+                                        @onclick="() => DeleteCategory(group.CategoryId.Value)">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            }
+                        </div>
+                    </div>
+
+                    @if (group.Notes?.Any() == true)
+                    {
+                        <div class="note-card-list">
+                            @foreach (var note in group.Notes.OrderByDescending(n => n.UpdatedAt))
+                            {
+                                <article class="note-card">
+                                    <div class="note-card-main">
+                                        <div class="note-card-topline">
+                                            <h3 class="note-card-title">@(string.IsNullOrWhiteSpace(note.Title) ? "بدون عنوان" : note.Title)</h3>
+                                            <span class="note-card-date">@note.UpdatedAt.ToPersianDate()</span>
+                                        </div>
+                                        <p class="note-card-preview">@note.TextPreview</p>
+                                    </div>
+
+                                    <div class="note-card-actions">
+                                        <NavLink class="btn btn-outline-primary btn-sm"
+                                                 href="@BuildNoteDetailUrl(note.NoteId)">
+                                            <i class="bi bi-eye"></i>
+                                            <span>مشاهده</span>
+                                        </NavLink>
+                                        <button class="btn btn-outline-danger btn-sm"
+                                                @onclick="() => DeleteNote(note.NoteId)">
+                                            <i class="bi bi-trash3"></i>
+                                            <span>حذف</span>
+                                        </button>
+                                    </div>
+                                </article>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="note-group-empty">
+                            <i class="bi bi-journal-x"></i>
+                            <span>در این دسته‌بندی هنوز یادداشتی ثبت نشده است.</span>
+                        </div>
+                    }
+                </section>
+            }
+        </div>
+    }
+</div>
+
+@* ── Add Note Modal ── *@
+@if (_showAddNoteModal)
+{
+    <div class="modal-overlay" @onclick="CloseAddNoteModal">
+        <div class="modal-content modal-content-wide" @onclick:stopPropagation>
+            <div class="modal-header">
+                <h5>یادداشت جدید</h5>
+                <button class="btn-close" @onclick="CloseAddNoteModal"></button>
+            </div>
+            <div class="modal-body">
+                <NoteForm DefaultCategoryId="_addNoteCategoryId" OnSaved="OnNoteAdded"/>
+            </div>
+        </div>
+    </div>
+}
+
+@* ── Category Modal ── *@
+@if (_showCategoryModal)
+{
+    <div class="modal-overlay" @onclick="CloseCategoryModal">
+        <div class="modal-content" @onclick:stopPropagation>
+            <div class="modal-header">
+                <h5>@(_editingCategoryId.HasValue ? "ویرایش دسته‌بندی" : "دسته‌بندی جدید")</h5>
+                <button class="btn-close" @onclick="CloseCategoryModal"></button>
+            </div>
+            <div class="modal-body">
+                <EditForm EditContext="@_categoryForm.EditContext" OnSubmit="@SaveCategory">
+                    <ValidationSummary class="text-danger mb-3"/>
+
+                    <div class="mb-3">
+                        <label class="form-label">عنوان دسته‌بندی</label>
+                        <InputText class="form-control" @bind-Value="_categoryForm.Model.Title"
+                                   placeholder="مثلاً: کار، مطالعه، شخصی"/>
+                    </div>
+
+                    <div class="notes-modal-actions">
+                        <button type="submit" class="btn btn-primary" disabled="@_isCategorySaving">
+                            @if (_isCategorySaving)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2"></span>
+                                <span>در حال ذخیره...</span>
+                            }
+                            else
+                            {
+                                <span>@(_editingCategoryId.HasValue ? "ذخیره تغییرات" : "ایجاد دسته‌بندی")</span>
+                            }
+                        </button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<GetUserNotesGroupedByCategoryQueryResponseCategory> _groups = [];
+    private bool _isLoading = true;
+    private int _noteCount;
+
+    // ── Add Note Modal ──
+    private bool _showAddNoteModal;
+    private Guid? _addNoteCategoryId;
+
+    // ── Category Modal ──
+    private bool _showCategoryModal;
+    private bool _isCategorySaving;
+    private Guid? _editingCategoryId;
+    private FormHelper<CategoryEditorModel> _categoryForm = new(new CategoryEditorModel());
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadNotes();
+    }
+
+    private async Task LoadNotes()
+    {
+        _isLoading = true;
+
+        var result = await ApiService.SendAsync(
+            apiCall: () => ApiClient.GetUserNotesGroupedByCategoryAsync(),
+            showErrorToast: true);
+
+        if (result?.IsSuccess is true)
+        {
+            _groups = result.Response?.Groups?.ToList() ?? [];
+            _noteCount = _groups.Sum(g => g.Notes?.Count ?? 0);
+        }
+        else
+        {
+            _groups = [];
+            _noteCount = 0;
+        }
+
+        _isLoading = false;
+        StateHasChanged();
+    }
+
+    private IEnumerable<GetUserNotesGroupedByCategoryQueryResponseCategory> GetOrderedGroups()
+    {
+        return _groups
+            .OrderBy(g => g.CategoryId.HasValue ? 0 : 1)
+            .ThenBy(g => (g.Title ?? "").Trim());
+    }
+
+    private static string GetGroupTitle(GetUserNotesGroupedByCategoryQueryResponseCategory group)
+    {
+        return string.IsNullOrWhiteSpace(group.Title) ? "بدون دسته‌بندی" : group.Title!;
+    }
+
+    private static int GetGroupCount(GetUserNotesGroupedByCategoryQueryResponseCategory group)
+    {
+        return group.Notes?.Count ?? 0;
+    }
+
+    private string BuildNoteDetailUrl(Guid noteId) => $"/notes/{noteId}";
+
+    // ──────────────────────────────────
+    //  Add Note Modal
+    // ──────────────────────────────────
+
+    private void OpenAddNoteModal(Guid? categoryId = null)
+    {
+        _addNoteCategoryId = categoryId;
+        _showAddNoteModal = true;
+    }
+
+    private void CloseAddNoteModal()
+    {
+        _showAddNoteModal = false;
+        _addNoteCategoryId = null;
+    }
+
+    private async Task OnNoteAdded()
+    {
+        CloseAddNoteModal();
+        await LoadNotes();
+    }
+
+    // ──────────────────────────────────
+    //  Delete Note
+    // ──────────────────────────────────
+
+    private async Task DeleteNote(Guid noteId)
+    {
+        var confirmed = await Js.InvokeAsync<bool>("confirm", "آیا مطمئن هستید که می‌خواهید این یادداشت را حذف کنید؟");
+        if (!confirmed) return;
+
+        var result = await ApiService.SendAsync(
+            apiCall: () => ApiClient.DeleteNoteAsync(noteId),
+            successMessage: "یادداشت با موفقیت حذف شد.",
+            showErrorToast: true);
+
+        if (result?.IsSuccess == true)
+            await LoadNotes();
+    }
+
+    // ──────────────────────────────────
+    //  Category Modal
+    // ──────────────────────────────────
+
+    private void OpenCreateCategoryModal()
+    {
+        _editingCategoryId = null;
+        _categoryForm = new FormHelper<CategoryEditorModel>(new CategoryEditorModel());
+        _showCategoryModal = true;
+    }
+
+    private void OpenEditCategoryModal(GetUserNotesGroupedByCategoryQueryResponseCategory group)
+    {
+        if (!group.CategoryId.HasValue) return;
+
+        _editingCategoryId = group.CategoryId;
+        _categoryForm = new FormHelper<CategoryEditorModel>(new CategoryEditorModel
+        {
+            Title = group.Title ?? ""
+        });
+        _showCategoryModal = true;
+    }
+
+    private void CloseCategoryModal()
+    {
+        _showCategoryModal = false;
+        _isCategorySaving = false;
+    }
+
+    private async Task DeleteCategory(Guid categoryId)
+    {
+        var confirmed = await Js.InvokeAsync<bool>("confirm", "آیا از حذف این دسته‌بندی مطمئن هستید؟");
+        if (!confirmed) return;
+
+        var result = await ApiService.SendAsync(
+            apiCall: () => ApiClient.DeleteCategoryAsync(categoryId),
+            successMessage: "دسته‌بندی با موفقیت حذف شد.",
+            showErrorToast: true);
+
+        if (result?.IsSuccess == true)
+            await LoadNotes();
+    }
+
+    private async Task SaveCategory()
+    {
+        if (_isCategorySaving) return;
+
+        _isCategorySaving = true;
+        _categoryForm.ClearErrors();
+
+        if (!_categoryForm.Validate())
+        {
+            _isCategorySaving = false;
+            return;
+        }
+
+        var title = _categoryForm.Model.Title.Trim();
+
+        if (_editingCategoryId.HasValue)
+        {
+            var result = await ApiService.SendAsync(
+                apiCall: () => ApiClient.UpdateCategoryAsync(_editingCategoryId.Value, new UpdateCategoryRequest(title)),
+                successMessage: "دسته‌بندی با موفقیت ویرایش شد.",
+                showErrorToast: true);
+
+            if (result?.IsSuccess is true)
+            {
+                CloseCategoryModal();
+                await LoadNotes();
+            }
+        }
+        else
+        {
+            var result = await ApiService.SendAsync(
+                apiCall: () => ApiClient.CreateCategoryAsync(new CreateCategoryRequest(title)),
+                successMessage: "دسته‌بندی با موفقیت ایجاد شد.",
+                showErrorToast: true);
+
+            if (result?.IsSuccess is true)
+            {
+                CloseCategoryModal();
+                await LoadNotes();
+            }
+        }
+
+        _isCategorySaving = false;
+    }
+
+    public class CategoryEditorModel
+    {
+        [Required(ErrorMessage = "عنوان دسته‌بندی الزامی است")]
+        public string Title { get; set; } = "";
+    }
+
+}

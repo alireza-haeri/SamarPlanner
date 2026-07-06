@@ -1,0 +1,462 @@
+@namespace SamarPlanner.Web.Pages.Components
+@inject IApiClient ApiClient
+@inject IApiService ApiService
+@inject IToastService ToastService
+@inject IJSRuntime JS
+
+@if (_isLoadingData)
+{
+    <div class="nf-loading">
+        <span class="spinner-border spinner-border-sm"></span>
+        <span>در حال بارگذاری...</span>
+    </div>
+}
+else if (_noteNotFound)
+{
+    <div class="nf-not-found">
+        <i class="bi bi-journal-x"></i>
+        <p>یادداشت پیدا نشد.</p>
+    </div>
+}
+else
+{
+    <EditForm EditContext="@_editContext" OnSubmit="@HandleSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="nf-validation" />
+
+        <div class="nf-field">
+            <label class="nf-label">عنوان</label>
+            <InputText class="nf-input" @bind-Value="_model.Title" placeholder="عنوان یادداشت (اختیاری)" />
+        </div>
+
+        <div class="nf-field">
+            <label class="nf-label">متن یادداشت</label>
+            <InputTextArea class="nf-input nf-textarea" @bind-Value="_model.Text" rows="6" placeholder="متن یادداشت را بنویسید..." />
+        </div>
+
+        <div class="nf-field">
+            <label class="nf-label">دسته‌بندی</label>
+            <InputSelect class="nf-input" @bind-Value="_model.CategoryId">
+                <option value="">بدون دسته‌بندی</option>
+                @foreach (var cat in _categories)
+                {
+                    <option value="@cat.Id">@cat.Title</option>
+                }
+            </InputSelect>
+        </div>
+
+        @* ── File Upload ── *@
+        <div class="nf-field">
+            <label class="nf-label nf-label-with-icon">
+                <i class="bi bi-paperclip"></i>
+                فایل پیوست
+            </label>
+            <label class="nf-dropzone">
+                <InputFile OnChange="@HandleFilesSelected" multiple hidden />
+                <div class="nf-dropzone-inner">
+                    <i class="bi bi-cloud-arrow-up"></i>
+                    <span>برای انتخاب فایل کلیک کنید</span>
+                    <small>حداکثر ۵ مگابایت · تصاویر خودکار فشرده می‌شوند</small>
+                </div>
+            </label>
+        </div>
+
+        @* ── New Files (editable titles) ── *@
+        @if (_newFiles.Any())
+        {
+            <div class="nf-field">
+                <div class="nf-file-section-header">
+                    <label class="nf-label">فایل‌های انتخاب‌شده</label>
+                    <span class="nf-file-count">@_newFiles.Count</span>
+                </div>
+                <div class="nf-file-list">
+                    @foreach (var file in _newFiles)
+                    {
+                        var fk = file.FileKey;
+                        <div class="nf-file-item" @key="fk">
+                            <div class="nf-file-icon nf-file-new">
+                                <i class="@GetNewFileIcon(file.ContentType)"></i>
+                            </div>
+                            <div class="nf-file-body">
+                                <input type="text" class="nf-file-title-input"
+                                       value="@file.Title"
+                                       @oninput="e => UpdateFileTitle(fk, e.Value?.ToString() ?? file.OriginalName)"
+                                       placeholder="عنوان فایل" />
+                                <span class="nf-file-meta">
+                                    @file.OriginalName · @FormatSize(file.Length)
+                                    @if (file.WasCompressed)
+                                    {
+                                        <span class="nf-compressed-badge" title="از @FormatSize(file.OriginalSize) فشرده شد">
+                                            <i class="bi bi-shrink"></i> فشرده‌شده
+                                        </span>
+                                    }
+                                </span>
+                            </div>
+                            <button type="button" class="nf-file-remove" @onclick="() => RemoveNewFile(fk)">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        @* ── Existing Files (edit mode only) ── *@
+        @if (_existingFiles.Any(f => !_removedFileIds.Contains(f.NoteFileId)))
+        {
+            <div class="nf-field">
+                <div class="nf-file-section-header">
+                    <label class="nf-label">فایل‌های فعلی</label>
+                    <span class="nf-file-count">@_existingFiles.Count(f => !_removedFileIds.Contains(f.NoteFileId))</span>
+                </div>
+                <div class="nf-file-list">
+                    @foreach (var file in _existingFiles.Where(f => !_removedFileIds.Contains(f.NoteFileId)))
+                    {
+                        <div class="nf-file-item" @key="file.NoteFileId">
+                            <div class="nf-file-icon nf-file-@file.FileType.ToString().ToLowerInvariant()">
+                                <i class="@GetFileIcon(file.FileType)"></i>
+                            </div>
+                            <div class="nf-file-body">
+                                <span class="nf-file-name">@file.Title</span>
+                                <span class="nf-file-meta">@GetFileTypeLabel(file.FileType)</span>
+                            </div>
+                            <button type="button" class="nf-file-remove nf-file-remove-danger" @onclick="() => RemoveExistingFile(file.NoteFileId)">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        <button type="submit" class="nf-submit" disabled="@_isSaving">
+            @if (_isSaving)
+            {
+                <span class="spinner-border spinner-border-sm"></span>
+                <span>در حال ذخیره...</span>
+            }
+            else
+            {
+                <span>@(NoteId.HasValue ? "ذخیره تغییرات" : "ایجاد یادداشت")</span>
+            }
+        </button>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public Guid? NoteId { get; set; }
+    [Parameter] public Guid? DefaultCategoryId { get; set; }
+    [Parameter] public EventCallback OnSaved { get; set; }
+
+    private NoteEditorModel _model = new();
+    private EditContext? _editContext;
+    private bool _isLoadingData = true;
+    private bool _isSaving;
+    private bool _noteNotFound;
+
+    private List<GetUserCategoriesQueryResponseCategory> _categories = [];
+    private readonly List<NewFileModel> _newFiles = [];
+    private readonly List<ExistingFileModel> _existingFiles = [];
+    private readonly HashSet<Guid> _removedFileIds = [];
+
+    // ── Compression constants ──
+    private const long MaxFileSize = 5L * 1024 * 1024;         // 5 MB final limit
+    private const long MaxPreCompressRead = 15L * 1024 * 1024;  // 15 MB pre-compression read limit
+    private const int MaxImageDimension = 2048;                  // max width/height
+    private const double JpegQuality = 0.80;                     // 80% quality
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        _isLoadingData = true;
+        _newFiles.Clear();
+        _existingFiles.Clear();
+        _removedFileIds.Clear();
+        _noteNotFound = false;
+
+        await LoadCategories();
+
+        if (NoteId.HasValue)
+            await LoadExistingNote();
+        else
+            InitializeCreateModel();
+
+        _editContext = new EditContext(_model);
+        _isLoadingData = false;
+        StateHasChanged();
+    }
+
+    private async Task LoadCategories()
+    {
+        var result = await ApiService.SendAsync(
+            apiCall: () => ApiClient.GetUserCategoriesAsync(),
+            showErrorToast: false);
+
+        if (result?.IsSuccess is true)
+            _categories = result.Response.Categories.ToList();
+    }
+
+    private async Task LoadExistingNote()
+    {
+        var result = await ApiService.SendAsync(
+            apiCall: () => ApiClient.GetNoteDetailAsync(NoteId!.Value),
+            showErrorToast: true);
+
+        if (result?.IsSuccess is true && result.Response is not null)
+        {
+            var note = result.Response;
+            _model = new NoteEditorModel
+            {
+                Title = note.Title ?? "",
+                Text = note.Text ?? "",
+                CategoryId = note.CategoryId
+            };
+
+            foreach (var f in note.Files)
+                _existingFiles.Add(new ExistingFileModel(f.NoteFileId, f.Title, f.FileType));
+        }
+        else
+        {
+            _noteNotFound = true;
+        }
+    }
+
+    private void InitializeCreateModel()
+    {
+        _model = new NoteEditorModel { CategoryId = DefaultCategoryId };
+    }
+
+    // ──────────────────────────────────
+    //  File Handling — Read + Compress + Size Check
+    // ──────────────────────────────────
+
+    private async Task HandleFilesSelected(InputFileChangeEventArgs args)
+    {
+        foreach (var browserFile in args.GetMultipleFiles())
+        {
+            try
+            {
+                var contentType = string.IsNullOrWhiteSpace(browserFile.ContentType)
+                    ? "application/octet-stream"
+                    : browserFile.ContentType;
+
+                var isImage = contentType.StartsWith("image/") && contentType != "image/svg+xml";
+                var readLimit = isImage ? MaxPreCompressRead : MaxFileSize;
+
+                // Reject files that are too large even to read
+                if (browserFile.Size > readLimit)
+                {
+                    ToastService.ShowToastError(
+                        $"فایل '{browserFile.Name}' ({FormatSize(browserFile.Size)}) بیشتر از حد مجاز ({FormatSize(readLimit)}) است.");
+                    continue;
+                }
+
+                // Read file into memory
+                await using var stream = browserFile.OpenReadStream(readLimit);
+                await using var memory = new MemoryStream();
+                await stream.CopyToAsync(memory);
+                var originalBytes = memory.ToArray();
+                var originalSize = originalBytes.Length;
+
+                byte[] finalBytes = originalBytes;
+                string finalContentType = contentType;
+                string finalTitle = browserFile.Name;
+                bool wasCompressed = false;
+
+                // Compress images
+                if (isImage)
+                {
+                    var compressed = await CompressImage(originalBytes, contentType);
+
+                    if (compressed is not null && compressed.Length < originalBytes.Length)
+                    {
+                        finalBytes = compressed;
+                        finalContentType = "image/jpeg";
+                        finalTitle = Path.GetFileNameWithoutExtension(browserFile.Name) + ".jpg";
+                        wasCompressed = true;
+                    }
+                }
+
+                // Final size check
+                if (finalBytes.Length > MaxFileSize)
+                {
+                    ToastService.ShowToastError(
+                        $"حجم فایل '{browserFile.Name}' پس از فشرده‌سازی ({FormatSize(finalBytes.Length)}) بیشتر از حد مجاز ({FormatSize(MaxFileSize)}) است.");
+                    continue;
+                }
+
+                _newFiles.Add(new NewFileModel
+                {
+                    FileKey = Guid.NewGuid(),
+                    Title = finalTitle,
+                    OriginalName = browserFile.Name,
+                    ContentType = finalContentType,
+                    Content = finalBytes,
+                    Length = finalBytes.Length,
+                    OriginalSize = originalSize,
+                    WasCompressed = wasCompressed
+                });
+
+                // Show compression feedback
+                if (wasCompressed)
+                {
+                    var savedPercent = (1.0 - (double)finalBytes.Length / originalSize) * 100;
+                    ToastService.ShowToastInfo(
+                        $"'{browserFile.Name}': {FormatSize(originalSize)} → {FormatSize(finalBytes.Length)} ({savedPercent:F0}% کاهش)");
+                }
+            }
+            catch (Exception ex)
+            {
+                ToastService.ShowToastError($"خطا در پردازش '{browserFile.Name}': {ex.Message}");
+            }
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task<byte[]?> CompressImage(byte[] imageBytes, string contentType)
+    {
+        try
+        {
+            var compressed = await JS.InvokeAsync<byte[]>(
+                "fileUtils.compressImage",
+                imageBytes, contentType, MaxImageDimension, MaxImageDimension, JpegQuality);
+
+            return compressed?.Length > 0 ? compressed : null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    // ──────────────────────────────────
+    //  File Title Editing
+    // ──────────────────────────────────
+
+    private void UpdateFileTitle(Guid fileKey, string title)
+    {
+        var file = _newFiles.FirstOrDefault(f => f.FileKey == fileKey);
+        if (file is not null)
+            file.Title = string.IsNullOrWhiteSpace(title) ? file.OriginalName : title;
+    }
+
+    private void RemoveNewFile(Guid fileKey)
+    {
+        _newFiles.RemoveAll(f => f.FileKey == fileKey);
+    }
+
+    private void RemoveExistingFile(Guid fileId)
+    {
+        _removedFileIds.Add(fileId);
+    }
+
+    // ──────────────────────────────────
+    //  Submit
+    // ──────────────────────────────────
+
+    private async Task HandleSubmit()
+    {
+        if (_isSaving) return;
+
+        _isSaving = true;
+        _editContext?.NotifyValidationStateChanged();
+
+        if (_editContext is null || !_editContext.Validate())
+        {
+            _isSaving = false;
+            return;
+        }
+
+        var title = _model.Title?.Trim() ?? "";
+        var text = _model.Text.Trim();
+        var categoryId = _model.CategoryId;
+        var fileDtos = _newFiles.Select(f => new NoteFileDto(f.Content, f.ContentType, f.Length, f.Title)).ToList();
+
+        if (NoteId.HasValue)
+        {
+            var removed = _removedFileIds.ToList();
+            var result = await ApiService.SendAsync(
+                apiCall: () => ApiClient.UpdateNoteAsync(NoteId.Value, new UpdateNoteRequest(categoryId, fileDtos, removed, text, title)),
+                successMessage: "یادداشت با موفقیت ویرایش شد.",
+                showErrorToast: true);
+
+            if (result?.IsSuccess == true)
+                await OnSaved.InvokeAsync();
+        }
+        else
+        {
+            var result = await ApiService.SendAsync(
+                apiCall: () => ApiClient.CreateNoteAsync(new CreateNoteRequest(categoryId, fileDtos, text, title)),
+                successMessage: "یادداشت با موفقیت ایجاد شد.",
+                showErrorToast: true);
+
+            if (result?.IsSuccess == true)
+                await OnSaved.InvokeAsync();
+        }
+
+        _isSaving = false;
+    }
+
+    // ──────────────────────────────────
+    //  Helpers
+    // ──────────────────────────────────
+
+    private static string GetNewFileIcon(string ct)
+    {
+        if (ct.StartsWith("image/")) return "bi bi-image";
+        if (ct.Contains("pdf") || ct.StartsWith("text/")) return "bi bi-file-earmark-text";
+        return "bi bi-paperclip";
+    }
+
+    private static string GetFileIcon(GetNoteDetailQueryResponseFileFileType t) => t switch
+    {
+        GetNoteDetailQueryResponseFileFileType.Image => "bi bi-image",
+        GetNoteDetailQueryResponseFileFileType.Document => "bi bi-file-earmark-text",
+        _ => "bi bi-paperclip"
+    };
+
+    private static string GetFileTypeLabel(GetNoteDetailQueryResponseFileFileType t) => t switch
+    {
+        GetNoteDetailQueryResponseFileFileType.Image => "تصویر",
+        GetNoteDetailQueryResponseFileFileType.Document => "سند",
+        _ => t.ToString()
+    };
+
+    private static string FormatSize(long bytes)
+    {
+        if (bytes < 1024) return $"{bytes} B";
+        if (bytes < 1024 * 1024) return $"{bytes / 1024.0:F1} KB";
+        return $"{bytes / (1024.0 * 1024.0):F1} MB";
+    }
+
+    // ──────────────────────────────────
+    //  Models
+    // ──────────────────────────────────
+
+    public class NoteEditorModel
+    {
+        public string? Title { get; set; }
+        [Required(ErrorMessage = "متن یادداشت الزامی است")]
+        public string Text { get; set; } = "";
+        public Guid? CategoryId { get; set; }
+    }
+
+    private sealed class NewFileModel
+    {
+        public Guid FileKey { get; set; }
+        public string Title { get; set; } = "";
+        public string OriginalName { get; set; } = "";
+        public string ContentType { get; set; } = "";
+        public byte[] Content { get; set; } = [];
+        public long Length { get; set; }
+        public long OriginalSize { get; set; }
+        public bool WasCompressed { get; set; }
+    }
+
+    private sealed record ExistingFileModel(Guid NoteFileId, string Title, GetNoteDetailQueryResponseFileFileType FileType);
+}

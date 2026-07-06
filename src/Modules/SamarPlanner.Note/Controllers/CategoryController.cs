@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SamarPlanner.Note.Contracts;
 using SamarPlanner.Shared;
 using SamarPlanner.Shared.Contracts.Command;
+using SamarPlanner.Shared.Contracts.Queries;
 using SamarPlanner.Shared.Kernel;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -47,6 +48,16 @@ public class CategoryController(IMediator mediator) : BaseController
             NoteCategoryId: categoryId)
         );
 
+        return Result(result);
+    }
+
+    [HttpGet]
+    [SwaggerOperation(OperationId = "GetUserCategories")]
+    public async Task<ActionResult<Result<GetUserCategoriesQueryResponse>>> GetUserCategories()
+    {
+        var result = await mediator.Send(new GetUserCategoriesQuery(
+            UserId: UserId)
+        );
         return Result(result);
     }
 }

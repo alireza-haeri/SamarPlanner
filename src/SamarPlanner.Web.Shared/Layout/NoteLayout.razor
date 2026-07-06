@@ -1,0 +1,55 @@
+@inherits LayoutComponentBase
+@using Blazored.Toast
+@using Blazored.Toast.Configuration
+@using SamarPlanner.Web.Pages.Components
+@inject NavigationManager NavigationManager
+
+<div class="sub-layout">
+    <SubTopbar />
+    
+    <main class="sub-content">
+        @Body
+    </main>
+
+    <div class="sub-fab">
+        <button class="fab-button" @onclick="OpenAddModal" title="یادداشت جدید">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+        </button>
+    </div>
+</div>
+
+<BottomNav ActiveSection="notes" />
+
+@if (_showAddModal)
+{
+    <div class="modal-overlay" @onclick="CloseAddModal">
+        <div class="modal-content" @onclick:stopPropagation>
+            <div class="modal-header">
+                <h5>یادداشت جدید</h5>
+                <button class="btn-close" @onclick="CloseAddModal"></button>
+            </div>
+            <div class="modal-body">
+                <NoteForm OnSaved="OnNoteSaved" />
+            </div>
+        </div>
+    </div>
+}
+
+<BlazoredToasts Position="ToastPosition.TopRight" />
+
+@code {
+    private bool _showAddModal;
+
+    private void OpenAddModal() => _showAddModal = true;
+    private void CloseAddModal() => _showAddModal = false;
+
+    private void OnNoteSaved()
+    {
+        CloseAddModal();
+        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+    }
+}

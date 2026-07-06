@@ -61,4 +61,11 @@ public class NoteCategoryRepository(NoteDbContext context, ILogger<NoteCategoryR
             return false;
         }
     }
+
+    public async Task<List<NoteCategory>> GetUserCategoryAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        return await context.NoteCategories
+            .Where(n => n.UserId == userId)
+            .ToListAsync(cancellationToken);
+    }
 }

@@ -29,6 +29,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Files\Notes\" />
       <Folder Include="Logs\" />
     </ItemGroup>
 

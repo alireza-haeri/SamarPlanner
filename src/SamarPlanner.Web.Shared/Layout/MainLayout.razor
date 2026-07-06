@@ -126,7 +126,9 @@
     private void UpdateNav(string url)
     {
         var path = new Uri(url).AbsolutePath.ToLowerInvariant();
-        _showBottomNav = _isAuthenticated && path == "/";
+        _showBottomNav = _isAuthenticated &&
+                         !path.StartsWith("/login") &&
+                         !path.StartsWith("/register");
     }
 
     private async Task Logout()

@@ -5,6 +5,7 @@ using SamarPlanner.Shared;
 using SamarPlanner.Shared.Contracts.Queries;
 using SamarPlanner.Shared.Extensions;
 using SamarPlanner.Shared.Kernel;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SamarPlanner.Note.Controllers;
 
@@ -13,13 +14,10 @@ namespace SamarPlanner.Note.Controllers;
 public class NoteFileController(IMediator mediator) : BaseController
 {
     [HttpGet("{noteFileId:guid}")]
+    [SwaggerOperation(OperationId = "GetNoteFile")]
     public async Task<ActionResult<Result<GetNoteFileQueryResponse>>> GetFile(Guid noteFileId)
     {
         var result = await mediator.Send(new GetNoteFileQuery(UserId, noteFileId));
-        if (!result.IsSuccess)
-            return Ok(result);
-
-        var response = result.Response!;
-        return File(response.Content, response.ContentType, response.FileName);
+        return Result(result);
     }
 }
