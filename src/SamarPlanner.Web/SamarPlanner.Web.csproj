@@ -4,6 +4,8 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <PublishTrimmed>true</PublishTrimmed>
+        <RunAOTCompilation>false</RunAOTCompilation>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="ANM.Blazored.Toast" Version="0.1.1" />

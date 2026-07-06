@@ -3,6 +3,7 @@ using SamarPlanner.Goal;
 using SamarPlanner.Identity;
 using SamarPlanner.Note;
 using SamarPlanner.Report;
+using SamarPlanner.Shared.Extensions;
 using SamarPlanner.Shared.Infrastructure;
 using SamarPlanner.Shared.Kernel;
 using SamarPlanner.Shared.Swagger;
@@ -24,6 +25,9 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
         rollingInterval: RollingInterval.Day
     )
 );
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 builder.Services.Configure<ApplicationSettings>(builder.Configuration.GetSection("ApplicationSettings"));
 var applicationSettings = builder.Configuration.GetSection("ApplicationSettings").Get<ApplicationSettings>()
@@ -74,6 +78,8 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
 
 app.MapSwagger();
 app.MapScalarApiReference(options =>
