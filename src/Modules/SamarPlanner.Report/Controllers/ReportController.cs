@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SamarPlanner.Report.Contracts;
 using SamarPlanner.Shared;
@@ -11,12 +12,13 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace SamarPlanner.Report.Controllers;
 
 [Authorize]
+[Tags("Report")]
 [Route("/api/v1/reports")]
 public class ReportController(IMediator mediator) : BaseController
 {
     [HttpPost]
     [SwaggerOperation(OperationId = "CreateReport")]
-    public async Task<ActionResult<Result<Guid>>> Create([FromBody] CreateReportRequest request)
+    public async Task<ActionResult<Result<Guid>>> Create([FromBody] CreateReportRequest request, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new CreateReportCommand(
             UserId: UserId,
@@ -25,15 +27,14 @@ public class ReportController(IMediator mediator) : BaseController
             Score: request.Score,
             PeriodStart: request.PeriodStart,
             PeriodEnd: request.PeriodEnd,
-            Highlights: request.Highlights)
-        );
+            Highlights: request.Highlights), cancellationToken);
 
         return Result(result);
     }
 
     [HttpPut("{reportId:guid}")]
     [SwaggerOperation(OperationId = "UpdateReport")]
-    public async Task<ActionResult<Result<bool>>> Update([FromBody] UpdateReportRequest request, Guid reportId)
+    public async Task<ActionResult<Result<bool>>> Update([FromBody] UpdateReportRequest request, Guid reportId, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new UpdateReportCommand(
             ReportId: reportId,
@@ -43,20 +44,18 @@ public class ReportController(IMediator mediator) : BaseController
             Score: request.Score,
             PeriodStart: request.PeriodStart,
             PeriodEnd: request.PeriodEnd,
-            Highlights: request.Highlights)
-        );
+            Highlights: request.Highlights), cancellationToken);
 
         return Result(result);
     }
 
     [HttpDelete("{reportId:guid}")]
     [SwaggerOperation(OperationId = "DeleteReport")]
-    public async Task<ActionResult<Result<bool>>> Delete(Guid reportId)
+    public async Task<ActionResult<Result<bool>>> Delete(Guid reportId, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new DeleteReportCommand(
             ReportId: reportId,
-            UserId: UserId)
-        );
+            UserId: UserId), cancellationToken);
 
         return Result(result);
     }
@@ -64,25 +63,23 @@ public class ReportController(IMediator mediator) : BaseController
     [HttpGet]
     [SwaggerOperation(OperationId = "GetReports")]
     public async Task<ActionResult<Result<GetReportsByUserIdQueryResponse>>> GetReports(
-        [FromQuery(Name = "periodStart")] DateOnly periodStart, [FromQuery(Name = "periodEnd")] DateOnly periodEnd)
+        [FromQuery(Name = "periodStart")] DateOnly periodStart, [FromQuery(Name = "periodEnd")] DateOnly periodEnd, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new GetReportsByUserIdQuery(
             UserId: UserId,
             PeriodStart: periodStart,
-            PeriodEnd: periodEnd)
-        );
+            PeriodEnd: periodEnd), cancellationToken);
 
         return Result(result);
     }
 
     [HttpGet("{reportId:guid}")]
     [SwaggerOperation(OperationId = "GetReportDetails")]
-    public async Task<ActionResult<Result<GetReportDetailQueryResponse>>> GetReportDetail(Guid reportId)
+    public async Task<ActionResult<Result<GetReportDetailQueryResponse>>> GetReportDetail(Guid reportId, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new GetReportDetailQuery(
             ReportId: reportId,
-            UserId: UserId)
-        );
+            UserId: UserId), cancellationToken);
 
         return Result(result);
     }

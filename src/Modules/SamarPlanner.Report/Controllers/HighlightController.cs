@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SamarPlanner.Shared;
 using SamarPlanner.Shared.Contracts.Queries;
@@ -9,18 +10,19 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace SamarPlanner.Report.Controllers;
 
 [Authorize]
+[Tags("Report")]
 [Route("/api/v1/highlights")]
 public class HighlightController(IMediator mediator) : BaseController
 {
     [HttpGet]
     [SwaggerOperation(OperationId = "GetHighlightsSuggestions")]
     public async Task<ActionResult<Result<GetHighlightSuggestionsQueryResponse>>> GetHighlightsSuggestions(
-        [FromQuery(Name = "text")] string text)
+        [FromQuery(Name = "text")] string text, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new GetHighlightSuggestionsQuery(
             UserId: UserId,
             Text: text
-        ));
+        ), cancellationToken);
 
         return Result(result);
     }
