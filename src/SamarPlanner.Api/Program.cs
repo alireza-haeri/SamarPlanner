@@ -68,7 +68,7 @@ builder.Services.AddSwaggerGen(options =>
         Scheme = "bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "توکن JWT را وارد کنید (نیازی به نوشتن کلمه‌ی Bearer نیست)"
+        Description = "Enter token without Bearer"
     });
 
     options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
