@@ -36,7 +36,7 @@ public class UserRepository(UserManager<ApplicationUser> userManager) : IUserRep
         if (applicationUser is null)
             return null;
 
-        return User.Create(applicationUser.Id, applicationUser.PhoneNumber!);
+        return User.Create(applicationUser.Id, applicationUser.PhoneNumber!).Response;
     }
 
     private IdentityResult ToIdentityResult(Microsoft.AspNetCore.Identity.IdentityResult result) =>

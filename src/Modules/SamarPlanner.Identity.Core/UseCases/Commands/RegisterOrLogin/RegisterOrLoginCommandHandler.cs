@@ -19,7 +19,11 @@ public class RegisterOrLoginCommandHandler(
         var user = await userRepository.GetAsync(request.PhoneNumber, cancellationToken);
         if (user is null)
         {
-            user = User.Create(request.PhoneNumber);
+            var userResult = User.Create(request.PhoneNumber);
+            if (!userResult.IsSuccess)
+                return Result<RegisterOrLoginCommandResponse>.GeneralFailure(userResult.ErrorMessage!);
+
+            user = userResult.Response;
             var createResult = await userRepository.CreateAsync(user, request.Password, cancellationToken);
             if (!createResult.Succeeded)
                 return Result<RegisterOrLoginCommandResponse>.ValidationFailure(createResult.Errors);
