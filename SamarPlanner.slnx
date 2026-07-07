@@ -43,4 +43,14 @@
     <Project Path="src/Shared/SamarPlanner.Shared/SamarPlanner.Shared.csproj" />
     <Project Path="src\Shared\SamarPlanner.Shared.Infrastructure\SamarPlanner.Shared.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <File Path="tests\Directory.Build.props" />
+  </Folder>
+  <Folder Name="/tests/Modules/" />
+  <Folder Name="/tests/Modules/Identity/">
+    <Project Path="tests/Modules/SamarPlanner.Identity.Core.Tests/SamarPlanner.Identity.Core.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Shared/">
+    <Project Path="tests/Shared/SamarPlanner.Shared.Tests/SamarPlanner.Shared.Tests.csproj" />
+  </Folder>
 </Solution>

@@ -11,7 +11,7 @@ public class User
     public Guid Id { get; private init; }
     public string PhoneNumber { get; private set; } = string.Empty;
 
-    public static DomainResult<User> Create(Guid id, string phoneNumber)
+    public static DomainResult<User> Create(Guid id, string? phoneNumber)
     {
         if (id == Guid.Empty)
             return DomainResult<User>.Failure("شناسه کاربر نمیتواند خالی باشد.");
