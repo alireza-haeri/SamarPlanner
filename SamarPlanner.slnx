@@ -41,7 +41,6 @@
     <Project Path="src/Shared/SamarPlanner.Shared.Contracts/SamarPlanner.Shared.Contracts.csproj" />
     <Project Path="src/Shared/SamarPlanner.Shared.Kernel/SamarPlanner.Shared.Kernel.csproj" />
     <Project Path="src/Shared/SamarPlanner.Shared/SamarPlanner.Shared.csproj" />
-    <Project Path="src/Shared/SmarPlanner.Shared.Core/SmarPlanner.Shared.Core.csproj" />
     <Project Path="src\Shared\SamarPlanner.Shared.Infrastructure\SamarPlanner.Shared.Infrastructure.csproj" />
   </Folder>
 </Solution>

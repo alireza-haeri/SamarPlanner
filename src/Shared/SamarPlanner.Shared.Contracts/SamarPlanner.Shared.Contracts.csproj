@@ -7,8 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Modules\SamarPlanner.Goal.Core\SamarPlanner.Goal.Core.csproj" />
-      <ProjectReference Include="..\..\Modules\SamarPlanner.Task.Core\SamarPlanner.Task.Core.csproj" />
       <ProjectReference Include="..\SamarPlanner.Shared.Kernel\SamarPlanner.Shared.Kernel.csproj" />
     </ItemGroup>
 

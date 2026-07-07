@@ -2,7 +2,7 @@ using MediatR;
 using SamarPlanner.Shared.Contracts.Queries;
 using SamarPlanner.Task.Application.Abstractions;
 using SamarPlanner.Task.Core.Entities;
-using TaskStatus = SamarPlanner.Task.Core.Enums.TaskStatus;
+using TaskStatus = SamarPlanner.Shared.Contracts.Enums.TaskStatus;
 
 namespace SamarPlanner.Task.Application.UseCases.Queries.GetTaskProgress;
 

@@ -1,4 +1,4 @@
-namespace SamarPlanner.Task.Core.Enums;
+namespace SamarPlanner.Shared.Contracts.Enums;
 
 public enum RepeatPatternType
 {

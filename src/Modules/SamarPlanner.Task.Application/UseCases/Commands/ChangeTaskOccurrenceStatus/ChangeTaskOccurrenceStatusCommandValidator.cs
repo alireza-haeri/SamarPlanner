@@ -1,5 +1,6 @@
 using FluentValidation;
 using SamarPlanner.Shared.Contracts.Command;
+using TaskStatus = SamarPlanner.Shared.Contracts.Enums.TaskStatus;
 
 namespace SamarPlanner.Task.Application.UseCases.Commands.ChangeTaskOccurrenceStatus;
 
@@ -32,7 +33,7 @@ public class ChangeTaskOccurrenceStatusCommandValidator : AbstractValidator<Chan
 
         RuleFor(x => x.Score)
             .Must(x => x is null)
-            .When(x => x.Status != Core.Enums.TaskStatus.AlmostDone)
+            .When(x => x.Status != TaskStatus.AlmostDone)
             .WithMessage("{PropertyName} باید null باشد زمانی که وضعیت وظیفه AlmostDone نیست.")
             .WithName("امتیاز");
         

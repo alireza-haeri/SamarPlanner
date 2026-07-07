@@ -1,4 +1,4 @@
-namespace SamarPlanner.Goal.Core.Enums;
+namespace SamarPlanner.Shared.Contracts.Enums;
 
 public enum GoalPriority
 {

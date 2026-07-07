@@ -1,6 +1,5 @@
-using SamarPlanner.Task.Core.Dtos;
-using SamarPlanner.Task.Core.Enums;
-
+using SamarPlanner.Shared.Contracts.Contracts;
+using SamarPlanner.Shared.Contracts.Enums;
 namespace SamarPlanner.Task.Core.Entities;
 
 public class RepeatPattern

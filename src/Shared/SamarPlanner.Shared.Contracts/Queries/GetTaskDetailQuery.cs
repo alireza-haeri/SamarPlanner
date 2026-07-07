@@ -1,11 +1,15 @@
+#region
+
 using MediatR;
+using SamarPlanner.Shared.Contracts.Contracts;
+using SamarPlanner.Shared.Contracts.Enums;
 using SamarPlanner.Shared.Kernel;
-using SamarPlanner.Task.Core.Dtos;
-using SamarPlanner.Task.Core.Enums;
+
+#endregion
 
 namespace SamarPlanner.Shared.Contracts.Queries;
 
-public record GetTaskDetailQuery(Guid TaskId, Guid UserId): IRequest<Result<GetTaskDetailQueryResult>>;
+public record GetTaskDetailQuery(Guid TaskId, Guid UserId) : IRequest<Result<GetTaskDetailQueryResult>>;
 
 public record GetTaskDetailQueryResult(
     Guid TaskId,
@@ -13,6 +17,6 @@ public record GetTaskDetailQueryResult(
     string? Description,
     TimeOnly? DefaultTime,
     TaskPriority? Priority,
-    SamarPlanner.Task.Core.Enums.TaskType Type,
+    TaskType Type,
     RepeatPatternDto? RepeatPattern,
     Guid? ParentGoalId);

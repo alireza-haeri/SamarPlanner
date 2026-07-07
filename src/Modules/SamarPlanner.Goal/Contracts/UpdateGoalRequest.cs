@@ -1,5 +1,5 @@
 using SamarPlanner.Goal.Core.Entities;
-using SamarPlanner.Goal.Core.Enums;
+using SamarPlanner.Shared.Contracts.Enums;
 
 namespace SamarPlanner.Goal.Contracts;
 

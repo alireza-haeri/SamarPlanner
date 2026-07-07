@@ -1,7 +1,10 @@
+#region
+
 using MediatR;
-using SamarPlanner.Goal.Core.Entities;
-using SamarPlanner.Goal.Core.Enums;
+using SamarPlanner.Shared.Contracts.Enums;
 using SamarPlanner.Shared.Kernel;
+
+#endregion
 
 namespace SamarPlanner.Shared.Contracts.Command;
 

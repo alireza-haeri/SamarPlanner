@@ -1,4 +1,8 @@
+#region
+
 using MediatR;
+
+#endregion
 
 namespace SamarPlanner.Shared.Contracts.Queries;
 

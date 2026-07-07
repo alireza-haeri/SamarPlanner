@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\Shared\SamarPlanner.Shared.Contracts\SamarPlanner.Shared.Contracts.csproj" />
+    </ItemGroup>
+
 </Project>

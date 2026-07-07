@@ -9,7 +9,6 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Shared\SamarPlanner.Shared.Application\SamarPlanner.Shared.Application.csproj" />
       <ProjectReference Include="..\..\Shared\SamarPlanner.Shared.Contracts\SamarPlanner.Shared.Contracts.csproj" />
-      <ProjectReference Include="..\..\Shared\SmarPlanner.Shared.Core\SmarPlanner.Shared.Core.csproj" />
       <ProjectReference Include="..\..\Shared\SamarPlanner.Shared.Kernel\SamarPlanner.Shared.Kernel.csproj" />
     </ItemGroup>
 

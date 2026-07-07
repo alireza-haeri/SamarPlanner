@@ -1,11 +1,11 @@
 using System.Globalization;
 using MediatR;
+using SamarPlanner.Shared.Contracts.Enums;
 using SamarPlanner.Shared.Contracts.Queries;
 using SamarPlanner.Shared.Kernel;
 using SamarPlanner.Task.Application.Abstractions;
 using SamarPlanner.Task.Core.Entities;
-using SamarPlanner.Task.Core.Enums;
-using TaskStatus = SamarPlanner.Task.Core.Enums.TaskStatus;
+using TaskStatus = SamarPlanner.Shared.Contracts.Enums.TaskStatus;
 
 namespace SamarPlanner.Task.Application.UseCases.Queries.GetTasksWithOccurrences;
 

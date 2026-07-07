@@ -1,6 +1,5 @@
-using System.Reflection.Metadata;
-using SamarPlanner.Task.Core.Enums;
-using TaskStatus = SamarPlanner.Task.Core.Enums.TaskStatus;
+using SamarPlanner.Shared.Contracts.Enums;
+using TaskStatus = SamarPlanner.Shared.Contracts.Enums.TaskStatus;
 
 namespace SamarPlanner.Task.Core.Entities;
 

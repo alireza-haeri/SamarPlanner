@@ -3,6 +3,7 @@ using SamarPlanner.Shared.Contracts.Command;
 using SamarPlanner.Shared.Contracts.Events;
 using SamarPlanner.Shared.Kernel;
 using SamarPlanner.Task.Application.Abstractions;
+using SamarPlanner.Task.Core.Entities;
 
 namespace SamarPlanner.Task.Application.UseCases.Commands.UpdateTask;
 
@@ -24,7 +25,10 @@ public class UpdateTaskCommandHandler(ITaskRepository taskRepository, IMediator 
             defaultTime: request.DefaultTime,
             priority: request.Priority,
             type: request.Type,
-            repeatPattern: request.RepeatPattern?.ToRepeatPattern(),
+            repeatPattern: request.RepeatPattern is not null
+                ? RepeatPattern.Create(request.RepeatPattern.Type, request.RepeatPattern.AnchorDate,
+                    request.RepeatPattern.Interval, request.RepeatPattern.WeekDays, request.RepeatPattern.MonthDays)
+                : null,
             parentGoalId: request.ParentGoalId);
 
         var updateResult = await taskRepository.UpdateAsync(task, cancellationToken);

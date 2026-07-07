@@ -1,4 +1,4 @@
-using SamarPlanner.Goal.Core.Enums;
+using SamarPlanner.Shared.Contracts.Enums;
 
 namespace SamarPlanner.Goal.Application.Dtos;
 

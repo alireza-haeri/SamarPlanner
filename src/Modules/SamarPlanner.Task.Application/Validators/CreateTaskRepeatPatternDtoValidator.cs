@@ -1,7 +1,7 @@
 using FluentValidation;
-using SamarPlanner.Task.Core.Dtos;
+using SamarPlanner.Shared.Contracts.Contracts;
+using SamarPlanner.Shared.Contracts.Enums;
 using SamarPlanner.Task.Core.Entities;
-using SamarPlanner.Task.Core.Enums;
 
 namespace SamarPlanner.Task.Application.Validators;
 

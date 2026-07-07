@@ -1,7 +1,11 @@
+#region
+
 using MediatR;
+using SamarPlanner.Shared.Contracts.Enums;
 using SamarPlanner.Shared.Kernel;
-using SamarPlanner.Task.Core.Enums;
-using TaskStatus = SamarPlanner.Task.Core.Enums.TaskStatus;
+using TaskStatus = SamarPlanner.Shared.Contracts.Enums.TaskStatus;
+
+#endregion
 
 namespace SamarPlanner.Shared.Contracts.Queries;
 

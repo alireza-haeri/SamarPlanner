@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SamarPlanner.Goal.Application.Dtos;
-using SamarPlanner.Goal.Core.Enums;
 using SamarPlanner.Goal.Infrastructure.Persistence;
+using SamarPlanner.Shared.Contracts.Enums;
 
 namespace SamarPlanner.Goal.Infrastructure.Repositories;
 
