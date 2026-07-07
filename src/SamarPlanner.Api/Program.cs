@@ -74,6 +74,7 @@ builder.Services.AddSwaggerGen(options =>
     options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
         { [new OpenApiSecuritySchemeReference("Bearer", document)] = [] });
 
+    options.SchemaFilter<EnumSchemaFilter>();
     options.OperationFilter<SummaryFromOperationIdFilter>();
 });
 

@@ -5,210 +5,6 @@
     "version": "v1"
   },
   "paths": {
-    "/api/v1/categories": {
-      "post": {
-        "tags": [
-          "Category"
-        ],
-        "summary": "CreateCategory",
-        "operationId": "CreateCategory",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/CreateCategoryRequest"
-                  }
-                ]
-              }
-            },
-            "text/json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/CreateCategoryRequest"
-                  }
-                ]
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/CreateCategoryRequest"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/GuidResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GuidResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GuidResult"
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "Category"
-        ],
-        "summary": "GetUserCategories",
-        "operationId": "GetUserCategories",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetUserCategoriesQueryResponseResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetUserCategoriesQueryResponseResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetUserCategoriesQueryResponseResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/categories/{categoryId}": {
-      "put": {
-        "tags": [
-          "Category"
-        ],
-        "summary": "UpdateCategory",
-        "operationId": "UpdateCategory",
-        "parameters": [
-          {
-            "name": "categoryId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/UpdateCategoryRequest"
-                  }
-                ]
-              }
-            },
-            "text/json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/UpdateCategoryRequest"
-                  }
-                ]
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/UpdateCategoryRequest"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/BooleanResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BooleanResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BooleanResult"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Category"
-        ],
-        "summary": "DeleteCategory",
-        "operationId": "DeleteCategory",
-        "parameters": [
-          {
-            "name": "categoryId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/BooleanResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BooleanResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BooleanResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/v1/client-logs": {
       "post": {
         "tags": [
@@ -674,46 +470,6 @@
         }
       }
     },
-    "/api/v1/highlights": {
-      "get": {
-        "tags": [
-          "Highlight"
-        ],
-        "summary": "GetHighlightsSuggestions",
-        "operationId": "GetHighlightsSuggestions",
-        "parameters": [
-          {
-            "name": "text",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetHighlightSuggestionsQueryResponseResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetHighlightSuggestionsQueryResponseResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetHighlightSuggestionsQueryResponseResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/v1/identity/authentication": {
       "post": {
         "tags": [
@@ -769,6 +525,210 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/RegisterOrLoginCommandResponseResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/categories": {
+      "post": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "CreateCategory",
+        "operationId": "CreateCategory",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CreateCategoryRequest"
+                  }
+                ]
+              }
+            },
+            "text/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CreateCategoryRequest"
+                  }
+                ]
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CreateCategoryRequest"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GuidResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GuidResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GuidResult"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "GetUserCategories",
+        "operationId": "GetUserCategories",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUserCategoriesQueryResponseResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUserCategoriesQueryResponseResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUserCategoriesQueryResponseResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/categories/{categoryId}": {
+      "put": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "UpdateCategory",
+        "operationId": "UpdateCategory",
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/UpdateCategoryRequest"
+                  }
+                ]
+              }
+            },
+            "text/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/UpdateCategoryRequest"
+                  }
+                ]
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/UpdateCategoryRequest"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "DeleteCategory",
+        "operationId": "DeleteCategory",
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
                 }
               }
             }
@@ -1023,7 +983,7 @@
     "/api/v1/note-files/{noteFileId}": {
       "get": {
         "tags": [
-          "NoteFile"
+          "Note"
         ],
         "summary": "GetNoteFile",
         "operationId": "GetNoteFile",
@@ -1055,6 +1015,46 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/GetNoteFileQueryResponseResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/highlights": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "summary": "GetHighlightsSuggestions",
+        "operationId": "GetHighlightsSuggestions",
+        "parameters": [
+          {
+            "name": "text",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetHighlightSuggestionsQueryResponseResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetHighlightSuggestionsQueryResponseResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetHighlightSuggestionsQueryResponseResult"
                 }
               }
             }
@@ -1706,7 +1706,7 @@
     "/api/v1/task-occurrences/{taskId}/date": {
       "patch": {
         "tags": [
-          "TaskOccurrence"
+          "Task"
         ],
         "summary": "ChangeOccurrenceDate",
         "operationId": "ChangeOccurrenceDate",
@@ -1779,7 +1779,7 @@
     "/api/v1/task-occurrences/{taskId}/time": {
       "patch": {
         "tags": [
-          "TaskOccurrence"
+          "Task"
         ],
         "summary": "ChangeOccurrenceTime",
         "operationId": "ChangeOccurrenceTime",
@@ -1852,7 +1852,7 @@
     "/api/v1/task-occurrences/{taskId}/skip": {
       "patch": {
         "tags": [
-          "TaskOccurrence"
+          "Task"
         ],
         "summary": "SkipOccurrence",
         "operationId": "SkipOccurrence",
@@ -1925,7 +1925,7 @@
     "/api/v1/task-occurrences/{taskId}/status": {
       "patch": {
         "tags": [
-          "TaskOccurrence"
+          "Task"
         ],
         "summary": "ChangeOccurrenceStatus",
         "operationId": "ChangeOccurrenceStatus",
@@ -2007,14 +2007,21 @@
             "readOnly": true
           },
           "badResultType": {
-            "type": "string",
+            "type": "integer",
             "readOnly": true,
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "NotFound",
               "Validation",
               "General",
               "Unauthorized"
+            ],
+            "enum": [
+              0,
+              1,
+              2,
+              3
             ]
           },
           "response": {
@@ -2057,12 +2064,19 @@
             "format": "date"
           },
           "status": {
-            "type": "string",
-            "enum": [
+            "type": "integer",
+            "format": "int32",
+            "x-enumNames": [
               "Pending",
               "Done",
               "NotDone",
               "AlmostDone"
+            ],
+            "enum": [
+              1,
+              2,
+              3,
+              4
             ]
           },
           "score": {
@@ -2141,14 +2155,21 @@
             "readOnly": true
           },
           "badResultType": {
-            "type": "string",
+            "type": "integer",
             "readOnly": true,
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "NotFound",
               "Validation",
               "General",
               "Unauthorized"
+            ],
+            "enum": [
+              0,
+              1,
+              2,
+              3
             ]
           },
           "response": {
@@ -2186,12 +2207,18 @@
             "nullable": true
           },
           "priority": {
-            "type": "string",
+            "type": "integer",
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "Low",
               "Medium",
               "High"
+            ],
+            "enum": [
+              1,
+              2,
+              3
             ]
           },
           "periodStart": {
@@ -2288,14 +2315,21 @@
             "readOnly": true
           },
           "badResultType": {
-            "type": "string",
+            "type": "integer",
             "readOnly": true,
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "NotFound",
               "Validation",
               "General",
               "Unauthorized"
+            ],
+            "enum": [
+              0,
+              1,
+              2,
+              3
             ]
           },
           "response": {
@@ -2342,19 +2376,30 @@
             "nullable": true
           },
           "priority": {
-            "type": "string",
+            "type": "integer",
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "High",
               "Medium",
               "Low"
+            ],
+            "enum": [
+              1,
+              2,
+              3
             ]
           },
           "type": {
-            "type": "string",
-            "enum": [
+            "type": "integer",
+            "format": "int32",
+            "x-enumNames": [
               "Task",
               "Event"
+            ],
+            "enum": [
+              1,
+              2
             ]
           },
           "repeatPattern": {
@@ -2402,12 +2447,18 @@
             "nullable": true
           },
           "goalPriority": {
-            "type": "string",
+            "type": "integer",
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "Low",
               "Medium",
               "High"
+            ],
+            "enum": [
+              1,
+              2,
+              3
             ]
           },
           "periodStart": {
@@ -2419,12 +2470,19 @@
             "format": "date"
           },
           "status": {
-            "type": "string",
-            "enum": [
+            "type": "integer",
+            "format": "int32",
+            "x-enumNames": [
               "Active",
               "Achieved",
               "Failed",
               "RolledOver"
+            ],
+            "enum": [
+              0,
+              1,
+              2,
+              3
             ]
           },
           "progress": {
@@ -2449,14 +2507,21 @@
             "readOnly": true
           },
           "badResultType": {
-            "type": "string",
+            "type": "integer",
             "readOnly": true,
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "NotFound",
               "Validation",
               "General",
               "Unauthorized"
+            ],
+            "enum": [
+              0,
+              1,
+              2,
+              3
             ]
           },
           "response": {
@@ -2507,12 +2572,18 @@
             "nullable": true
           },
           "priority": {
-            "type": "string",
+            "type": "integer",
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "Low",
               "Medium",
               "High"
+            ],
+            "enum": [
+              1,
+              2,
+              3
             ]
           }
         }
@@ -2526,14 +2597,21 @@
             "readOnly": true
           },
           "badResultType": {
-            "type": "string",
+            "type": "integer",
             "readOnly": true,
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "NotFound",
               "Validation",
               "General",
               "Unauthorized"
+            ],
+            "enum": [
+              0,
+              1,
+              2,
+              3
             ]
           },
           "response": {
@@ -2580,14 +2658,21 @@
             "readOnly": true
           },
           "badResultType": {
-            "type": "string",
+            "type": "integer",
             "readOnly": true,
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "NotFound",
               "Validation",
               "General",
               "Unauthorized"
+            ],
+            "enum": [
+              0,
+              1,
+              2,
+              3
             ]
           },
           "response": {
@@ -2648,14 +2733,21 @@
             "readOnly": true
           },
           "badResultType": {
-            "type": "string",
+            "type": "integer",
             "readOnly": true,
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "NotFound",
               "Validation",
               "General",
               "Unauthorized"
+            ],
+            "enum": [
+              0,
+              1,
+              2,
+              3
             ]
           },
           "response": {
@@ -2689,11 +2781,17 @@
             "nullable": true
           },
           "type": {
-            "type": "string",
-            "enum": [
+            "type": "integer",
+            "format": "int32",
+            "x-enumNames": [
               "Negative",
               "Positive",
               "Lesson"
+            ],
+            "enum": [
+              0,
+              1,
+              2
             ]
           }
         }
@@ -2745,10 +2843,15 @@
             "nullable": true
           },
           "fileType": {
-            "type": "string",
-            "enum": [
+            "type": "integer",
+            "format": "int32",
+            "x-enumNames": [
               "Image",
               "Document"
+            ],
+            "enum": [
+              0,
+              1
             ]
           }
         }
@@ -2762,14 +2865,21 @@
             "readOnly": true
           },
           "badResultType": {
-            "type": "string",
+            "type": "integer",
             "readOnly": true,
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "NotFound",
               "Validation",
               "General",
               "Unauthorized"
+            ],
+            "enum": [
+              0,
+              1,
+              2,
+              3
             ]
           },
           "response": {
@@ -2822,14 +2932,21 @@
             "readOnly": true
           },
           "badResultType": {
-            "type": "string",
+            "type": "integer",
             "readOnly": true,
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "NotFound",
               "Validation",
               "General",
               "Unauthorized"
+            ],
+            "enum": [
+              0,
+              1,
+              2,
+              3
             ]
           },
           "response": {
@@ -2897,14 +3014,21 @@
             "readOnly": true
           },
           "badResultType": {
-            "type": "string",
+            "type": "integer",
             "readOnly": true,
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "NotFound",
               "Validation",
               "General",
               "Unauthorized"
+            ],
+            "enum": [
+              0,
+              1,
+              2,
+              3
             ]
           },
           "response": {
@@ -2982,14 +3106,21 @@
             "readOnly": true
           },
           "badResultType": {
-            "type": "string",
+            "type": "integer",
             "readOnly": true,
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "NotFound",
               "Validation",
               "General",
               "Unauthorized"
+            ],
+            "enum": [
+              0,
+              1,
+              2,
+              3
             ]
           },
           "response": {
@@ -3036,19 +3167,30 @@
             "nullable": true
           },
           "priority": {
-            "type": "string",
+            "type": "integer",
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "High",
               "Medium",
               "Low"
+            ],
+            "enum": [
+              1,
+              2,
+              3
             ]
           },
           "type": {
-            "type": "string",
-            "enum": [
+            "type": "integer",
+            "format": "int32",
+            "x-enumNames": [
               "Task",
               "Event"
+            ],
+            "enum": [
+              1,
+              2
             ]
           },
           "repeatPattern": {
@@ -3075,14 +3217,21 @@
             "readOnly": true
           },
           "badResultType": {
-            "type": "string",
+            "type": "integer",
             "readOnly": true,
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "NotFound",
               "Validation",
               "General",
               "Unauthorized"
+            ],
+            "enum": [
+              0,
+              1,
+              2,
+              3
             ]
           },
           "response": {
@@ -3129,14 +3278,21 @@
             "readOnly": true
           },
           "badResultType": {
-            "type": "string",
+            "type": "integer",
             "readOnly": true,
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "NotFound",
               "Validation",
               "General",
               "Unauthorized"
+            ],
+            "enum": [
+              0,
+              1,
+              2,
+              3
             ]
           },
           "response": {
@@ -3175,12 +3331,19 @@
             "nullable": true
           },
           "status": {
-            "type": "string",
-            "enum": [
+            "type": "integer",
+            "format": "int32",
+            "x-enumNames": [
               "Pending",
               "Done",
               "NotDone",
               "AlmostDone"
+            ],
+            "enum": [
+              1,
+              2,
+              3,
+              4
             ]
           },
           "score": {
@@ -3206,19 +3369,30 @@
             "nullable": true
           },
           "priority": {
-            "type": "string",
+            "type": "integer",
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "High",
               "Medium",
               "Low"
+            ],
+            "enum": [
+              1,
+              2,
+              3
             ]
           },
           "type": {
-            "type": "string",
-            "enum": [
+            "type": "integer",
+            "format": "int32",
+            "x-enumNames": [
               "Task",
               "Event"
+            ],
+            "enum": [
+              1,
+              2
             ]
           },
           "parentGoalId": {
@@ -3271,14 +3445,21 @@
             "readOnly": true
           },
           "badResultType": {
-            "type": "string",
+            "type": "integer",
             "readOnly": true,
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "NotFound",
               "Validation",
               "General",
               "Unauthorized"
+            ],
+            "enum": [
+              0,
+              1,
+              2,
+              3
             ]
           },
           "response": {
@@ -3369,14 +3550,21 @@
             "readOnly": true
           },
           "badResultType": {
-            "type": "string",
+            "type": "integer",
             "readOnly": true,
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "NotFound",
               "Validation",
               "General",
               "Unauthorized"
+            ],
+            "enum": [
+              0,
+              1,
+              2,
+              3
             ]
           },
           "response": {
@@ -3410,14 +3598,21 @@
             "readOnly": true
           },
           "badResultType": {
-            "type": "string",
+            "type": "integer",
             "readOnly": true,
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "NotFound",
               "Validation",
               "General",
               "Unauthorized"
+            ],
+            "enum": [
+              0,
+              1,
+              2,
+              3
             ]
           },
           "response": {
@@ -3484,14 +3679,21 @@
             "readOnly": true
           },
           "badResultType": {
-            "type": "string",
+            "type": "integer",
             "readOnly": true,
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "NotFound",
               "Validation",
               "General",
               "Unauthorized"
+            ],
+            "enum": [
+              0,
+              1,
+              2,
+              3
             ]
           },
           "response": {
@@ -3535,11 +3737,17 @@
         "additionalProperties": false,
         "properties": {
           "type": {
-            "type": "string",
-            "enum": [
+            "type": "integer",
+            "format": "int32",
+            "x-enumNames": [
               "Daily",
               "WeeklyOnDays",
               "MonthlyOnDays"
+            ],
+            "enum": [
+              1,
+              2,
+              3
             ]
           },
           "anchorDate": {
@@ -3557,6 +3765,15 @@
             "items": {
               "type": "integer",
               "format": "int32",
+              "x-enumNames": [
+                "Sunday",
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday"
+              ],
               "enum": [
                 0,
                 1,
@@ -3587,11 +3804,17 @@
             "nullable": true
           },
           "type": {
-            "type": "string",
-            "enum": [
+            "type": "integer",
+            "format": "int32",
+            "x-enumNames": [
               "Negative",
               "Positive",
               "Lesson"
+            ],
+            "enum": [
+              0,
+              1,
+              2
             ]
           }
         }
@@ -3615,14 +3838,21 @@
             "readOnly": true
           },
           "badResultType": {
-            "type": "string",
+            "type": "integer",
             "readOnly": true,
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "NotFound",
               "Validation",
               "General",
               "Unauthorized"
+            ],
+            "enum": [
+              0,
+              1,
+              2,
+              3
             ]
           },
           "response": {
@@ -3701,12 +3931,18 @@
             "nullable": true
           },
           "priority": {
-            "type": "string",
+            "type": "integer",
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "Low",
               "Medium",
               "High"
+            ],
+            "enum": [
+              1,
+              2,
+              3
             ]
           },
           "periodStart": {
@@ -3814,19 +4050,30 @@
             "nullable": true
           },
           "priority": {
-            "type": "string",
+            "type": "integer",
+            "format": "int32",
             "nullable": true,
-            "enum": [
+            "x-enumNames": [
               "High",
               "Medium",
               "Low"
+            ],
+            "enum": [
+              1,
+              2,
+              3
             ]
           },
           "type": {
-            "type": "string",
-            "enum": [
+            "type": "integer",
+            "format": "int32",
+            "x-enumNames": [
               "Task",
               "Event"
+            ],
+            "enum": [
+              1,
+              2
             ]
           },
           "repeatPattern": {
@@ -3848,7 +4095,7 @@
     "securitySchemes": {
       "Bearer": {
         "type": "http",
-        "description": "توکن JWT را وارد کنید (نیازی به نوشتن کلمه‌ی Bearer نیست)",
+        "description": "Enter token without Bearer",
         "scheme": "bearer",
         "bearerFormat": "JWT"
       }
@@ -3861,16 +4108,10 @@
   ],
   "tags": [
     {
-      "name": "Category"
-    },
-    {
       "name": "ClientLogs"
     },
     {
       "name": "Goal"
-    },
-    {
-      "name": "Highlight"
     },
     {
       "name": "Identity"
@@ -3879,16 +4120,10 @@
       "name": "Note"
     },
     {
-      "name": "NoteFile"
-    },
-    {
       "name": "Report"
     },
     {
       "name": "Task"
-    },
-    {
-      "name": "TaskOccurrence"
     }
   ]
 }

@@ -78,7 +78,7 @@
                         <div class="mb-2">
                             <label class="form-label small">روزهای هفته</label>
                             <div class="d-flex flex-wrap gap-2">
-                                @foreach (var day in new[] { ("شنبه", WeekDays._1), ("یکشنبه", WeekDays._2), ("دوشنبه", WeekDays._3), ("سه‌شنبه", WeekDays._4), ("چهارشنبه", WeekDays._5), ("پنجشنبه", WeekDays._6), ("جمعه", WeekDays._0) })
+                                @foreach (var day in new[] { ("شنبه", WeekDays.Saturday), ("یکشنبه", WeekDays.Sunday), ("دوشنبه", WeekDays.Monday), ("سه‌شنبه", WeekDays.Tuesday), ("چهارشنبه", WeekDays.Wednesday), ("پنجشنبه", WeekDays.Thursday), ("جمعه", WeekDays.Friday) })
                                 {
                                     var currentDay = day.Item2;
                                     <div class="form-check">

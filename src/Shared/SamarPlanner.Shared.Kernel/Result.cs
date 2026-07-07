@@ -45,17 +45,10 @@ public class Result<TModel>
         };
 }
 
-[JsonConverter(typeof(JsonStringEnumConverter))]
-[DataContract(Name = "BadResultType")]
-[SwaggerSchema(Title = "BadResultType")]
 public enum BadResultType
 {
-    [EnumMember(Value = "NotFound")]
     NotFound = 0,
-    [EnumMember(Value = "Validation")]
     Validation = 1,
-    [EnumMember(Value = "General")]
     General = 2,
-    [EnumMember(Value = "Unauthorized")]
     Unauthorized = 3,
 }

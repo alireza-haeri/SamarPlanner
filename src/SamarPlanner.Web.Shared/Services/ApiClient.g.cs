@@ -30,38 +30,6 @@ namespace SamarPlanner.Web.Shared.Services
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// CreateCategory
-        /// </summary>
-        /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<GuidResult> CreateCategoryAsync(CreateCategoryRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// GetUserCategories
-        /// </summary>
-        /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<GetUserCategoriesQueryResponseResult> GetUserCategoriesAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// UpdateCategory
-        /// </summary>
-        /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<BooleanResult> UpdateCategoryAsync(System.Guid categoryId, UpdateCategoryRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// DeleteCategory
-        /// </summary>
-        /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<BooleanResult> DeleteCategoryAsync(System.Guid categoryId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
         /// LogClientEntries
         /// </summary>
         /// <returns>OK</returns>
@@ -142,19 +110,43 @@ namespace SamarPlanner.Web.Shared.Services
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// GetHighlightsSuggestions
-        /// </summary>
-        /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<GetHighlightSuggestionsQueryResponseResult> GetHighlightsSuggestionsAsync(string text = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
         /// RegisterOrLogin
         /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<RegisterOrLoginCommandResponseResult> RegisterOrLoginAsync(RegisterOrLoginRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// CreateCategory
+        /// </summary>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<GuidResult> CreateCategoryAsync(CreateCategoryRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// GetUserCategories
+        /// </summary>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<GetUserCategoriesQueryResponseResult> GetUserCategoriesAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// UpdateCategory
+        /// </summary>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<BooleanResult> UpdateCategoryAsync(System.Guid categoryId, UpdateCategoryRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// DeleteCategory
+        /// </summary>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<BooleanResult> DeleteCategoryAsync(System.Guid categoryId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -203,6 +195,14 @@ namespace SamarPlanner.Web.Shared.Services
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<GetNoteFileQueryResponseResult> GetNoteFileAsync(System.Guid noteFileId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// GetHighlightsSuggestions
+        /// </summary>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<GetHighlightSuggestionsQueryResponseResult> GetHighlightsSuggestionsAsync(string text = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -373,318 +373,6 @@ namespace SamarPlanner.Web.Shared.Services
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, string url);
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// CreateCategory
-        /// </summary>
-        /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<GuidResult> CreateCategoryAsync(CreateCategoryRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(body, JsonSerializerSettings);
-                    var content_ = new System.Net.Http.StringContent(json_);
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
-
-                    var urlBuilder_ = new System.Text.StringBuilder();
-                
-                    // Operation Path: "api/v1/categories"
-                    urlBuilder_.Append("api/v1/categories");
-
-                    PrepareRequest(client_, request_, urlBuilder_);
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-
-                    PrepareRequest(client_, request_, url_);
-
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
-                        foreach (var item_ in response_.Headers)
-                            headers_[item_.Key] = item_.Value;
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-
-                        ProcessResponse(client_, response_);
-
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<GuidResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// GetUserCategories
-        /// </summary>
-        /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<GetUserCategoriesQueryResponseResult> GetUserCategoriesAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
-
-                    var urlBuilder_ = new System.Text.StringBuilder();
-                
-                    // Operation Path: "api/v1/categories"
-                    urlBuilder_.Append("api/v1/categories");
-
-                    PrepareRequest(client_, request_, urlBuilder_);
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-
-                    PrepareRequest(client_, request_, url_);
-
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
-                        foreach (var item_ in response_.Headers)
-                            headers_[item_.Key] = item_.Value;
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-
-                        ProcessResponse(client_, response_);
-
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<GetUserCategoriesQueryResponseResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// UpdateCategory
-        /// </summary>
-        /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<BooleanResult> UpdateCategoryAsync(System.Guid categoryId, UpdateCategoryRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            if (categoryId == null)
-                throw new System.ArgumentNullException("categoryId");
-
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(body, JsonSerializerSettings);
-                    var content_ = new System.Net.Http.StringContent(json_);
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("PUT");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
-
-                    var urlBuilder_ = new System.Text.StringBuilder();
-                
-                    // Operation Path: "api/v1/categories/{categoryId}"
-                    urlBuilder_.Append("api/v1/categories/");
-                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(categoryId, System.Globalization.CultureInfo.InvariantCulture)));
-
-                    PrepareRequest(client_, request_, urlBuilder_);
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-
-                    PrepareRequest(client_, request_, url_);
-
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
-                        foreach (var item_ in response_.Headers)
-                            headers_[item_.Key] = item_.Value;
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-
-                        ProcessResponse(client_, response_);
-
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<BooleanResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// DeleteCategory
-        /// </summary>
-        /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<BooleanResult> DeleteCategoryAsync(System.Guid categoryId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            if (categoryId == null)
-                throw new System.ArgumentNullException("categoryId");
-
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    request_.Method = new System.Net.Http.HttpMethod("DELETE");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
-
-                    var urlBuilder_ = new System.Text.StringBuilder();
-                
-                    // Operation Path: "api/v1/categories/{categoryId}"
-                    urlBuilder_.Append("api/v1/categories/");
-                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(categoryId, System.Globalization.CultureInfo.InvariantCulture)));
-
-                    PrepareRequest(client_, request_, urlBuilder_);
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-
-                    PrepareRequest(client_, request_, url_);
-
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
-                        foreach (var item_ in response_.Headers)
-                            headers_[item_.Key] = item_.Value;
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-
-                        ProcessResponse(client_, response_);
-
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<BooleanResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1465,86 +1153,6 @@ namespace SamarPlanner.Web.Shared.Services
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// GetHighlightsSuggestions
-        /// </summary>
-        /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<GetHighlightSuggestionsQueryResponseResult> GetHighlightsSuggestionsAsync(string text = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
-
-                    var urlBuilder_ = new System.Text.StringBuilder();
-                
-                    // Operation Path: "api/v1/highlights"
-                    urlBuilder_.Append("api/v1/highlights");
-                    urlBuilder_.Append('?');
-                    if (text != null)
-                    {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("text")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(text, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
-                    }
-                    urlBuilder_.Length--;
-
-                    PrepareRequest(client_, request_, urlBuilder_);
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-
-                    PrepareRequest(client_, request_, url_);
-
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
-                        foreach (var item_ in response_.Headers)
-                            headers_[item_.Key] = item_.Value;
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-
-                        ProcessResponse(client_, response_);
-
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<GetHighlightSuggestionsQueryResponseResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
         /// RegisterOrLogin
         /// </summary>
         /// <returns>OK</returns>
@@ -1595,6 +1203,318 @@ namespace SamarPlanner.Web.Shared.Services
                         if (status_ == 200)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<RegisterOrLoginCommandResponseResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// CreateCategory
+        /// </summary>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<GuidResult> CreateCategoryAsync(CreateCategoryRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(body, JsonSerializerSettings);
+                    var content_ = new System.Net.Http.StringContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/v1/categories"
+                    urlBuilder_.Append("api/v1/categories");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<GuidResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// GetUserCategories
+        /// </summary>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<GetUserCategoriesQueryResponseResult> GetUserCategoriesAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/v1/categories"
+                    urlBuilder_.Append("api/v1/categories");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<GetUserCategoriesQueryResponseResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// UpdateCategory
+        /// </summary>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<BooleanResult> UpdateCategoryAsync(System.Guid categoryId, UpdateCategoryRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+            if (categoryId == null)
+                throw new System.ArgumentNullException("categoryId");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(body, JsonSerializerSettings);
+                    var content_ = new System.Net.Http.StringContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("PUT");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/v1/categories/{categoryId}"
+                    urlBuilder_.Append("api/v1/categories/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(categoryId, System.Globalization.CultureInfo.InvariantCulture)));
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<BooleanResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// DeleteCategory
+        /// </summary>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<BooleanResult> DeleteCategoryAsync(System.Guid categoryId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+            if (categoryId == null)
+                throw new System.ArgumentNullException("categoryId");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("DELETE");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/v1/categories/{categoryId}"
+                    urlBuilder_.Append("api/v1/categories/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(categoryId, System.Globalization.CultureInfo.InvariantCulture)));
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<BooleanResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -2063,6 +1983,86 @@ namespace SamarPlanner.Web.Shared.Services
                         if (status_ == 200)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<GetNoteFileQueryResponseResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// GetHighlightsSuggestions
+        /// </summary>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<GetHighlightSuggestionsQueryResponseResult> GetHighlightsSuggestionsAsync(string text = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/v1/highlights"
+                    urlBuilder_.Append("api/v1/highlights");
+                    urlBuilder_.Append('?');
+                    if (text != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("text")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(text, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    urlBuilder_.Length--;
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<GetHighlightSuggestionsQueryResponseResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -3603,7 +3603,6 @@ namespace SamarPlanner.Web.Shared.Services
         public bool IsSuccess { get; init; }
 
         [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public BooleanResultBadResultType? BadResultType { get; init; }
 
         [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -3650,7 +3649,6 @@ namespace SamarPlanner.Web.Shared.Services
         public System.DateTimeOffset Date { get; init; }
 
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ChangeOccurrenceStatusRequestStatus Status { get; init; }
 
         [Newtonsoft.Json.JsonProperty("score", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -3751,7 +3749,6 @@ namespace SamarPlanner.Web.Shared.Services
         public bool IsSuccess { get; init; }
 
         [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public CreateGoalCommandResponseResultBadResultType? BadResultType { get; init; }
 
         [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -3783,7 +3780,6 @@ namespace SamarPlanner.Web.Shared.Services
         public string Description { get; init; }
 
         [Newtonsoft.Json.JsonProperty("priority", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public CreateGoalRequestPriority? Priority { get; init; }
 
         [Newtonsoft.Json.JsonProperty("periodStart", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -3891,7 +3887,6 @@ namespace SamarPlanner.Web.Shared.Services
         public bool IsSuccess { get; init; }
 
         [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public CreateTaskCommandResponseResultBadResultType? BadResultType { get; init; }
 
         [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -3932,11 +3927,9 @@ namespace SamarPlanner.Web.Shared.Services
         public System.TimeSpan? DefaultTime { get; init; }
 
         [Newtonsoft.Json.JsonProperty("priority", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public CreateTaskRequestPriority? Priority { get; init; }
 
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public CreateTaskRequestType Type { get; init; }
 
         [Newtonsoft.Json.JsonProperty("repeatPattern", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -3988,7 +3981,6 @@ namespace SamarPlanner.Web.Shared.Services
         public string Description { get; init; }
 
         [Newtonsoft.Json.JsonProperty("goalPriority", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetAllGoalsByUserIdQueryResponseGoalsGoalPriority? GoalPriority { get; init; }
 
         [Newtonsoft.Json.JsonProperty("periodStart", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -4000,7 +3992,6 @@ namespace SamarPlanner.Web.Shared.Services
         public System.DateTimeOffset PeriodEnd { get; init; }
 
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetAllGoalsByUserIdQueryResponseGoalsStatus Status { get; init; }
 
         [Newtonsoft.Json.JsonProperty("progress", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -4027,7 +4018,6 @@ namespace SamarPlanner.Web.Shared.Services
         public bool IsSuccess { get; init; }
 
         [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetAllGoalsByUserIdQueryResponseResultBadResultType? BadResultType { get; init; }
 
         [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -4070,7 +4060,6 @@ namespace SamarPlanner.Web.Shared.Services
         public string Title { get; init; }
 
         [Newtonsoft.Json.JsonProperty("priority", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetAllShortGoalsByUserIdQueryResponseGoalsPriority? Priority { get; init; }
 
     }
@@ -4091,7 +4080,6 @@ namespace SamarPlanner.Web.Shared.Services
         public bool IsSuccess { get; init; }
 
         [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetAllShortGoalsByUserIdQueryResponseResultBadResultType? BadResultType { get; init; }
 
         [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -4132,7 +4120,6 @@ namespace SamarPlanner.Web.Shared.Services
         public bool IsSuccess { get; init; }
 
         [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetDeletedTasksQueryResultResultBadResultType? BadResultType { get; init; }
 
         [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -4191,7 +4178,6 @@ namespace SamarPlanner.Web.Shared.Services
         public bool IsSuccess { get; init; }
 
         [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetHighlightSuggestionsQueryResponseResultBadResultType? BadResultType { get; init; }
 
         [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -4216,7 +4202,6 @@ namespace SamarPlanner.Web.Shared.Services
         public string Text { get; init; }
 
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetHighlightSuggestionsQueryResponseSuggestionType Type { get; init; }
 
     }
@@ -4273,7 +4258,6 @@ namespace SamarPlanner.Web.Shared.Services
         public string Title { get; init; }
 
         [Newtonsoft.Json.JsonProperty("fileType", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetNoteDetailQueryResponseFileFileType FileType { get; init; }
 
     }
@@ -4294,7 +4278,6 @@ namespace SamarPlanner.Web.Shared.Services
         public bool IsSuccess { get; init; }
 
         [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetNoteDetailQueryResponseResultBadResultType? BadResultType { get; init; }
 
         [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -4343,7 +4326,6 @@ namespace SamarPlanner.Web.Shared.Services
         public bool IsSuccess { get; init; }
 
         [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetNoteFileQueryResponseResultBadResultType? BadResultType { get; init; }
 
         [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -4406,7 +4388,6 @@ namespace SamarPlanner.Web.Shared.Services
         public bool IsSuccess { get; init; }
 
         [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetReportDetailQueryResponseResultBadResultType? BadResultType { get; init; }
 
         [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -4483,7 +4464,6 @@ namespace SamarPlanner.Web.Shared.Services
         public bool IsSuccess { get; init; }
 
         [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetReportsByUserIdQueryResponseResultBadResultType? BadResultType { get; init; }
 
         [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -4523,11 +4503,9 @@ namespace SamarPlanner.Web.Shared.Services
         public System.TimeSpan? DefaultTime { get; init; }
 
         [Newtonsoft.Json.JsonProperty("priority", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetTaskDetailQueryResultPriority? Priority { get; init; }
 
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetTaskDetailQueryResultType Type { get; init; }
 
         [Newtonsoft.Json.JsonProperty("repeatPattern", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -4554,7 +4532,6 @@ namespace SamarPlanner.Web.Shared.Services
         public bool IsSuccess { get; init; }
 
         [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetTaskDetailQueryResultResultBadResultType? BadResultType { get; init; }
 
         [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -4595,7 +4572,6 @@ namespace SamarPlanner.Web.Shared.Services
         public bool IsSuccess { get; init; }
 
         [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetTasksWithOccurrencesQueryResultResultBadResultType? BadResultType { get; init; }
 
         [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -4627,7 +4603,6 @@ namespace SamarPlanner.Web.Shared.Services
         public System.TimeSpan? Time { get; init; }
 
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetTasksWithOccurrencesQueryResultTaskOccurrencesStatus Status { get; init; }
 
         [Newtonsoft.Json.JsonProperty("score", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -4659,11 +4634,9 @@ namespace SamarPlanner.Web.Shared.Services
         public string Title { get; init; }
 
         [Newtonsoft.Json.JsonProperty("priority", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetTasksWithOccurrencesQueryResultTasksPriority? Priority { get; init; }
 
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetTasksWithOccurrencesQueryResultTasksType Type { get; init; }
 
         [Newtonsoft.Json.JsonProperty("parentGoalId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -4722,7 +4695,6 @@ namespace SamarPlanner.Web.Shared.Services
         public bool IsSuccess { get; init; }
 
         [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetUserCategoriesQueryResponseResultBadResultType? BadResultType { get; init; }
 
         [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -4811,7 +4783,6 @@ namespace SamarPlanner.Web.Shared.Services
         public bool IsSuccess { get; init; }
 
         [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GetUserNotesGroupedByCategoryQueryResponseResultBadResultType? BadResultType { get; init; }
 
         [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -4838,7 +4809,6 @@ namespace SamarPlanner.Web.Shared.Services
         public bool IsSuccess { get; init; }
 
         [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GuidResultBadResultType? BadResultType { get; init; }
 
         [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -4909,7 +4879,6 @@ namespace SamarPlanner.Web.Shared.Services
         public bool IsSuccess { get; init; }
 
         [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public RegisterOrLoginCommandResponseResultBadResultType? BadResultType { get; init; }
 
         [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -4952,7 +4921,6 @@ namespace SamarPlanner.Web.Shared.Services
         }
 
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public RepeatPatternDtoType Type { get; init; }
 
         [Newtonsoft.Json.JsonProperty("anchorDate", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -4984,7 +4952,6 @@ namespace SamarPlanner.Web.Shared.Services
         public string Text { get; init; }
 
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ReportHighlightDtoType Type { get; init; }
 
     }
@@ -5019,7 +4986,6 @@ namespace SamarPlanner.Web.Shared.Services
         public bool IsSuccess { get; init; }
 
         [Newtonsoft.Json.JsonProperty("badResultType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public RolloverGoalCommandResultResultBadResultType? BadResultType { get; init; }
 
         [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -5108,7 +5074,6 @@ namespace SamarPlanner.Web.Shared.Services
         public string Description { get; init; }
 
         [Newtonsoft.Json.JsonProperty("priority", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public UpdateGoalRequestPriority? Priority { get; init; }
 
         [Newtonsoft.Json.JsonProperty("periodStart", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -5220,11 +5185,9 @@ namespace SamarPlanner.Web.Shared.Services
         public System.TimeSpan? DefaultTime { get; init; }
 
         [Newtonsoft.Json.JsonProperty("priority", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public UpdateTaskRequestPriority? Priority { get; init; }
 
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public UpdateTaskRequestType Type { get; init; }
 
         [Newtonsoft.Json.JsonProperty("repeatPattern", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -5239,16 +5202,12 @@ namespace SamarPlanner.Web.Shared.Services
     public enum BooleanResultBadResultType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
         NotFound = 0,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
         Validation = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"General")]
         General = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
         Unauthorized = 3,
 
     }
@@ -5257,17 +5216,13 @@ namespace SamarPlanner.Web.Shared.Services
     public enum ChangeOccurrenceStatusRequestStatus
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Pending")]
-        Pending = 0,
+        Pending = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Done")]
-        Done = 1,
+        Done = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"NotDone")]
-        NotDone = 2,
+        NotDone = 3,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"AlmostDone")]
-        AlmostDone = 3,
+        AlmostDone = 4,
 
     }
 
@@ -5275,16 +5230,12 @@ namespace SamarPlanner.Web.Shared.Services
     public enum CreateGoalCommandResponseResultBadResultType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
         NotFound = 0,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
         Validation = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"General")]
         General = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
         Unauthorized = 3,
 
     }
@@ -5293,14 +5244,11 @@ namespace SamarPlanner.Web.Shared.Services
     public enum CreateGoalRequestPriority
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Low")]
-        Low = 0,
+        Low = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Medium")]
-        Medium = 1,
+        Medium = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"High")]
-        High = 2,
+        High = 3,
 
     }
 
@@ -5308,16 +5256,12 @@ namespace SamarPlanner.Web.Shared.Services
     public enum CreateTaskCommandResponseResultBadResultType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
         NotFound = 0,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
         Validation = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"General")]
         General = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
         Unauthorized = 3,
 
     }
@@ -5326,14 +5270,11 @@ namespace SamarPlanner.Web.Shared.Services
     public enum CreateTaskRequestPriority
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"High")]
-        High = 0,
+        High = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Medium")]
-        Medium = 1,
+        Medium = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Low")]
-        Low = 2,
+        Low = 3,
 
     }
 
@@ -5341,11 +5282,9 @@ namespace SamarPlanner.Web.Shared.Services
     public enum CreateTaskRequestType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Task")]
-        Task = 0,
+        Task = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Event")]
-        Event = 1,
+        Event = 2,
 
     }
 
@@ -5353,14 +5292,11 @@ namespace SamarPlanner.Web.Shared.Services
     public enum GetAllGoalsByUserIdQueryResponseGoalsGoalPriority
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Low")]
-        Low = 0,
+        Low = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Medium")]
-        Medium = 1,
+        Medium = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"High")]
-        High = 2,
+        High = 3,
 
     }
 
@@ -5368,16 +5304,12 @@ namespace SamarPlanner.Web.Shared.Services
     public enum GetAllGoalsByUserIdQueryResponseGoalsStatus
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Active")]
         Active = 0,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Achieved")]
         Achieved = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Failed")]
         Failed = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"RolledOver")]
         RolledOver = 3,
 
     }
@@ -5386,16 +5318,12 @@ namespace SamarPlanner.Web.Shared.Services
     public enum GetAllGoalsByUserIdQueryResponseResultBadResultType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
         NotFound = 0,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
         Validation = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"General")]
         General = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
         Unauthorized = 3,
 
     }
@@ -5404,14 +5332,11 @@ namespace SamarPlanner.Web.Shared.Services
     public enum GetAllShortGoalsByUserIdQueryResponseGoalsPriority
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Low")]
-        Low = 0,
+        Low = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Medium")]
-        Medium = 1,
+        Medium = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"High")]
-        High = 2,
+        High = 3,
 
     }
 
@@ -5419,16 +5344,12 @@ namespace SamarPlanner.Web.Shared.Services
     public enum GetAllShortGoalsByUserIdQueryResponseResultBadResultType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
         NotFound = 0,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
         Validation = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"General")]
         General = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
         Unauthorized = 3,
 
     }
@@ -5437,16 +5358,12 @@ namespace SamarPlanner.Web.Shared.Services
     public enum GetDeletedTasksQueryResultResultBadResultType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
         NotFound = 0,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
         Validation = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"General")]
         General = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
         Unauthorized = 3,
 
     }
@@ -5455,16 +5372,12 @@ namespace SamarPlanner.Web.Shared.Services
     public enum GetHighlightSuggestionsQueryResponseResultBadResultType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
         NotFound = 0,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
         Validation = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"General")]
         General = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
         Unauthorized = 3,
 
     }
@@ -5473,13 +5386,10 @@ namespace SamarPlanner.Web.Shared.Services
     public enum GetHighlightSuggestionsQueryResponseSuggestionType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Negative")]
         Negative = 0,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Positive")]
         Positive = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Lesson")]
         Lesson = 2,
 
     }
@@ -5488,10 +5398,8 @@ namespace SamarPlanner.Web.Shared.Services
     public enum GetNoteDetailQueryResponseFileFileType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Image")]
         Image = 0,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Document")]
         Document = 1,
 
     }
@@ -5500,16 +5408,12 @@ namespace SamarPlanner.Web.Shared.Services
     public enum GetNoteDetailQueryResponseResultBadResultType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
         NotFound = 0,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
         Validation = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"General")]
         General = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
         Unauthorized = 3,
 
     }
@@ -5518,16 +5422,12 @@ namespace SamarPlanner.Web.Shared.Services
     public enum GetNoteFileQueryResponseResultBadResultType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
         NotFound = 0,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
         Validation = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"General")]
         General = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
         Unauthorized = 3,
 
     }
@@ -5536,16 +5436,12 @@ namespace SamarPlanner.Web.Shared.Services
     public enum GetReportDetailQueryResponseResultBadResultType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
         NotFound = 0,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
         Validation = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"General")]
         General = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
         Unauthorized = 3,
 
     }
@@ -5554,16 +5450,12 @@ namespace SamarPlanner.Web.Shared.Services
     public enum GetReportsByUserIdQueryResponseResultBadResultType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
         NotFound = 0,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
         Validation = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"General")]
         General = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
         Unauthorized = 3,
 
     }
@@ -5572,14 +5464,11 @@ namespace SamarPlanner.Web.Shared.Services
     public enum GetTaskDetailQueryResultPriority
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"High")]
-        High = 0,
+        High = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Medium")]
-        Medium = 1,
+        Medium = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Low")]
-        Low = 2,
+        Low = 3,
 
     }
 
@@ -5587,11 +5476,9 @@ namespace SamarPlanner.Web.Shared.Services
     public enum GetTaskDetailQueryResultType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Task")]
-        Task = 0,
+        Task = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Event")]
-        Event = 1,
+        Event = 2,
 
     }
 
@@ -5599,16 +5486,12 @@ namespace SamarPlanner.Web.Shared.Services
     public enum GetTaskDetailQueryResultResultBadResultType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
         NotFound = 0,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
         Validation = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"General")]
         General = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
         Unauthorized = 3,
 
     }
@@ -5617,16 +5500,12 @@ namespace SamarPlanner.Web.Shared.Services
     public enum GetTasksWithOccurrencesQueryResultResultBadResultType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
         NotFound = 0,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
         Validation = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"General")]
         General = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
         Unauthorized = 3,
 
     }
@@ -5635,17 +5514,13 @@ namespace SamarPlanner.Web.Shared.Services
     public enum GetTasksWithOccurrencesQueryResultTaskOccurrencesStatus
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Pending")]
-        Pending = 0,
+        Pending = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Done")]
-        Done = 1,
+        Done = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"NotDone")]
-        NotDone = 2,
+        NotDone = 3,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"AlmostDone")]
-        AlmostDone = 3,
+        AlmostDone = 4,
 
     }
 
@@ -5653,14 +5528,11 @@ namespace SamarPlanner.Web.Shared.Services
     public enum GetTasksWithOccurrencesQueryResultTasksPriority
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"High")]
-        High = 0,
+        High = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Medium")]
-        Medium = 1,
+        Medium = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Low")]
-        Low = 2,
+        Low = 3,
 
     }
 
@@ -5668,11 +5540,9 @@ namespace SamarPlanner.Web.Shared.Services
     public enum GetTasksWithOccurrencesQueryResultTasksType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Task")]
-        Task = 0,
+        Task = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Event")]
-        Event = 1,
+        Event = 2,
 
     }
 
@@ -5680,16 +5550,12 @@ namespace SamarPlanner.Web.Shared.Services
     public enum GetUserCategoriesQueryResponseResultBadResultType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
         NotFound = 0,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
         Validation = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"General")]
         General = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
         Unauthorized = 3,
 
     }
@@ -5698,16 +5564,12 @@ namespace SamarPlanner.Web.Shared.Services
     public enum GetUserNotesGroupedByCategoryQueryResponseResultBadResultType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
         NotFound = 0,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
         Validation = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"General")]
         General = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
         Unauthorized = 3,
 
     }
@@ -5716,16 +5578,12 @@ namespace SamarPlanner.Web.Shared.Services
     public enum GuidResultBadResultType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
         NotFound = 0,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
         Validation = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"General")]
         General = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
         Unauthorized = 3,
 
     }
@@ -5734,16 +5592,12 @@ namespace SamarPlanner.Web.Shared.Services
     public enum RegisterOrLoginCommandResponseResultBadResultType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
         NotFound = 0,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
         Validation = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"General")]
         General = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
         Unauthorized = 3,
 
     }
@@ -5752,14 +5606,11 @@ namespace SamarPlanner.Web.Shared.Services
     public enum RepeatPatternDtoType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Daily")]
-        Daily = 0,
+        Daily = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"WeeklyOnDays")]
-        WeeklyOnDays = 1,
+        WeeklyOnDays = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"MonthlyOnDays")]
-        MonthlyOnDays = 2,
+        MonthlyOnDays = 3,
 
     }
 
@@ -5767,19 +5618,19 @@ namespace SamarPlanner.Web.Shared.Services
     public enum WeekDays
     {
 
-        _0 = 0,
+        Sunday = 0,
 
-        _1 = 1,
+        Monday = 1,
 
-        _2 = 2,
+        Tuesday = 2,
 
-        _3 = 3,
+        Wednesday = 3,
 
-        _4 = 4,
+        Thursday = 4,
 
-        _5 = 5,
+        Friday = 5,
 
-        _6 = 6,
+        Saturday = 6,
 
     }
 
@@ -5787,13 +5638,10 @@ namespace SamarPlanner.Web.Shared.Services
     public enum ReportHighlightDtoType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Negative")]
         Negative = 0,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Positive")]
         Positive = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Lesson")]
         Lesson = 2,
 
     }
@@ -5802,16 +5650,12 @@ namespace SamarPlanner.Web.Shared.Services
     public enum RolloverGoalCommandResultResultBadResultType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"NotFound")]
         NotFound = 0,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Validation")]
         Validation = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"General")]
         General = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Unauthorized")]
         Unauthorized = 3,
 
     }
@@ -5820,14 +5664,11 @@ namespace SamarPlanner.Web.Shared.Services
     public enum UpdateGoalRequestPriority
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Low")]
-        Low = 0,
+        Low = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Medium")]
-        Medium = 1,
+        Medium = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"High")]
-        High = 2,
+        High = 3,
 
     }
 
@@ -5835,14 +5676,11 @@ namespace SamarPlanner.Web.Shared.Services
     public enum UpdateTaskRequestPriority
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"High")]
-        High = 0,
+        High = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Medium")]
-        Medium = 1,
+        Medium = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Low")]
-        Low = 2,
+        Low = 3,
 
     }
 
@@ -5850,11 +5688,9 @@ namespace SamarPlanner.Web.Shared.Services
     public enum UpdateTaskRequestType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Task")]
-        Task = 0,
+        Task = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"Event")]
-        Event = 1,
+        Event = 2,
 
     }
 
