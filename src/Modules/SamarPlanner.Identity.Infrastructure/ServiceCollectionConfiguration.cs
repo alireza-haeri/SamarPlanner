@@ -27,7 +27,6 @@ public static class ServiceCollectionConfiguration
             builder.Configuration.GetSection(nameof(ApplicationSettings)).Get<ApplicationSettings>()
             ?? throw new InvalidOperationException(nameof(ApplicationSettings));
         var databaseSettings = applicationSettings.Databases;
-        var jwtSettings = applicationSettings.JwtToken;
 
         builder.Services.AddDbContext<IdentityDbContext>(options =>
         {
