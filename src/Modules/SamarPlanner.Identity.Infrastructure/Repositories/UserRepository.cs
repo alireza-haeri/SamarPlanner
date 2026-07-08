@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SamarPlanner.Identity.Core.Abstractions;
 using SamarPlanner.Identity.Core.Entities;
 using SamarPlanner.Identity.Infrastructure.Persistence;
@@ -7,16 +8,26 @@ using IdentityResult = SamarPlanner.Identity.Core.Contracts.IdentityResult;
 
 namespace SamarPlanner.Identity.Infrastructure.Repositories;
 
-public class UserRepository(UserManager<ApplicationUser> userManager) : IUserRepository
+public class UserRepository(UserManager<ApplicationUser> userManager, ILogger<UserRepository> logger) : IUserRepository
 {
     public async Task<IdentityResult> CreateAsync(User user, string password,
         CancellationToken cancellationToken = default)
     {
-        var applicationUser = ApplicationUser.CrateFromUser(user);
+        try
+        {
+            var applicationUser = ApplicationUser.CrateFromUser(user);
 
-        var result = await userManager.CreateAsync(applicationUser, password);
+            var result = await userManager.CreateAsync(applicationUser, password);
 
-        return ToIdentityResult(result);
+            return ToIdentityResult(result);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error creating user with phone number {PhoneNumber}", user.PhoneNumber);
+            return new IdentityResult(false, new Dictionary<string, string[]>
+                { { "General", ["خطا در هنگام ایجاد کاربر."] } }
+            );
+        }
     }
 
     public async Task<bool> CheckPasswordAsync(string phoneNumber, string password,

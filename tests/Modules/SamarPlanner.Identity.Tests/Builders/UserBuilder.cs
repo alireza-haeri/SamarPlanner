@@ -1,4 +1,6 @@
-namespace SamarPlanner.Identity.Core.Tests.Builders;
+using SamarPlanner.Shared.Kernel;
+
+namespace SamarPlanner.Identity.Tests.Builders;
 
 public class UserBuilder
 {
@@ -17,8 +19,8 @@ public class UserBuilder
         return this;
     }
 
-    public DomainResult<Entities.User> CreateResult()
+    public DomainResult<Core.Entities.User> CreateResult()
     {
-        return Entities.User.Create(_id, _phoneNumber);
+        return Core.Entities.User.Create(_id, _phoneNumber);
     }
 }

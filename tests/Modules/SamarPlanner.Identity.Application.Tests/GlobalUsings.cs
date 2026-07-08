@@ -1,0 +1,10 @@
+global using Xunit;
+global using FluentAssertions;
+global using NSubstitute;
+global using SamarPlanner.Identity.Core.Abstractions;
+global using SamarPlanner.Identity.Core.Contracts;
+global using SamarPlanner.Identity.Core.UseCases.Commands.RegisterOrLogin;
+global using SamarPlanner.Shared.Contracts.Command;
+global using SamarPlanner.Shared.Kernel;
+global using SamarPlanner.Identity.Tests.Builders;
+global using SamarPlanner.Shared.Tests.Assertions;

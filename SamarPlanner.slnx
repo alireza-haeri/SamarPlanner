@@ -48,7 +48,9 @@
   </Folder>
   <Folder Name="/tests/Modules/" />
   <Folder Name="/tests/Modules/Identity/">
+    <Project Path="tests/Modules/SamarPlanner.Identity.Application.Tests/SamarPlanner.Identity.Application.Tests.csproj" />
     <Project Path="tests/Modules/SamarPlanner.Identity.Core.Tests/SamarPlanner.Identity.Core.Tests.csproj" />
+    <Project Path="tests/Modules/SamarPlanner.Identity.Tests/SamarPlanner.Identity.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Shared/">
     <Project Path="tests/Shared/SamarPlanner.Shared.Tests/SamarPlanner.Shared.Tests.csproj" />

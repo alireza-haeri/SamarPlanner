@@ -9,8 +9,7 @@ namespace SamarPlanner.Identity.Core.UseCases.Commands.RegisterOrLogin;
 
 public class RegisterOrLoginCommandHandler(
     IUserRepository userRepository,
-    IJwtTokenService jwtToken,
-    IValidator<RegisterOrLoginCommand> validator)
+    IJwtTokenService jwtToken)
     : IRequestHandler<RegisterOrLoginCommand, Result<RegisterOrLoginCommandResponse>>
 {
     public async Task<Result<RegisterOrLoginCommandResponse>> Handle(RegisterOrLoginCommand request,
