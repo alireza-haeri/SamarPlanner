@@ -6,11 +6,10 @@ namespace SamarPlanner.Shared.Kernel;
 
 public class Result<TModel>
 {
-    public bool IsSuccess { get; private set; }
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public BadResultType? BadResultType { get; private set; }
-    public TModel? Response { get; private set; }
-    public IDictionary<string, string[]>? Errors { get; private set; }
+    public bool IsSuccess { get; init; }
+    public BadResultType? BadResultType { get; init; }
+    public TModel? Response { get; init; }
+    public IDictionary<string, string[]>? Errors { get; init; }
 
     public static Result<TModel> Success(TModel response) =>
         new() { IsSuccess = true, Response = response };

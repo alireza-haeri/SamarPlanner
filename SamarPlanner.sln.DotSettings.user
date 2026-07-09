@@ -8,7 +8,9 @@
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AIdentityResult_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002Econfig_003FJetBrains_003FRider2026_002E1_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F6b23fcb5dce144228b5fc6aa7fa5cd5a81a00_003F31_003F5b4dc87d_003FIdentityResult_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AIToastService_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002Econfig_003FJetBrains_003FRider2026_002E1_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003Fa81f1eee9948442191657197c3290cde6400_003F0f_003Fdbb1458d_003FIToastService_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ALateBoundTestFramework_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002Econfig_003FJetBrains_003FRider2026_002E1_003Fresharper_002Dhost_003FSourcesCache_003F22647a7960d2619ab733924a2acfee09d32a8827c8c680a37cc4863678abec_003FLateBoundTestFramework_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ANullable_00601_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002Econfig_003FJetBrains_003FRider2026_002E1_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F46ed5c19080e41c3b91ecb324d356cf2b2e200_003F37_003F318612db_003FNullable_00601_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AOpenApiSecuritySchemeReference_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002Econfig_003FJetBrains_003FRider2026_002E1_003Fresharper_002Dhost_003FSourcesCache_003F745cb396bebb9be0d7abf0fa667e32788a6395867bd4cfac16c1c6666ad421_003FOpenApiSecuritySchemeReference_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AProgram_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002Econfig_003FJetBrains_003FRider2026_002E1_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003Ff8c859fa67af41f8bd90fc15f4f9c01c95c0_003F9b_003F7ac1afc0_003FProgram_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AProgram_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002Econfig_003FJetBrains_003FRider2026_002E1_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F4e03ce5db1bf4145b04d60a6d1aff9746550_003F79_003Fb57905bd_003FProgram_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	
 	
@@ -22,19 +24,31 @@
     &lt;TestId&gt;xUnit::9331F1D0-C39D-5D23-3B3B-DBC736DFB93E::net8.0::SamarPlanner.Identity.Application.Tests.UseCases.Commands.RegisterOrLogin.RegisterOrLoginCommandHandlerTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=afd4b571_002D92a9_002D46ad_002D86c7_002D8c81cb432b0c/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Handle_NewUser_WithValidData_ShouldRegisterAndReturnToken" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;TestAncestor&gt;
-    &lt;TestId&gt;xUnit::9331F1D0-C39D-5D23-3B3B-DBC736DFB93E::net8.0::SamarPlanner.Identity.Application.Tests.User.RegisterOrLoginCommandHandlerTests.Handle_NewUser_WithValidData_ShouldRegisterAndReturnToken&lt;/TestId&gt;
-  &lt;/TestAncestor&gt;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=afd4b571_002D92a9_002D46ad_002D86c7_002D8c81cb432b0c/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Handle_NewUser_WithValidData_ShouldRegisterAndReturnToken" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;Or&gt;
+    &lt;And&gt;
+      &lt;TestAncestor&gt;
+        &lt;TestId&gt;xUnit::0E9DC66C-85FA-27AA-2936-EBA5F985D98E::net8.0::SamarPlanner.Identity.Integration.Tests.Pipeline.RegisterOrLoginPipelineTests&lt;/TestId&gt;
+      &lt;/TestAncestor&gt;
+      &lt;Category&gt;&amp;lt;Uncategorized&amp;gt;&lt;/Category&gt;
+    &lt;/And&gt;
+    &lt;TestAncestor&gt;
+      &lt;TestId&gt;xUnit::0E9DC66C-85FA-27AA-2936-EBA5F985D98E::net8.0::SamarPlanner.Identity.Integration.Tests.Api.IdentityControllerTests&lt;/TestId&gt;
+    &lt;/TestAncestor&gt;
+  &lt;/Or&gt;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=dd3b292a_002Dd506_002D43f2_002Db15f_002D157f867a4a0e/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Tests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=dd3b292a_002Dd506_002D43f2_002Db15f_002D157f867a4a0e/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Tests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
     &lt;TestId&gt;xUnit::176286DA-AF8D-ABAB-0B2D-208F4329481C::net8.0::SamarPlanner.Identity.Core.Tests.User.CreateUserTests&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::9331F1D0-C39D-5D23-3B3B-DBC736DFB93E::net8.0::SamarPlanner.Identity.Application.Tests.User.RegisterOrLoginCommandHandlerTests.Handle_NewUser_WithValidData_ShouldRegisterAndReturnToken&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::D103E5C1-D8A9-42B2-B3E3-028FBFFC6BD7::net8.0::SamarPlanner.Identity.Infrastructure.Tests.Services.JwtTokenServiceTests&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::D103E5C1-D8A9-42B2-B3E3-028FBFFC6BD7::net8.0::SamarPlanner.Identity.Infrastructure.Tests.Repositories.UserRepositoryTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::0E9DC66C-85FA-27AA-2936-EBA5F985D98E::net8.0::SamarPlanner.Identity.Integration.Tests.Pipeline.RegisterOrLoginPipelineTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
+	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=f15023c8_002D0e2b_002D6d1c_002Dc40d_002D94f2cc49194c_0023SamarPlanner_002EMaui/@EntryIndexedValue">True</s:Boolean>
+	
+	
 	
 	
 	

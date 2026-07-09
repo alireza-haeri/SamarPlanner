@@ -110,11 +110,14 @@ app.MapControllers();
 
 try
 {
-    await app.UseTaskModuleAsync();
-    await app.UseReportModuleAsync();
-    await app.UseIdentityModuleAsync();
-    await app.UseGoalModuleAsync();
-    await app.UseNoteModuleAsync();
+    if (!builder.Environment.IsEnvironment("Testing"))
+    {
+        await app.UseTaskModuleAsync();
+        await app.UseReportModuleAsync();
+        await app.UseIdentityModuleAsync();
+        await app.UseGoalModuleAsync();
+        await app.UseNoteModuleAsync();
+    }
 
     Log.Information("Starting SamarPlanner API");
     await app.RunAsync();
@@ -127,3 +130,5 @@ finally
 {
     Log.CloseAndFlush();
 }
+
+public partial class Program();

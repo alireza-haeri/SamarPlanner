@@ -52,6 +52,7 @@
     <Project Path="tests/Modules/SamarPlanner.Identity.Core.Tests/SamarPlanner.Identity.Core.Tests.csproj" />
     <Project Path="tests/Modules/SamarPlanner.Identity.Infrastructure.Tests/SamarPlanner.Identity.Infrastructure.Tests.csproj" />
     <Project Path="tests/Modules/SamarPlanner.Identity.Tests/SamarPlanner.Identity.Tests.csproj" />
+    <Project Path="tests\Modules\SamarPlanner.Identity.Integration.Tests\SamarPlanner.Identity.Integration.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Shared/">
     <Project Path="tests/Shared/SamarPlanner.Shared.Tests/SamarPlanner.Shared.Tests.csproj" />

@@ -15,11 +15,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Extensions\" />
-      <Folder Include="Fixtures\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\..\..\src\Shared\SamarPlanner.Shared.Kernel\SamarPlanner.Shared.Kernel.csproj" />
     </ItemGroup>
     

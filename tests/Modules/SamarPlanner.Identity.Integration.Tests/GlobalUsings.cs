@@ -1,0 +1,14 @@
+global using Xunit;
+global using FluentAssertions;
+global using MediatR;
+global using Microsoft.Extensions.DependencyInjection;
+global using SamarPlanner.Identity.Integration.Tests.Fixtures;
+global using SamarPlanner.Shared.Contracts.Command;
+global using SamarPlanner.Shared.Kernel;
+global using Microsoft.AspNetCore.Hosting;
+global using Microsoft.AspNetCore.Mvc.Testing;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.DependencyInjection;
+global using SamarPlanner.Identity.Infrastructure.Persistence;
+global using System.Net;
+global using System.Net.Http.Json;
