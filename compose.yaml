@@ -1,0 +1,18 @@
+﻿services:
+  samarplanner.api:
+    container_name: samarplanner.api
+    build:
+      context: .
+      dockerfile: src/SamarPlanner.Api/Dockerfile
+    ports:
+      - "5009:8080"
+    depends_on:
+      - samarplanner.sql
+  samarplanner.sql:
+    container_name: samarplanner.sql
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    ports:
+      - "1433:1433"
+    environment:
+        SA_PASSWORD: "MyStrongP@ssw0rd"
+        ACCEPT_EULA: "Y"
