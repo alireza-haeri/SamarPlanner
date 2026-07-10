@@ -1,4 +1,10 @@
 <Solution>
+  <Folder Name="/docs/" />
+  <Folder Name="/docs/images/">
+    <File Path="docs\images\daily-task.png" />
+    <File Path="docs\images\landing.png" />
+    <File Path="docs\images\scalar.png" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path="compose.yaml" />
   </Folder>
